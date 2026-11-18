@@ -1,60 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/common_widgets.dart';
+import '../../../core/router/app_routes.dart';
+import '../../../core/theme/lume_tokens.dart';
+import '../../../core/widgets/animations/entrance.dart';
+import '../../../core/widgets/animations/press_scale.dart';
+import '../../../core/widgets/lume_components.dart';
+import '../../../core/widgets/lume_icon.dart';
+import '../../../data/discovery_action.dart';
 import '../../../data/models/match.dart';
-import '../../discovery/view/discovery_view.dart';
 import '../../matches/view_model/matches_bloc.dart';
 import '../view_model/likes_bloc.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_sizes.dart';
+import '../../../core/constants/app_strings.dart';
 
+/// "They noticed you." — likes grid, and the empty state.
 class LikesView extends StatelessWidget {
   const LikesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<LikesBloc, LikesState>(
-      listenWhen: (a, b) => (b.newMatch != null && a.newMatch != b.newMatch) || (b.error != null && a.error != b.error),
+      listenWhen: (a, b) => b.newMatch != null && a.newMatch != b.newMatch,
       listener: (context, s) {
-        if (s.error != null) showSnack(context, s.error!);
-        if (s.newMatch != null) {
-          context.read<LikesBloc>().add(const LikesMatchSeen());
-          context.read<MatchesBloc>().add(const MatchesRequested());
-          showMatchDialog(context, s.newMatch!);
-        }
+        context.read<LikesBloc>().add(const LikesMatchSeen());
+        context.read<MatchesBloc>().add(const MatchesRequested());
+        context.push(AppRoutes.itsAMatch, extra: s.newMatch);
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Likes You')),
-        body: BlocBuilder<LikesBloc, LikesState>(
-          builder: (context, s) {
-            final bloc = context.read<LikesBloc>();
-            if (s.status == LikesStatus.loading) return const LoadingView();
-            if (s.status == LikesStatus.failure) {
-              return ErrorView(message: s.error ?? 'Error', onRetry: () => bloc.add(const LikesRequested()));
-            }
-            if (s.likes.isEmpty) {
-              return const EmptyView(
-                icon: Icons.favorite_border,
-                title: 'No likes yet',
-                subtitle: 'Complete your profile with great photos and prompts to stand out.',
-              );
-            }
-            return RefreshIndicator(
-              onRefresh: () async => bloc.add(const LikesRequested()),
-              child: GridView.builder(
-                padding: const EdgeInsets.all(12),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.68,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+        body: SafeArea(
+          bottom: false,
+          child: BlocBuilder<LikesBloc, LikesState>(
+            builder: (context, s) {
+              if (s.status == LikesStatus.loading) return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+              if (s.likes.isEmpty) {
+                return LumeEmptyState(
+                  icon: LumeIcons.heart,
+                  archColor: AppColors.blush,
+                  title: AppStrings.likesEmptyTitle,
+                  body: AppStrings.likesEmptyBody,
+                  actionLabel: AppStrings.addVoiceIntro,
+                  onAction: () => context.push(AppRoutes.voiceIntro),
+                );
+              }
+              return RefreshIndicator(
+                color: AppColors.plum,
+                onRefresh: () async => context.read<LikesBloc>().add(const LikesRequested()),
+                child: CustomScrollView(
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                      sliver: SliverToBoxAdapter(child: FadeRise(child: LumeTitle(AppStrings.likesTitle, subtitle: AppStrings.likedThisWeek(s.likes.length)))),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+                      sliver: SliverGrid.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 16,
+                          childAspectRatio: 173 / 270,
+                        ),
+                        itemCount: s.likes.length,
+                        itemBuilder:
+                            (_, i) => FadeRise(key: ValueKey(s.likes[i].profile.id), delay: Duration(milliseconds: 60 * i), child: _LikeTile(like: s.likes[i])),
+                      ),
+                    ),
+                  ],
                 ),
-                itemCount: s.likes.length,
-                itemBuilder: (_, i) => _LikeTile(like: s.likes[i]),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -63,94 +82,41 @@ class LikesView extends StatelessWidget {
 
 class _LikeTile extends StatelessWidget {
   const _LikeTile({required this.like});
+
   final ReceivedLike like;
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<LikesBloc>();
     final p = like.profile;
-    void respond(bool yes) => bloc.add(LikeResponded(like, likeBack: yes));
-
-    return GestureDetector(
-      onTap: () => AppRouter.openProfileDetail(
-        context,
-        p,
-        actions: Builder(
-          builder: (ctx) => Row(children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () {
-                  respond(false);
-                  Navigator.of(ctx).pop();
-                },
-                child: const Text('Pass'),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: GradientButton(
-                label: 'Like back',
-                onPressed: () {
-                  respond(true);
-                  Navigator.of(ctx).pop();
-                },
-              ),
-            ),
-          ]),
-        ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: Stack(
-          fit: StackFit.expand,
+    final bloc = context.read<LikesBloc>();
+    return Semantics(
+      button: true,
+      label: '${p.name}, ${p.age}. ${like.reason ?? ''}',
+      child: PressScale(
+        scale: 0.98,
+        onTap: () async {
+          final result = await context.push<Object?>(AppRoutes.person, extra: FullProfileArgs(p, fromDiscover: true));
+          final action = DiscoveryActionResult.from(result);
+          if (action != null) bloc.add(LikeResponded(like, likeBack: action.isLike));
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NetworkPhoto(p.mainPhoto),
-            const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: [0.45, 1],
-                  colors: [Colors.transparent, Colors.black87],
-                ),
+            Expanded(
+              child: LayoutBuilder(
+                builder:
+                    (_, b) => ArchPhoto(
+                      source: p.mainPhoto,
+                      width: b.maxWidth,
+                      height: b.maxHeight,
+                      child: Align(alignment: Alignment.bottomLeft, child: Padding(padding: const EdgeInsets.all(10), child: _Badge(like: like))),
+                    ),
               ),
             ),
-            if (like.isSuperLike)
-              const Positioned(
-                top: 8,
-                left: 8,
-                child: Chip(
-                  visualDensity: VisualDensity.compact,
-                  backgroundColor: AppColors.superLike,
-                  avatar: Icon(Icons.star, color: Colors.white, size: 16),
-                  label: Text('Super Like', style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            Positioned(
-              left: 10,
-              right: 10,
-              bottom: 8,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${p.name}, ${p.age}',
-                      style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                  if (like.comment != null)
-                    Text('"${like.comment}"',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.white70, fontStyle: FontStyle.italic)),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _MiniButton(icon: Icons.close, color: AppColors.nope, onTap: () => respond(false)),
-                      _MiniButton(icon: Icons.favorite, color: AppColors.like, onTap: () => respond(true)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            AppGaps.h8,
+            Text('${p.name}, ${p.age}', style: LumeText.titleS.copyWith(color: AppColors.plum)),
+            AppGaps.h8,
+            Text(like.reason ?? AppStrings.likedYourProfile, style: LumeText.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),
@@ -158,20 +124,30 @@ class _LikeTile extends StatelessWidget {
   }
 }
 
-class _MiniButton extends StatelessWidget {
-  const _MiniButton({required this.icon, required this.color, required this.onTap});
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
+class _Badge extends StatelessWidget {
+  const _Badge({required this.like});
+
+  final ReceivedLike like;
 
   @override
-  Widget build(BuildContext context) => Material(
-        color: Colors.white,
-        shape: const CircleBorder(),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onTap,
-          child: Padding(padding: const EdgeInsets.all(8), child: Icon(icon, color: color, size: 22)),
-        ),
-      );
+  Widget build(BuildContext context) {
+    final (label, icon, bg) = switch (like.kind) {
+      LikeKind.superLike => (AppStrings.superLike, LumeIcons.star, AppColors.lavender),
+      LikeKind.compliment => (AppStrings.compliment, LumeIcons.compliment, AppColors.surface),
+      LikeKind.like => (null, null, null),
+    };
+    if (label == null) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
+      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(14)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LumeIcon(icon!, size: 14),
+          AppGaps.w4,
+          Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: LumeText.caption.copyWith(color: AppColors.plum))),
+        ],
+      ),
+    );
+  }
 }

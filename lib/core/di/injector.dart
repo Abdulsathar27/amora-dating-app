@@ -6,6 +6,7 @@ import '../../data/repositories/discovery_repository.dart';
 import '../../data/repositories/match_repository.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../../data/repositories/relationship_repository.dart';
+import '../../data/repositories/safety_repository.dart';
 import '../network/dio_client.dart';
 import '../storage/token_storage.dart';
 
@@ -22,5 +23,6 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<ProfileRepository>(() => ProfileRepository(sl()))
     ..registerLazySingleton<DiscoveryRepository>(() => DiscoveryRepository(sl()))
     ..registerLazySingleton<MatchRepository>(() => MatchRepository(sl()))
-    ..registerLazySingleton<RelationshipRepository>(() => RelationshipRepository(sl()));
+    ..registerLazySingleton<RelationshipRepository>(() => RelationshipRepository(sl()))
+    ..registerLazySingleton<SafetyRepository>(() => SafetyRepository(sl()));
 }

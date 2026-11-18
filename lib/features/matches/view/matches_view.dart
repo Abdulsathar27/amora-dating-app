@@ -1,164 +1,162 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/common_widgets.dart';
+import '../../../core/router/app_routes.dart';
+import '../../../core/theme/lume_tokens.dart';
+import '../../../core/widgets/animations/entrance.dart';
+import '../../../core/widgets/animations/press_scale.dart';
+import '../../../core/widgets/lume_button.dart';
+import '../../../core/widgets/lume_components.dart';
+import '../../../core/widgets/lume_icon.dart';
 import '../../../data/models/match.dart';
 import '../view_model/matches_bloc.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_sizes.dart';
+import '../../../core/constants/app_strings.dart';
 
+/// "Your matches": waiting for your hello + getting to know.
 class MatchesView extends StatelessWidget {
   const MatchesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Chats')),
-      body: BlocConsumer<MatchesBloc, MatchesState>(
-        listenWhen: (a, b) => b.error != null && a.error != b.error,
-        listener: (context, s) => showSnack(context, s.error!),
-        builder: (context, s) {
-          final bloc = context.read<MatchesBloc>();
-          if (s.status == MatchesStatus.loading) return const LoadingView();
-          if (s.status == MatchesStatus.failure) {
-            return ErrorView(message: s.error ?? 'Error', onRetry: () => bloc.add(const MatchesRequested()));
-          }
-          if (s.matches.isEmpty) {
-            return const EmptyView(
-              icon: Icons.chat_bubble_outline,
-              title: 'No matches yet',
-              subtitle: 'Start swiping – your matches and conversations will show up here.',
-            );
-          }
-          return RefreshIndicator(
-            onRefresh: () async => bloc.add(const MatchesRequested()),
-            child: ListView(
-              children: [
-                if (s.newMatches.isNotEmpty) ...[
-                  const _SectionTitle('New matches'),
-                  SizedBox(
-                    height: 132,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: s.newMatches.length,
-                      separatorBuilder: (_, _) => const SizedBox(width: 14),
-                      itemBuilder: (_, i) => _NewMatchBubble(match: s.newMatches[i]),
+      body: SafeArea(
+        bottom: false,
+        child: BlocBuilder<MatchesBloc, MatchesState>(
+          builder: (context, s) {
+            if (s.status == MatchesStatus.loading) return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+            if (s.matches.isEmpty) {
+              return LumeEmptyState(
+                illustration: const _OverlappingArches(),
+                title: AppStrings.matchesEmptyTitle,
+                body: AppStrings.matchesEmptyBody,
+                actionLabel: AppStrings.keepDiscovering,
+                onAction: () => context.go(AppRoutes.discover),
+              );
+            }
+            return RefreshIndicator(
+              color: AppColors.plum,
+              onRefresh: () async => context.read<MatchesBloc>().add(const MatchesRequested()),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
+                children: [
+                  const FadeRise(child: LumeTitle(AppStrings.yourMatches)),
+                  if (s.newMatches.isNotEmpty) ...[
+                    AppGaps.h18,
+                    Text(AppStrings.waitingForHello, style: LumeText.titleS.copyWith(color: AppColors.plum)),
+                    AppGaps.h18,
+                    SizedBox(
+                      height: 158,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: s.newMatches.length,
+                        separatorBuilder: (_, _) => AppGaps.w14,
+                        itemBuilder: (_, i) => FadeRise(delay: Duration(milliseconds: 70 * i), child: _NewMatch(match: s.newMatches[i])),
+                      ),
                     ),
-                  ),
+                  ],
+                  if (s.conversations.isNotEmpty) ...[
+                    AppGaps.h18,
+                    Text(AppStrings.gettingToKnow, style: LumeText.titleS.copyWith(color: AppColors.plum)),
+                    AppGaps.h18,
+                    LumeCard(
+                      children: [
+                        StaggeredEntrance(children: [for (final m in s.conversations) _Connection(match: m)]),
+                      ],
+                    ),
+                  ],
                 ],
-                const _SectionTitle('Messages'),
-                if (s.conversations.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.all(24),
-                    child: Text('Say hi to one of your new matches!', textAlign: TextAlign.center),
-                  ),
-                for (final m in s.conversations) _ConversationTile(match: m),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
-        child: Text(text, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.primary)),
-      );
-}
-
-String? _expiryLabel(Match m) {
-  final exp = m.expiresAt;
-  if (exp == null) return null;
-  final left = exp.difference(DateTime.now());
-  if (left.isNegative) return 'Expired';
-  return left.inHours >= 1 ? '${left.inHours}h left' : '${left.inMinutes}m left';
-}
-
-class _NewMatchBubble extends StatelessWidget {
-  const _NewMatchBubble({required this.match});
-  final Match match;
-
-  @override
-  Widget build(BuildContext context) {
-    final expiry = _expiryLabel(match);
-    return GestureDetector(
-      onTap: () => AppRouter.openChat(context, match),
-      onLongPress: () => confirmUnmatch(context, match),
-      child: SizedBox(
-        width: 80,
-        child: Column(
-          children: [
-            Avatar(match.profile.mainPhoto, size: 72, ring: true),
-            const SizedBox(height: 6),
-            Text(match.profile.name, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600)),
-            if (expiry != null) Text(expiry, style: const TextStyle(fontSize: 11, color: AppColors.rewind)),
-          ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _ConversationTile extends StatelessWidget {
-  const _ConversationTile({required this.match});
+class _NewMatch extends StatelessWidget {
+  const _NewMatch({required this.match});
+
+  final Match match;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: AppStrings.sayHelloTo(match.profile.name),
+    child: PressScale(
+      onTap: () => context.push(AppRoutes.chat(match.id), extra: match),
+      child: Column(
+        children: [
+          ArchPhoto(source: match.profile.mainPhoto, width: 100, height: 134, borderColor: AppColors.coral, borderWidth: 2.5),
+          AppGaps.h6,
+          Text(match.profile.name, style: LumeText.labelM),
+        ],
+      ),
+    ),
+  );
+}
+
+class _Connection extends StatelessWidget {
+  const _Connection({required this.match});
+
   final Match match;
 
   @override
   Widget build(BuildContext context) {
-    final last = match.lastMessage!;
-    final unread = match.unreadCount > 0;
-    final time = last.sentAt.toLocal();
-    final isToday = DateUtils.isSameDay(time, DateTime.now());
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      leading: Avatar(match.profile.mainPhoto, size: 56),
-      title: Text(match.profile.name, style: TextStyle(fontWeight: unread ? FontWeight.bold : FontWeight.w600)),
-      subtitle: Text(
-        last.text,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(fontWeight: unread ? FontWeight.w600 : FontWeight.normal),
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Row(
         children: [
-          Text(isToday ? DateFormat.jm().format(time) : DateFormat.MMMd().format(time), style: const TextStyle(fontSize: 12)),
-          if (unread) ...[
-            const SizedBox(height: 4),
-            Badge(label: Text('${match.unreadCount}'), backgroundColor: AppColors.primary),
-          ],
+          LumeAvatar(match.profile.mainPhoto, size: AppSizes.avatarMd),
+          AppGaps.w12,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [Text(match.profile.name, style: LumeText.titleS), Text(matchedLabel(match.matchedAt), style: LumeText.bodyM)],
+            ),
+          ),
+          LumeIconButton(
+            LumeIcons.chat,
+            tooltip: AppStrings.messageName(match.profile.name),
+            background: AppColors.lavenderSoft,
+            onPressed: () => context.push(AppRoutes.chat(match.id), extra: match),
+          ),
         ],
       ),
-      onTap: () => AppRouter.openChat(context, match),
-      onLongPress: () => confirmUnmatch(context, match),
     );
   }
 }
 
-Future<void> confirmUnmatch(BuildContext context, Match match, {bool popAfter = false}) async {
-  final bloc = context.read<MatchesBloc>();
-  final ok = await showDialog<bool>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text('Unmatch ${match.profile.name}?'),
-      content: const Text('You will no longer see each other and your conversation will be deleted.'),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-        TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Unmatch', style: TextStyle(color: AppColors.nope))),
-      ],
-    ),
-  );
-  if (ok != true) return;
-  bloc.add(UnmatchRequested(match.id));
-  if (popAfter && context.mounted) Navigator.of(context).pop();
+String matchedLabel(DateTime at) {
+  final days = DateTime.now().difference(at).inDays;
+  if (days < 1) return AppStrings.matchedToday;
+  if (days < 7) return AppStrings.matchedDaysAgo(days);
+  return AppStrings.matchedLastWeek;
+}
+
+/// Matches Empty illustration: lavender and blush arches overlapping.
+class _OverlappingArches extends StatelessWidget {
+  const _OverlappingArches();
+
+  @override
+  Widget build(BuildContext context) {
+    Widget arch(Color fill, Color stroke) => Container(
+      width: 140,
+      height: 200,
+      decoration: BoxDecoration(color: fill, borderRadius: AppRadius.arch(140), border: Border.all(color: stroke, width: 1.5)),
+    );
+    return SizedBox(
+      width: 250,
+      height: 220,
+      child: Stack(
+        children: [
+          Positioned(left: 0, top: 10, child: arch(AppColors.lavenderSoft, AppColors.lavender)),
+          Positioned(left: 110, top: 10, child: arch(AppColors.blush, AppColors.coral)),
+        ],
+      ),
+    );
+  }
 }

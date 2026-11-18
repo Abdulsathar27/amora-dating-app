@@ -1,202 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/di/injector.dart';
 import '../../../core/router/app_router.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/common_widgets.dart';
+import '../../../core/router/app_routes.dart';
+import '../../../core/theme/lume_tokens.dart';
+import '../../../core/widgets/animations/entrance.dart';
+import '../../../core/widgets/lume_button.dart';
+import '../../../core/widgets/lume_components.dart';
+import '../../../core/widgets/lume_icon.dart';
+import '../../../data/models/match.dart';
 import '../../../data/models/message.dart';
-import '../../../data/models/relationship.dart';
-import '../../auth/view_model/auth_bloc.dart';
-import '../../matches/view/matches_view.dart';
-import '../../relationship/view_model/relationship_bloc.dart';
+import '../../discovery/view/full_profile_view.dart';
+import '../../matches/view_model/matches_bloc.dart';
 import '../view_model/chat_bloc.dart';
+import 'chat_sheets.dart';
+import 'message_bubbles.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_sizes.dart';
+import '../../../core/constants/app_strings.dart';
 
-enum _ChatMenu { profile, partner, unmatch }
-
+/// Chat with one match. Works for a brand-new match (starters) and an ongoing conversation.
 class ChatView extends StatelessWidget {
-  const ChatView({super.key});
+  const ChatView({super.key, required this.matchId, this.initial});
+
+  final String matchId;
+  final Match? initial;
 
   @override
   Widget build(BuildContext context) {
-    final match = context.read<ChatBloc>().state.match;
-    return BlocListener<ChatBloc, ChatState>(
-      listenWhen: (a, b) => b.error != null && a.error != b.error,
-      listener: (context, s) => showSnack(context, s.error!),
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: false,
-          titleSpacing: 0,
-          title: InkWell(
-            onTap: () => AppRouter.openProfileDetail(context, match.profile),
-            child: Row(children: [
-              Avatar(match.profile.mainPhoto, size: 38),
-              const SizedBox(width: 10),
-              Text(match.profile.name),
-            ]),
-          ),
-          actions: [
-            PopupMenuButton<_ChatMenu>(
-              onSelected: (v) => switch (v) {
-                _ChatMenu.profile => AppRouter.openProfileDetail(context, match.profile),
-                _ChatMenu.partner => _askPartner(context),
-                _ChatMenu.unmatch => confirmUnmatch(context, match, popAfter: true),
-              },
-              itemBuilder: (_) => const [
-                PopupMenuItem(value: _ChatMenu.profile, child: Text('View profile')),
-                PopupMenuItem(value: _ChatMenu.partner, child: Text('Ask to be partners 💞')),
-                PopupMenuItem(value: _ChatMenu.unmatch, child: Text('Unmatch')),
-              ],
-            ),
-          ],
-        ),
-        body: const SafeArea(
-          child: Column(children: [Expanded(child: _MessageList()), _Composer()]),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _askPartner(BuildContext context) async {
-    final rel = context.read<RelationshipBloc>();
-    final match = context.read<ChatBloc>().state.match;
-    if (rel.state.relationship.status != RelationshipStatus.none) {
-      return showSnack(context, 'You already have a partner or a pending request.');
-    }
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Make it official with ${match.profile.name}?'),
-        content: const Text(
-          'If they accept, you both unlock the "Us" space: shared date plans, memories, mood check-ins and your anniversary countdown.',
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Not yet')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Send request')),
-        ],
-      ),
-    );
-    if (ok == true && context.mounted) {
-      rel.add(PartnerRequestSent(match.id));
-      showSnack(context, 'Request sent to ${match.profile.name}');
-    }
-  }
-}
-
-class _MessageList extends StatelessWidget {
-  const _MessageList();
-
-  @override
-  Widget build(BuildContext context) {
-    final myId = context.read<AuthBloc>().state.user?.id ?? 'me';
-    return BlocBuilder<ChatBloc, ChatState>(
-      buildWhen: (a, b) => a.messages != b.messages || a.status != b.status,
-      builder: (context, s) {
-        if (s.status == ChatStatus.loading) return const LoadingView();
-        if (s.status == ChatStatus.failure && s.messages.isEmpty) {
-          return ErrorView(message: s.error ?? 'Error', onRetry: () => context.read<ChatBloc>().add(const ChatOpened()));
-        }
-        if (s.messages.isEmpty) return _Icebreakers(state: s);
-        final reversed = s.messages.reversed.toList();
-        return ListView.builder(
-          reverse: true,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          itemCount: reversed.length,
-          itemBuilder: (_, i) {
-            final msg = reversed[i];
-            final older = i + 1 < reversed.length ? reversed[i + 1] : null;
-            final showDay = older == null || !DateUtils.isSameDay(older.sentAt.toLocal(), msg.sentAt.toLocal());
-            return Column(children: [
-              if (showDay) _DayDivider(msg.sentAt),
-              _Bubble(message: msg, isMine: msg.senderId == myId),
-            ]);
-          },
-        );
-      },
-    );
-  }
-}
-
-class _Icebreakers extends StatelessWidget {
-  const _Icebreakers({required this.state});
-  final ChatState state;
-
-  @override
-  Widget build(BuildContext context) {
-    final p = state.match.profile;
-    final prompt = p.prompts.isEmpty ? null : p.prompts.first;
-    final suggestions = [
-      if (prompt != null) 'Okay, "${prompt.answer}" – tell me more!',
-      if (p.interests.isNotEmpty) 'I see you are into ${p.interests.first}. Favourite spot for it?',
-      'Hey ${p.name}! What does your perfect weekend look like?',
-    ];
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        Center(child: Avatar(p.mainPhoto, size: 110, ring: true)),
-        const SizedBox(height: 16),
-        Text('You matched with ${p.name}', textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 4),
-        const Text('Break the ice with one of these:', textAlign: TextAlign.center),
-        const SizedBox(height: 16),
-        for (final s in suggestions)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: ActionChip(
-              label: Text(s, softWrap: true),
-              onPressed: () => context.read<ChatBloc>().add(ChatSendPressed(s)),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _DayDivider extends StatelessWidget {
-  const _DayDivider(this.at);
-  final DateTime at;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Text(DateFormat.yMMMd().format(at.toLocal()), style: Theme.of(context).textTheme.labelSmall),
+    final match = initial ?? context.read<MatchesBloc>().state.byId(matchId);
+    if (match == null) {
+      return LumeScaffold(
+        header: LumeHeader(onBack: () => context.pop()),
+        scroll: false,
+        body: const LumeEmptyState(title: AppStrings.conversationEnded, body: AppStrings.matchRemoved, icon: LumeIcons.chat),
       );
+    }
+    return BlocProvider(
+      create: (_) => ChatBloc(sl(), match)..add(const ChatOpened()),
+      child: BlocListener<ChatBloc, ChatState>(
+        listenWhen: (a, b) => b.error != null && a.error != b.error,
+        listener: (context, s) => showLumeSnack(context, s.error!),
+        child: const _ChatScaffold(),
+      ),
+    );
+  }
 }
 
-class _Bubble extends StatelessWidget {
-  const _Bubble({required this.message, required this.isMine});
-  final Message message;
-  final bool isMine;
+class _ChatScaffold extends StatelessWidget {
+  const _ChatScaffold();
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Align(
-      alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.75),
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 3),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            gradient: isMine ? AppColors.brandGradient : null,
-            color: isMine ? null : scheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(18),
-              topRight: const Radius.circular(18),
-              bottomLeft: Radius.circular(isMine ? 18 : 4),
-              bottomRight: Radius.circular(isMine ? 4 : 18),
-            ),
-          ),
+    return PopScope(
+      onPopInvokedWithResult: (_, _) => context.read<MatchesBloc>().add(const MatchesRequested()),
+      child: Scaffold(
+        body: SafeArea(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(message.text, style: TextStyle(color: isMine ? Colors.white : scheme.onSurface, fontSize: 15)),
-              const SizedBox(height: 2),
-              Text(
-                DateFormat.jm().format(message.sentAt.toLocal()),
-                style: TextStyle(fontSize: 10, color: isMine ? Colors.white70 : scheme.onSurfaceVariant),
+              const _ChatHeader(),
+              Expanded(
+                child: BlocBuilder<ChatBloc, ChatState>(
+                  buildWhen:
+                      (a, b) =>
+                          a.status != b.status ||
+                          a.messages != b.messages ||
+                          a.partnerTyping != b.partnerTyping ||
+                          a.declined != b.declined ||
+                          a.playingId != b.playingId,
+                  builder:
+                      (context, s) => switch (s.status) {
+                        ChatStatus.loading => const Center(child: CircularProgressIndicator(color: AppColors.plum)),
+                        _ when s.isNew => _NewMatchStarters(state: s),
+                        _ => _MessageList(state: s),
+                      },
+                ),
               ),
+              const _Composer(),
             ],
           ),
         ),
@@ -205,6 +88,109 @@ class _Bubble extends StatelessWidget {
   }
 }
 
+class _ChatHeader extends StatelessWidget {
+  const _ChatHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final match = context.read<ChatBloc>().state.match;
+    final p = match.profile;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
+      child: Row(
+        children: [
+          LumeIconButton(LumeIcons.back, tooltip: AppStrings.back, onPressed: () => context.canPop() ? context.pop() : context.go(AppRoutes.messages)),
+          AppGaps.w10,
+          GestureDetector(
+            onTap: () => context.push(AppRoutes.person, extra: FullProfileArgs(p)),
+            child: Row(
+              children: [
+                LumeAvatar(p.mainPhoto, size: AppSizes.avatarSm),
+                AppGaps.w10,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(p.name, style: LumeText.titleS),
+                        if (p.isVerified) ...[AppGaps.w4, const LumeIcon(LumeIcons.verified, size: 16, color: AppColors.success)],
+                      ],
+                    ),
+                    if (match.isOnline)
+                      Row(
+                        children: [
+                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.success, shape: BoxShape.circle)),
+                          AppGaps.w5,
+                          Text(AppStrings.onlineNow, style: LumeText.caption.copyWith(color: AppColors.success)),
+                        ],
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const Spacer(),
+          LumeIconButton(LumeIcons.more, tooltip: AppStrings.conversationOptions, onPressed: () => showChatSafetySheet(context)),
+        ],
+      ),
+    );
+  }
+}
+
+/// "You and Maya matched today" + conversation starters from their profile.
+class _NewMatchStarters extends StatelessWidget {
+  const _NewMatchStarters({required this.state});
+
+  final ChatState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = state.match.profile;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+      children: [
+        StaggeredEntrance(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ArchPhoto(source: p.mainPhoto, width: 130, height: 168, shadow: LumeShadows.card),
+            AppGaps.h10,
+            Text(AppStrings.matchedTodayWith(p.name), style: LumeText.titleS.copyWith(color: AppColors.plum)),
+            AppGaps.h10,
+            Text(AppStrings.startersFrom(p.name), style: LumeText.bodyM),
+            AppGaps.h20,
+            for (final s in p.starters) ...[StarterChip(text: s, onTap: () => context.read<ChatBloc>().add(ChatSendPressed(s))), AppGaps.h8],
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MessageList extends StatelessWidget {
+  const _MessageList({required this.state});
+
+  final ChatState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final items = buildChatItems(state);
+    return ListView.builder(
+      reverse: true,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      itemCount: items.length + (state.partnerTyping ? 1 : 0),
+      itemBuilder: (_, i) {
+        if (state.partnerTyping) {
+          if (i == 0) return const Align(alignment: Alignment.centerLeft, child: FadeRise(child: TypingBubble()));
+          i -= 1;
+        }
+        return items[items.length - 1 - i];
+      },
+    );
+  }
+}
+
+/// Message field, plus (share) and mic/send. Stateless: the field is rebuilt
+/// empty via a new key after each send.
 class _Composer extends StatelessWidget {
   const _Composer();
 
@@ -212,44 +198,267 @@ class _Composer extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<ChatBloc>();
     return BlocBuilder<ChatBloc, ChatState>(
-      buildWhen: (a, b) =>
-          a.draftVersion != b.draftVersion ||
-          a.canSend != b.canSend ||
-          a.isSending != b.isSending ||
-          a.messages.isEmpty != b.messages.isEmpty,
-      builder: (context, s) {
-        final enabled = s.match.canSendFirstMessage || s.messages.isNotEmpty;
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 8, 8),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  // New key after each send => fresh, empty field without a controller.
-                  key: ValueKey(s.draftVersion),
-                  enabled: enabled,
-                  onChanged: (t) => bloc.add(ChatDraftChanged(t)),
-                  onSubmitted: (_) => bloc.add(const ChatSendPressed()),
-                  minLines: 1,
-                  maxLines: 4,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    hintText: enabled ? 'Type a message' : 'Waiting for ${s.match.profile.name} to make the first move',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(24), borderSide: BorderSide.none),
+      buildWhen: (a, b) => a.draftVersion != b.draftVersion || a.hasDraft != b.hasDraft || a.isSending != b.isSending,
+      builder:
+          (context, s) => Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                LumeIconButton(
+                  LumeIcons.plus,
+                  tooltip: AppStrings.shareSomething,
+                  background: AppColors.surface,
+                  bordered: true,
+                  onPressed: () => showShareSheet(context),
+                ),
+                AppGaps.w8,
+                Expanded(
+                  child: Container(
+                    constraints: const BoxConstraints(minHeight: 44),
+                    padding: const EdgeInsets.only(left: 16, right: 4),
+                    decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(22), border: Border.all(color: AppColors.line)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            key: ValueKey(s.draftVersion),
+                            onChanged: (t) => bloc.add(ChatDraftChanged(t)),
+                            onSubmitted: (_) => bloc.add(const ChatSendPressed()),
+                            minLines: 1,
+                            maxLines: 4,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: LumeText.bodyL.copyWith(color: AppColors.ink),
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              border: InputBorder.none,
+                              hintText: AppStrings.messageName(s.match.profile.name),
+                              hintStyle: LumeText.bodyL,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                            ),
+                          ),
+                        ),
+                        LumeIconButton(
+                          LumeIcons.smile,
+                          size: 36,
+                          iconSize: 20,
+                          color: AppColors.muted,
+                          tooltip: AppStrings.gifs,
+                          onPressed: () => showGifPicker(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                AppGaps.w8,
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 180),
+                  transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
+                  child:
+                      s.hasDraft
+                          ? LumeIconButton(
+                            LumeIcons.send,
+                            key: const ValueKey('send'),
+                            tooltip: AppStrings.send,
+                            color: AppColors.ink,
+                            background: AppColors.coral,
+                            onPressed: s.isSending ? null : () => bloc.add(const ChatSendPressed()),
+                          )
+                          : LumeIconButton(
+                            LumeIcons.mic,
+                            key: const ValueKey('mic'),
+                            tooltip: AppStrings.recordVoiceNote,
+                            color: AppColors.ink,
+                            background: AppColors.coral,
+                            onPressed: () => showLumeSnack(context, AppStrings.voiceNotesComingSoon),
+                          ),
+                ),
+              ],
+            ),
+          ),
+    );
+  }
+}
+
+/// Reaction bar + message menu over a scrim (long-press on a bubble).
+Future<void> showReactions(BuildContext context, Message message) {
+  final bloc = context.read<ChatBloc>()..add(ChatMessageSelected(message));
+  return showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: AppStrings.closeReactions,
+    barrierColor: AppColors.ink.withValues(alpha: 0.55),
+    transitionDuration: LumeMotion.dissolve,
+    pageBuilder: (ctx, _, _) => BlocProvider.value(value: bloc, child: _ReactionOverlay(message: message)),
+    transitionBuilder: (_, a, _, child) => FadeTransition(opacity: a, child: child),
+  ).whenComplete(() {
+    if (!bloc.isClosed && bloc.state.selected != null) bloc.add(const ChatMessageSelected(null));
+  });
+}
+
+class _ReactionOverlay extends StatelessWidget {
+  const _ReactionOverlay({required this.message});
+
+  final Message message;
+
+  static const _reactions = [LumeIcons.heart, LumeIcons.smile, LumeIcons.star, LumeIcons.discover, LumeIcons.check];
+
+  @override
+  Widget build(BuildContext context) {
+    final mine = message.senderId == 'me';
+    void react(String r) {
+      context.read<ChatBloc>().add(ChatReacted(r));
+      Navigator.of(context).pop();
+    }
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            // Pops in with a bouncy scale.
+            _PopIn(
+              child: Material(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), boxShadow: LumeShadows.card),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final r in _reactions)
+                        LumeIconButton(
+                          r,
+                          tooltip: r,
+                          iconSize: 24,
+                          color: switch (r) {
+                            LumeIcons.heart => AppColors.coral,
+                            LumeIcons.check => AppColors.success,
+                            _ => AppColors.plum,
+                          },
+                          background: message.reaction == r ? AppColors.lavenderSoft : null,
+                          onPressed: () => react(r),
+                        ),
+                      LumeIconButton(
+                        LumeIcons.plus,
+                        tooltip: AppStrings.moreReactions,
+                        color: AppColors.muted,
+                        background: AppColors.background,
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(width: 6),
-              IconButton.filled(
-                onPressed: s.canSend ? () => bloc.add(const ChatSendPressed()) : null,
-                icon: s.isSending
-                    ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Icon(Icons.send_rounded),
+            ),
+            AppGaps.h10,
+            IgnorePointer(child: MessageBubble(message: message, mine: mine)),
+            AppGaps.h8,
+            _PopIn(
+              delay: 60,
+              child: Material(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                  width: 220,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _MenuItem(icon: LumeIcons.undo, label: AppStrings.reply, onTap: () => Navigator.of(context).pop()),
+                      if (message.type == MessageType.text)
+                        _MenuItem(
+                          icon: LumeIcons.edit,
+                          label: AppStrings.copyText,
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(text: message.text));
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      if (!mine)
+                        _MenuItem(
+                          icon: LumeIcons.flag,
+                          label: AppStrings.reportMessage,
+                          danger: true,
+                          onTap: () {
+                            final p = context.read<ChatBloc>().state.match.profile;
+                            Navigator.of(context).pop();
+                            context.push(AppRoutes.reportReason(p.id, p.name));
+                          },
+                        ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
+}
+
+class _MenuItem extends StatelessWidget {
+  const _MenuItem({required this.icon, required this.label, required this.onTap, this.danger = false});
+
+  final String icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool danger;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = danger ? AppColors.danger : AppColors.ink;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        child: Row(
+          children: [
+            LumeIcon(icon, size: 20, color: danger ? AppColors.danger : AppColors.plum),
+            AppGaps.w10,
+            Text(label, style: LumeText.labelM.copyWith(color: color)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Scale-from-0.6 entrance with a slight overshoot, on its own AnimationController.
+class _PopIn extends StatefulWidget {
+  const _PopIn({required this.child, this.delay = 0});
+
+  final Widget child;
+  final int delay;
+
+  @override
+  State<_PopIn> createState() => _PopInState();
+}
+
+class _PopInState extends State<_PopIn> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 320));
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(Duration(milliseconds: widget.delay), () {
+      if (mounted) _c.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+    opacity: _c,
+    child: ScaleTransition(scale: Tween(begin: 0.6, end: 1.0).animate(CurvedAnimation(parent: _c, curve: Curves.easeOutBack)), child: widget.child),
+  );
 }

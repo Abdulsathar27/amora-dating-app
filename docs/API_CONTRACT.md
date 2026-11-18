@@ -102,3 +102,55 @@ Date plans, memories and check-ins belong to the relationship and are visible to
 
 ## Suggested backend extras (not yet called by the app)
 Block/report users, photo verification, push notifications (FCM tokens), and a WebSocket for chat.
+
+---
+
+## Added for the Lumé UI
+
+### Phone sign-in (replaces email/password in the app)
+| Method | Path | Body | Response |
+|---|---|---|---|
+| POST | `/auth/phone/start` | `{phone}` | `{resend_in: 24}` (seconds until a new code may be sent) |
+| POST | `/auth/phone/verify` | `{phone, code}` | `AuthSession` · `400 {"detail": "That code didn’t match…"}` on a wrong code |
+| DELETE | `/auth/account` | – | `204` (delete account) |
+
+New users get `is_onboarded: false` and go through pledge → create profile.
+
+### Profile additions
+`Profile` gains: `quote`, `compatibility` (e.g. "In tune"), `verified_at`, `video_thumb`,
+`voice {prompt, seconds, url}`, `activities[]`, `lifestyle {sleep, drinks, diet, exercise, kids, smoking}`,
+`personality [{left, right, value 0..1}]`, `on_repeat [{title, note}]`, `relationship_goal`, `starters[]`,
+and for your own profile `photo_reviews[]` (`approved | in_review | rejected`, same order as `photos`).
+Intent values are now `life_partner | relationship | new_connections | figuring_out`;
+gender adds `self_describe`.
+
+### Discovery additions
+`Preferences` adds `looking_for[]` (intent values) and `has_voice_intro`. `PUT /discovery/preferences`
+also returns `match_count` ("Show 42 people"). `/discovery/rewind` is no longer used.
+`ReceivedLike` adds `kind: like | super_like | compliment` and `reason` ("Liked your voice intro").
+
+### Chat additions
+`Message` adds `type: text | voice | photo | gif`, `media_url`, `voice_seconds`, `reaction`, `is_hidden`.
+`Match` adds `is_online`, `is_muted`.
+
+| Method | Path | Body | Response |
+|---|---|---|---|
+| GET | `/matches/{id}` | – | `Match` |
+| PATCH | `/matches/{id}` | `{is_muted}` | `Match` |
+| POST | `/matches/{id}/messages` | `{type, text, media_url?}` | `201 Message` |
+| PUT | `/messages/{id}/reaction` | `{reaction: "heart" \| "smile" \| … \| null}` | `Message` |
+| POST | `/messages/{id}/reveal` | – | `Message` with `is_hidden: false` (photo consent) |
+
+Photos sent to someone with "Hide photos until I approve" on must arrive with `is_hidden: true`.
+
+### Settings & safety
+| Method | Path | Body | Response |
+|---|---|---|---|
+| GET | `/settings` | – | `Settings` |
+| PATCH | `/settings` | any one flag | `Settings` |
+| POST | `/safety/block` | `{user_id}` | `204` — removes the match/conversation; the other person isn’t told |
+| POST | `/safety/report` | `{user_id, reason, details?, also_block}` | `204` |
+
+`Settings = {show_in_discover, show_online, read_receipts, approximate_distance, hide_photos_until_approved,
+voice_from_matches_only, two_step, phone_masked, email, blocked_count}`
+`reason = harassment | inappropriate_photos | fake_or_scam | under_18 | other`

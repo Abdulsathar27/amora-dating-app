@@ -13,16 +13,19 @@ class AuthRepository {
 
   Stream<void> get onSessionExpired => _client.authInterceptor.onSessionExpired;
 
-  Future<AppUser> login({required String email, required String password}) async {
-    final json = await _client.post(ApiEndpoints.login, data: {'email': email, 'password': password});
+  /// Sends an SMS code. Returns how many seconds until a new code may be requested.
+  Future<int> startPhone(String phone) async {
+    final json = await _client.post(ApiEndpoints.phoneStart, data: {'phone': phone});
+    return (json['resend_in'] as num?)?.toInt() ?? 30;
+  }
+
+  Future<AppUser> verifyPhone({required String phone, required String code}) async {
+    final json = await _client.post(ApiEndpoints.phoneVerify, data: {'phone': phone, 'code': code});
     return _store(AuthSession.fromJson(json as Map<String, dynamic>));
   }
 
-  Future<AppUser> register({required String name, required String email, required String password}) async {
-    final json = await _client.post(
-      ApiEndpoints.register,
-      data: {'name': name, 'email': email, 'password': password},
-    );
+  Future<AppUser> login({required String email, required String password}) async {
+    final json = await _client.post(ApiEndpoints.login, data: {'email': email, 'password': password});
     return _store(AuthSession.fromJson(json as Map<String, dynamic>));
   }
 
@@ -34,6 +37,14 @@ class AuthRepository {
   Future<void> logout() async {
     try {
       await _client.post(ApiEndpoints.logout, data: {'refresh_token': _tokens.refreshToken});
+    } finally {
+      await _tokens.clear();
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      await _client.delete(ApiEndpoints.account);
     } finally {
       await _tokens.clear();
     }

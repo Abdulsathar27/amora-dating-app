@@ -5,13 +5,10 @@
 class AppConfig {
   AppConfig._();
 
-  static const String appName = 'Amora';
+  static const String appName = 'Lumé';
 
   /// Base URL of the Python backend (FastAPI/Django). 10.0.2.2 = host machine from Android emulator.
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8000/api/v1',
-  );
+  static const String baseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'http://10.0.2.2:8000/api/v1');
 
   /// While the backend is not built yet, the Dio client answers from an in-memory mock.
   static const bool useMockApi = bool.fromEnvironment('USE_MOCK_API', defaultValue: true);

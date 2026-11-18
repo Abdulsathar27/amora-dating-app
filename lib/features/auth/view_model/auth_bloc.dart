@@ -18,29 +18,27 @@ class AuthStarted extends AuthEvent {
   const AuthStarted();
 }
 
-class AuthLoginRequested extends AuthEvent {
-  const AuthLoginRequested(this.email, this.password);
-  final String email;
-  final String password;
+/// Phone verification succeeded.
+class AuthSignedIn extends AuthEvent {
+  const AuthSignedIn(this.user);
+  final AppUser user;
   @override
-  List<Object?> get props => [email, password];
-}
-
-class AuthRegisterRequested extends AuthEvent {
-  const AuthRegisterRequested(this.name, this.email, this.password);
-  final String name;
-  final String email;
-  final String password;
-  @override
-  List<Object?> get props => [name, email, password];
+  List<Object?> get props => [user];
 }
 
 class AuthOnboardingCompleted extends AuthEvent {
-  const AuthOnboardingCompleted();
+  const AuthOnboardingCompleted({this.name});
+  final String? name;
+  @override
+  List<Object?> get props => [name];
 }
 
 class AuthLogoutRequested extends AuthEvent {
   const AuthLogoutRequested();
+}
+
+class AuthDeleteRequested extends AuthEvent {
+  const AuthDeleteRequested();
 }
 
 class _AuthSessionExpired extends AuthEvent {
@@ -51,34 +49,28 @@ class _AuthSessionExpired extends AuthEvent {
 enum AuthStatus { unknown, unauthenticated, authenticated }
 
 class AuthState extends Equatable {
-  const AuthState({this.status = AuthStatus.unknown, this.user, this.isSubmitting = false, this.error});
+  const AuthState({this.status = AuthStatus.unknown, this.user});
 
   final AuthStatus status;
   final AppUser? user;
-  final bool isSubmitting;
-  final String? error;
 
   bool get needsOnboarding => status == AuthStatus.authenticated && !(user?.isOnboarded ?? false);
 
-  AuthState copyWith({AuthStatus? status, AppUser? user, bool? isSubmitting, String? error}) => AuthState(
-        status: status ?? this.status,
-        user: user ?? this.user,
-        isSubmitting: isSubmitting ?? this.isSubmitting,
-        error: error,
-      );
+  /// Changes whenever a different session begins, so session-scoped ViewModels reset.
+  String get sessionKey => '${status.name}:${user?.id}';
 
   @override
-  List<Object?> get props => [status, user, isSubmitting, error];
+  List<Object?> get props => [status, user];
 }
 
 // ---------------- ViewModel ----------------
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._repo) : super(const AuthState()) {
     on<AuthStarted>(_onStarted);
-    on<AuthLoginRequested>(_onLogin);
-    on<AuthRegisterRequested>(_onRegister);
+    on<AuthSignedIn>((e, emit) => emit(AuthState(status: AuthStatus.authenticated, user: e.user)));
     on<AuthOnboardingCompleted>(_onOnboarded);
     on<AuthLogoutRequested>(_onLogout);
+    on<AuthDeleteRequested>(_onDelete);
     on<_AuthSessionExpired>((_, emit) => emit(const AuthState(status: AuthStatus.unauthenticated)));
     _expiredSub = _repo.onSessionExpired.listen((_) => add(const _AuthSessionExpired()));
   }
@@ -89,36 +81,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onStarted(AuthStarted e, Emitter<AuthState> emit) async {
     if (!_repo.hasSession) return emit(const AuthState(status: AuthStatus.unauthenticated));
     try {
-      final user = await _repo.currentUser();
-      emit(AuthState(status: AuthStatus.authenticated, user: user));
+      emit(AuthState(status: AuthStatus.authenticated, user: await _repo.currentUser()));
     } on ApiException {
       emit(const AuthState(status: AuthStatus.unauthenticated));
     }
   }
 
-  Future<void> _onLogin(AuthLoginRequested e, Emitter<AuthState> emit) async {
-    emit(state.copyWith(isSubmitting: true));
-    try {
-      final user = await _repo.login(email: e.email.trim(), password: e.password);
-      emit(AuthState(status: AuthStatus.authenticated, user: user));
-    } on ApiException catch (err) {
-      emit(state.copyWith(isSubmitting: false, error: err.message));
-    }
-  }
-
-  Future<void> _onRegister(AuthRegisterRequested e, Emitter<AuthState> emit) async {
-    emit(state.copyWith(isSubmitting: true));
-    try {
-      final user = await _repo.register(name: e.name.trim(), email: e.email.trim(), password: e.password);
-      emit(AuthState(status: AuthStatus.authenticated, user: user));
-    } on ApiException catch (err) {
-      emit(state.copyWith(isSubmitting: false, error: err.message));
-    }
-  }
-
   void _onOnboarded(AuthOnboardingCompleted e, Emitter<AuthState> emit) {
     final user = state.user;
-    if (user != null) emit(state.copyWith(user: user.copyWith(isOnboarded: true)));
+    if (user != null) emit(AuthState(status: state.status, user: user.copyWith(isOnboarded: true, name: e.name)));
   }
 
   Future<void> _onLogout(AuthLogoutRequested e, Emitter<AuthState> emit) async {
@@ -126,6 +97,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _repo.logout();
     } on ApiException {
       // Tokens are cleared regardless.
+    }
+    emit(const AuthState(status: AuthStatus.unauthenticated));
+  }
+
+  Future<void> _onDelete(AuthDeleteRequested e, Emitter<AuthState> emit) async {
+    try {
+      await _repo.deleteAccount();
+    } on ApiException {
+      // Local session is cleared regardless.
     }
     emit(const AuthState(status: AuthStatus.unauthenticated));
   }

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💗 Amora
+# 💗 Lumé (Amora)
 
 ### Meet someone worth staying for.
 
@@ -10,6 +10,7 @@ then turn a match into a couple with a shared space just for the two of you.
 [![Flutter](https://img.shields.io/badge/Flutter-3.44-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.12-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![BLoC](https://img.shields.io/badge/State-BLoC-FF4D6D?style=for-the-badge)](https://bloclibrary.dev)
+[![go_router](https://img.shields.io/badge/Routing-go__router-572B50?style=for-the-badge)](https://pub.dev/packages/go_router)
 [![Dio](https://img.shields.io/badge/HTTP-Dio-FF8E53?style=for-the-badge)](https://pub.dev/packages/dio)
 [![Python](https://img.shields.io/badge/Backend-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](docs/API_CONTRACT.md)
 
@@ -38,7 +39,7 @@ then turn a match into a couple with a shared space just for the two of you.
 - Swipe cards: **drag right to like, left to pass, up to super like**
 - Live **LIKE / NOPE / SUPER LIKE** stamps while dragging
 - Tap left/right on a card to browse photos
-- **Rewind** your last pass
+- **Send a compliment** with suggestions built from their profile
 - Filters: age, distance, gender, verified only
 
 </td>
@@ -59,16 +60,16 @@ then turn a match into a couple with a shared space just for the two of you.
 - Conversation list with unread badges
 - **Icebreakers** generated from the other person's prompts and interests
 - Day dividers, timestamps, unmatch
-- Ask a match to **be your partner** from the chat menu
+- Photo **consent**: incoming photos stay hidden until you choose to view them; reactions, GIFs and voice notes
 
 </td>
 <td valign="top">
 
-### 💑 Us — the relationship space
-- Partner requests (send / accept / decline)
-- **Days together** counter and **anniversary countdown**
-- Daily **mood check-ins** you can both see
-- Shared **date plans** and a **memories** timeline
+### 🛡 Trust and safety
+- 18+ age gate and a community pledge
+- Phone sign-in, selfie verification, fuzzy location
+- Block and report from any profile or chat
+- Safety centre and "Dating safely" guidance
 
 </td>
 </tr>
@@ -85,6 +86,18 @@ dating intention (long-term, marriage, casual, figuring it out), profile complet
 
 > Feature ideas come from common patterns in apps like Tinder, Bumble, Hinge and Aisle.
 > All code, names and visuals in this repository are original.
+
+## 🎨 Lumé design implementation
+
+The UI follows the **Lumé** design file (Foundations, Components and 58 App Screens):
+
+- **Design tokens** in `lib/core/theme/lume_tokens.dart`: colours, type scale (Gelasio stands in for Georgia, plus Inter), spacing, radii, elevation and motion.
+- **Assets** exported from the design: 50 SVG icons (`assets/icons`) and 11 illustrations (`assets/images`).
+- **Routing** with `go_router` (`lib/core/router`): auth-aware redirects, a 5-tab `StatefulShellRoute`, and the design's transitions (push 280ms, dissolve 220ms, slide-up 300ms, 150ms fades with reduced motion).
+- **Animations driven by `AnimationController`**: card swipe on a spring (8° tilt, 35% threshold, Like/Pass/Super Like stamps), heart bounce, the match moment (arches, double heart pulse, particle bloom), splash, nav-bar indicator, toggles, waveforms, skeleton shimmer, typing dots, code-error shake, scanning selfie ring, pulsing location rings and staggered entrances.
+- Screens stay `StatelessWidget`; only small reusable animation widgets hold a controller.
+
+`test/screens_smoke_test.dart` opens every route of the real app on a 390x844 phone and fails on any exception or overflow.
 
 ---
 
@@ -170,7 +183,7 @@ flutter run
 ```
 
 The app runs **without a backend**: a built-in mock API answers every request with sample profiles, matches and chats.
-Log in with any email and a password of 6+ characters.
+Sign in with any phone number and the demo code **482613**.
 
 ### Connect to the real backend
 
@@ -197,7 +210,7 @@ The Python backend is built against **[docs/API_CONTRACT.md](docs/API_CONTRACT.m
 |---|---|
 | Auth | `/auth/register` `/auth/login` `/auth/refresh` `/auth/logout` `/auth/me` |
 | Profile | `/profiles/me` `/profiles/{id}` |
-| Discovery | `/discovery/feed` `/discovery/swipe` `/discovery/rewind` `/discovery/preferences` `/likes/received` |
+| Discovery | `/discovery/feed` `/discovery/swipe` `/discovery/preferences` `/likes/received` |
 | Chat | `/matches` `/matches/{id}` `/matches/{id}/messages` |
 | Relationship | `/relationship` `/relationship/request` `/respond` `/end` `/date-plans` `/memories` `/check-ins` |
 
@@ -206,7 +219,8 @@ The Python backend is built against **[docs/API_CONTRACT.md](docs/API_CONTRACT.m
 ## 🗺 Roadmap
 
 - [x] Flutter app: auth, onboarding, swipe deck, likes, matches, chat, profile
-- [x] Relationship space: partner requests, mood check-ins, date plans, memories
+- [x] Lumé UI: 58 design frames, go_router, AnimationController motion
+- [ ] Relationship space ("Us") in the Lumé style (data layer and BLoC are kept, no screen yet)
 - [x] Offline mock API and bloc tests
 - [ ] Python backend (FastAPI + PostgreSQL)
 - [ ] Photo upload (multipart) and photo verification

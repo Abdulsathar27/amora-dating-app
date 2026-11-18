@@ -10,8 +10,8 @@ class Match extends Equatable {
     required this.matchedAt,
     this.lastMessage,
     this.unreadCount = 0,
-    this.expiresAt,
-    this.canSendFirstMessage = true,
+    this.isOnline = false,
+    this.isMuted = false,
   });
 
   final String id;
@@ -21,49 +21,53 @@ class Match extends Equatable {
   final DateTime matchedAt;
   final Message? lastMessage;
   final int unreadCount;
-
-  /// Bumble-style: a match with no conversation expires after 24h. Null = never.
-  final DateTime? expiresAt;
-
-  /// Bumble-style "first move" rule decided by the backend.
-  final bool canSendFirstMessage;
+  final bool isOnline;
+  final bool isMuted;
 
   bool get hasConversation => lastMessage != null;
 
   factory Match.fromJson(Map<String, dynamic> json) => Match(
-        id: json['id'].toString(),
-        profile: Profile.fromJson(json['profile'] as Map<String, dynamic>),
-        matchedAt: DateTime.parse(json['matched_at'] as String),
-        lastMessage: json['last_message'] == null
-            ? null
-            : Message.fromJson(json['last_message'] as Map<String, dynamic>),
-        unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
-        expiresAt: json['expires_at'] == null ? null : DateTime.parse(json['expires_at'] as String),
-        canSendFirstMessage: json['can_send_first_message'] as bool? ?? true,
-      );
+    id: json['id'].toString(),
+    profile: Profile.fromJson(json['profile'] as Map<String, dynamic>),
+    matchedAt: DateTime.parse(json['matched_at'] as String),
+    lastMessage: json['last_message'] == null ? null : Message.fromJson(json['last_message'] as Map<String, dynamic>),
+    unreadCount: (json['unread_count'] as num?)?.toInt() ?? 0,
+    isOnline: json['is_online'] as bool? ?? false,
+    isMuted: json['is_muted'] as bool? ?? false,
+  );
 
   @override
-  List<Object?> get props => [id, profile, matchedAt, lastMessage, unreadCount, expiresAt, canSendFirstMessage];
+  List<Object?> get props => [id, profile, matchedAt, lastMessage, unreadCount, isOnline, isMuted];
 }
 
-/// Someone who liked you but you haven't swiped on yet ("Likes You").
+enum LikeKind { like, superLike, compliment }
+
+/// Someone who liked you but you haven't answered yet ("They noticed you.").
 class ReceivedLike extends Equatable {
-  const ReceivedLike({required this.profile, required this.likedAt, this.isSuperLike = false, this.comment});
+  const ReceivedLike({required this.profile, required this.likedAt, this.kind = LikeKind.like, this.reason, this.comment});
 
   final Profile profile;
   final DateTime likedAt;
-  final bool isSuperLike;
+  final LikeKind kind;
 
-  /// Hinge-style comment attached to the like.
+  /// "Liked your voice intro", "Liked your photo"…
+  final String? reason;
+
+  /// Compliment text, if they sent one.
   final String? comment;
 
   factory ReceivedLike.fromJson(Map<String, dynamic> json) => ReceivedLike(
-        profile: Profile.fromJson(json['profile'] as Map<String, dynamic>),
-        likedAt: DateTime.parse(json['liked_at'] as String),
-        isSuperLike: json['is_super_like'] as bool? ?? false,
-        comment: json['comment'] as String?,
-      );
+    profile: Profile.fromJson(json['profile'] as Map<String, dynamic>),
+    likedAt: DateTime.parse(json['liked_at'] as String),
+    kind: switch (json['kind']) {
+      'super_like' => LikeKind.superLike,
+      'compliment' => LikeKind.compliment,
+      _ => LikeKind.like,
+    },
+    reason: json['reason'] as String?,
+    comment: json['comment'] as String?,
+  );
 
   @override
-  List<Object?> get props => [profile, likedAt, isSuperLike, comment];
+  List<Object?> get props => [profile, likedAt, kind, reason, comment];
 }

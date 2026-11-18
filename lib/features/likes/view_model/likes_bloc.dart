@@ -38,19 +38,18 @@ class LikesState extends Equatable {
   final Match? newMatch;
   final String? error;
 
-  LikesState copyWith({LikesStatus? status, List<ReceivedLike>? likes, Match? Function()? newMatch, String? error}) =>
-      LikesState(
-        status: status ?? this.status,
-        likes: likes ?? this.likes,
-        newMatch: newMatch != null ? newMatch() : this.newMatch,
-        error: error,
-      );
+  LikesState copyWith({LikesStatus? status, List<ReceivedLike>? likes, Match? Function()? newMatch, String? Function()? error}) => LikesState(
+    status: status ?? this.status,
+    likes: likes ?? this.likes,
+    newMatch: newMatch != null ? newMatch() : this.newMatch,
+    error: error != null ? error() : this.error,
+  );
 
   @override
   List<Object?> get props => [status, likes, newMatch, error];
 }
 
-/// "Likes You" – people who already liked the user (Hinge / Bumble Beeline).
+/// "They noticed you." — people who already liked the user.
 class LikesBloc extends Bloc<LikesEvent, LikesState> {
   LikesBloc(this._repo) : super(const LikesState()) {
     on<LikesRequested>(_onRequested);
@@ -61,11 +60,10 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
   final DiscoveryRepository _repo;
 
   Future<void> _onRequested(LikesRequested e, Emitter<LikesState> emit) async {
-    if (state.likes.isEmpty) emit(state.copyWith(status: LikesStatus.loading));
     try {
-      emit(state.copyWith(status: LikesStatus.ready, likes: await _repo.receivedLikes()));
+      emit(state.copyWith(status: LikesStatus.ready, likes: await _repo.receivedLikes(), error: () => null));
     } on ApiException catch (err) {
-      emit(state.copyWith(status: LikesStatus.failure, error: err.message));
+      emit(state.copyWith(status: state.likes.isEmpty ? LikesStatus.failure : LikesStatus.ready, error: () => err.message));
     }
   }
 
@@ -73,13 +71,10 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
     final remaining = state.likes.where((l) => l.profile.id != e.like.profile.id).toList();
     emit(state.copyWith(likes: remaining));
     try {
-      final result = await _repo.swipe(
-        profileId: e.like.profile.id,
-        action: e.likeBack ? SwipeAction.like : SwipeAction.pass,
-      );
+      final result = await _repo.swipe(profileId: e.like.profile.id, action: e.likeBack ? SwipeAction.like : SwipeAction.pass);
       if (result.isMatch) emit(state.copyWith(newMatch: () => result.match));
     } on ApiException catch (err) {
-      emit(state.copyWith(likes: [e.like, ...remaining], error: err.message));
+      emit(state.copyWith(likes: [e.like, ...remaining], error: () => err.message));
     }
   }
 }

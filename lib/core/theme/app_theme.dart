@@ -1,60 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class AppColors {
-  AppColors._();
-
-  static const primary = Color(0xFFFF4D6D);
-  static const secondary = Color(0xFFFF8E53);
-  static const like = Color(0xFF2ECC71);
-  static const nope = Color(0xFFFF5864);
-  static const superLike = Color(0xFF3CA4FF);
-  static const rewind = Color(0xFFF5B748);
-  static const surfaceDark = Color(0xFF1C1B22);
-
-  static const brandGradient = LinearGradient(
-    colors: [primary, secondary],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-}
+import 'lume_tokens.dart';
+import '../constants/app_colors.dart';
 
 class AppTheme {
   AppTheme._();
 
-  static ThemeData light() => _build(Brightness.light);
-  static ThemeData dark() => _build(Brightness.dark);
-
-  static ThemeData _build(Brightness b) {
-    final scheme = ColorScheme.fromSeed(seedColor: AppColors.primary, brightness: b, primary: AppColors.primary);
+  static ThemeData light() {
+    final scheme = ColorScheme.fromSeed(
+      seedColor: AppColors.coral,
+      primary: AppColors.coral,
+      secondary: AppColors.plum,
+      surface: AppColors.surface,
+      error: AppColors.danger,
+    );
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: b == Brightness.dark ? AppColors.surfaceDark : const Color(0xFFFFF8F9),
-      appBarTheme: AppBarTheme(
-        centerTitle: true,
-        elevation: 0,
+      scaffoldBackgroundColor: AppColors.background,
+      textTheme: (LumeText.useGoogleFonts ? GoogleFonts.interTextTheme() : const TextTheme()).apply(bodyColor: AppColors.ink, displayColor: AppColors.plum),
+      inputDecorationTheme: const InputDecorationTheme(hoverColor: Colors.transparent, focusColor: Colors.transparent),
+      splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+      appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: scheme.onSurface,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      textSelectionTheme: const TextSelectionThemeData(cursorColor: AppColors.plum, selectionColor: AppColors.lavender, selectionHandleColor: AppColors.plum),
+      sliderTheme: const SliderThemeData(
+        activeTrackColor: AppColors.plum,
+        inactiveTrackColor: AppColors.line,
+        thumbColor: AppColors.surface,
+        trackHeight: 6,
+        overlayShape: RoundSliderOverlayShape(overlayRadius: 18),
+        thumbShape: _RingThumb(),
+        rangeThumbShape: _RingRangeThumb(),
+        showValueIndicator: ShowValueIndicator.never,
       ),
-      filledButtonTheme: FilledButtonThemeData(
-        style: FilledButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(26)),
-        ),
-      ),
-      chipTheme: ChipThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
     );
   }
+}
+
+/// White 24px handle with a 2px plum ring, as drawn in "Discovery filters".
+class _RingThumb extends SliderComponentShape {
+  const _RingThumb();
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => const Size.square(24);
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    required bool isDiscrete,
+    required TextPainter labelPainter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required TextDirection textDirection,
+    required double value,
+    required double textScaleFactor,
+    required Size sizeWithOverflow,
+  }) {
+    _paintRing(context.canvas, center);
+  }
+}
+
+class _RingRangeThumb extends RangeSliderThumbShape {
+  const _RingRangeThumb();
+
+  @override
+  Size getPreferredSize(bool isEnabled, bool isDiscrete) => const Size.square(24);
+
+  @override
+  void paint(
+    PaintingContext context,
+    Offset center, {
+    required Animation<double> activationAnimation,
+    required Animation<double> enableAnimation,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    bool? isOnTop,
+    TextDirection? textDirection,
+    required SliderThemeData sliderTheme,
+    Thumb? thumb,
+    bool? isPressed,
+  }) {
+    _paintRing(context.canvas, center);
+  }
+}
+
+void _paintRing(Canvas canvas, Offset center) {
+  canvas.drawCircle(center, 12, Paint()..color = AppColors.surface);
+  canvas.drawCircle(
+    center,
+    11,
+    Paint()
+      ..color = AppColors.plum
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2,
+  );
 }

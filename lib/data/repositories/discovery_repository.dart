@@ -14,6 +14,7 @@ class DiscoveryRepository {
     return (json['items'] as List).map((e) => Profile.fromJson(e as Map<String, dynamic>)).toList();
   }
 
+  /// [comment] turns a like into a compliment ("Send Maya a compliment").
   Future<SwipeResult> swipe({required String profileId, required SwipeAction action, String? comment}) async {
     final json = await _client.post(
       ApiEndpoints.swipe,
@@ -22,20 +23,15 @@ class DiscoveryRepository {
     return SwipeResult.fromJson(json as Map<String, dynamic>);
   }
 
-  /// Undo the last pass (Tinder "rewind"). Returns the restored profile.
-  Future<Profile> rewind() async {
-    final json = await _client.post(ApiEndpoints.rewind);
-    return Profile.fromJson(json as Map<String, dynamic>);
-  }
-
   Future<DiscoveryPreferences> preferences() async {
     final json = await _client.get(ApiEndpoints.preferences);
     return DiscoveryPreferences.fromJson(json as Map<String, dynamic>);
   }
 
-  Future<DiscoveryPreferences> savePreferences(DiscoveryPreferences prefs) async {
-    final json = await _client.put(ApiEndpoints.preferences, data: prefs.toJson());
-    return DiscoveryPreferences.fromJson(json as Map<String, dynamic>);
+  /// Saves and returns the preferences plus how many people match them ("Show 42 people").
+  Future<(DiscoveryPreferences, int)> savePreferences(DiscoveryPreferences prefs) async {
+    final json = await _client.put(ApiEndpoints.preferences, data: prefs.toJson()) as Map<String, dynamic>;
+    return (DiscoveryPreferences.fromJson(json), (json['match_count'] as num?)?.toInt() ?? 0);
   }
 
   Future<List<ReceivedLike>> receivedLikes() async {

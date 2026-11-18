@@ -22,6 +22,14 @@ class UnmatchRequested extends MatchesEvent {
   List<Object?> get props => [matchId];
 }
 
+/// Removes a match locally after the person was blocked.
+class MatchRemoved extends MatchesEvent {
+  const MatchRemoved(this.profileId);
+  final String profileId;
+  @override
+  List<Object?> get props => [profileId];
+}
+
 enum MatchesStatus { loading, ready, failure }
 
 class MatchesState extends Equatable {
@@ -31,34 +39,38 @@ class MatchesState extends Equatable {
   final List<Match> matches;
   final String? error;
 
-  /// Top carousel – matched but nobody has written yet.
+  /// "Waiting for your hello": matched, nobody has written yet.
   List<Match> get newMatches => matches.where((m) => !m.hasConversation).toList();
 
-  /// Conversation list.
+  /// "Getting to know" / Messages list.
   List<Match> get conversations => matches.where((m) => m.hasConversation).toList();
 
   int get unreadTotal => matches.fold(0, (sum, m) => sum + m.unreadCount);
 
-  MatchesState copyWith({MatchesStatus? status, List<Match>? matches, String? error}) =>
-      MatchesState(status: status ?? this.status, matches: matches ?? this.matches, error: error);
+  Match? byId(String id) => matches.where((m) => m.id == id).firstOrNull;
+
+  MatchesState copyWith({MatchesStatus? status, List<Match>? matches, String? Function()? error}) =>
+      MatchesState(status: status ?? this.status, matches: matches ?? this.matches, error: error != null ? error() : this.error);
 
   @override
   List<Object?> get props => [status, matches, error];
 }
 
+/// Feeds both the Matches tab and the Messages tab.
 class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
   MatchesBloc(this._repo) : super(const MatchesState()) {
     on<MatchesRequested>(_onRequested);
     on<UnmatchRequested>(_onUnmatch);
+    on<MatchRemoved>((e, emit) => emit(state.copyWith(matches: state.matches.where((m) => m.profile.id != e.profileId).toList())));
   }
 
   final MatchRepository _repo;
 
   Future<void> _onRequested(MatchesRequested e, Emitter<MatchesState> emit) async {
     try {
-      emit(state.copyWith(status: MatchesStatus.ready, matches: await _repo.matches()));
+      emit(state.copyWith(status: MatchesStatus.ready, matches: await _repo.matches(), error: () => null));
     } on ApiException catch (err) {
-      emit(state.copyWith(status: state.matches.isEmpty ? MatchesStatus.failure : MatchesStatus.ready, error: err.message));
+      emit(state.copyWith(status: state.matches.isEmpty ? MatchesStatus.failure : MatchesStatus.ready, error: () => err.message));
     }
   }
 
@@ -68,7 +80,7 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
     try {
       await _repo.unmatch(e.matchId);
     } on ApiException catch (err) {
-      emit(state.copyWith(matches: before, error: err.message));
+      emit(state.copyWith(matches: before, error: () => err.message));
     }
   }
 }

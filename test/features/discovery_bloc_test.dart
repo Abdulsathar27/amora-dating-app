@@ -1,8 +1,9 @@
-
+import 'package:amora/core/network/api_exception.dart';
 import 'package:amora/data/models/discovery.dart';
 import 'package:amora/data/models/match.dart';
 import 'package:amora/data/models/profile.dart';
 import 'package:amora/data/repositories/discovery_repository.dart';
+import 'package:amora/features/discovery/view_model/compliment_cubit.dart';
 import 'package:amora/features/discovery/view_model/discovery_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,9 +11,9 @@ import 'package:mocktail/mocktail.dart';
 
 class _MockRepo extends Mock implements DiscoveryRepository {}
 
-const _a = Profile(id: 'a', name: 'A', age: 25);
-const _b = Profile(id: 'b', name: 'B', age: 26);
-const _c = Profile(id: 'c', name: 'C', age: 27);
+const _maya = Profile(id: 'maya', name: 'Maya', age: 27);
+const _leo = Profile(id: 'leo', name: 'Leo', age: 31);
+const _dan = Profile(id: 'dan', name: 'Daniel', age: 33);
 
 void main() {
   late _MockRepo repo;
@@ -22,7 +23,7 @@ void main() {
   setUp(() {
     repo = _MockRepo();
     when(() => repo.preferences()).thenAnswer((_) async => const DiscoveryPreferences());
-    when(() => repo.feed(limit: any(named: 'limit'))).thenAnswer((_) async => [_a, _b, _c]);
+    when(() => repo.feed(limit: any(named: 'limit'))).thenAnswer((_) async => [_maya, _leo, _dan]);
   });
 
   blocTest<DiscoveryBloc, DiscoveryState>(
@@ -31,62 +32,75 @@ void main() {
     act: (b) => b.add(const DiscoveryStarted()),
     verify: (b) {
       expect(b.state.status, DiscoveryStatus.ready);
-      expect(b.state.deck.map((p) => p.id), ['a', 'b', 'c']);
+      expect(b.state.deck.map((p) => p.id), ['maya', 'leo', 'dan']);
+      expect(b.state.next?.id, 'leo');
     },
   );
 
   blocTest<DiscoveryBloc, DiscoveryState>(
-    'small drag snaps back without swiping',
-    build: () => DiscoveryBloc(repo),
-    seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_a, _b, _c]),
-    act: (b) => b
-      ..add(const CardDragUpdated(Offset(40, 0)))
-      ..add(const CardDragEnded()),
-    verify: (b) {
-      expect(b.state.dragOffset, Offset.zero);
-      expect(b.state.deck.length, 3);
-      verifyNever(() => repo.swipe(profileId: any(named: 'profileId'), action: any(named: 'action')));
-    },
-  );
-
-  blocTest<DiscoveryBloc, DiscoveryState>(
-    'right swipe past threshold likes and surfaces a match',
+    'a lost connection shows the offline state',
     build: () {
-      when(() => repo.swipe(profileId: 'a', action: SwipeAction.like)).thenAnswer(
-        (_) async => SwipeResult(isMatch: true, match: Match(id: 'm1', profile: _a, matchedAt: DateTime(2026))),
-      );
+      when(() => repo.feed(limit: any(named: 'limit'))).thenThrow(const ApiException('No internet connection.'));
       return DiscoveryBloc(repo);
     },
-    seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_a, _b, _c]),
-    act: (b) => b
-      ..add(const CardDragUpdated(Offset(200, 0)))
-      ..add(const CardDragEnded()),
-    wait: const Duration(milliseconds: 400),
+    act: (b) => b.add(const DiscoveryStarted()),
+    verify: (b) => expect(b.state.status, DiscoveryStatus.offline),
+  );
+
+  blocTest<DiscoveryBloc, DiscoveryState>(
+    'a mutual like removes the card and surfaces the match',
+    build: () {
+      when(
+        () => repo.swipe(profileId: 'maya', action: SwipeAction.like, comment: any(named: 'comment')),
+      ).thenAnswer((_) async => SwipeResult(isMatch: true, match: Match(id: 'm1', profile: _maya, matchedAt: DateTime(2026))));
+      return DiscoveryBloc(repo);
+    },
+    seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_maya, _leo, _dan]),
+    act: (b) => b.add(const CardSwiped(SwipeAction.like)),
     verify: (b) {
-      expect(b.state.deck.first.id, 'b');
+      expect(b.state.top?.id, 'leo');
       expect(b.state.newMatch?.id, 'm1');
-      expect(b.state.canRewind, isFalse);
+      expect(b.state.likes, 1);
     },
   );
 
   blocTest<DiscoveryBloc, DiscoveryState>(
-    'pass enables rewind, rewind restores the card',
+    'a compliment is sent as a like with the comment',
     build: () {
-      when(() => repo.swipe(profileId: 'a', action: SwipeAction.pass))
-          .thenAnswer((_) async => const SwipeResult(isMatch: false));
-      when(() => repo.rewind()).thenAnswer((_) async => _a);
+      when(
+        () => repo.swipe(profileId: any(named: 'profileId'), action: any(named: 'action'), comment: any(named: 'comment')),
+      ).thenAnswer((_) async => const SwipeResult(isMatch: false));
       return DiscoveryBloc(repo);
     },
-    seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_a, _b, _c]),
-    act: (b) async {
-      b.add(const SwipeRequested(SwipeAction.pass));
-      await Future<void>.delayed(const Duration(milliseconds: 400));
-      b.add(const RewindRequested());
-    },
-    wait: const Duration(milliseconds: 100),
-    verify: (b) {
-      expect(b.state.deck.first.id, 'a');
-      expect(b.state.canRewind, isFalse);
-    },
+    seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_maya, _leo, _dan]),
+    act: (b) => b.add(const CardSwiped(SwipeAction.like, comment: 'Great bookshop taste')),
+    verify: (_) => verify(() => repo.swipe(profileId: 'maya', action: SwipeAction.like, comment: 'Great bookshop taste')).called(1),
   );
+
+  blocTest<DiscoveryBloc, DiscoveryState>(
+    'passing the last cards tops the deck up from the feed',
+    build: () {
+      when(
+        () => repo.swipe(profileId: any(named: 'profileId'), action: any(named: 'action'), comment: any(named: 'comment')),
+      ).thenAnswer((_) async => const SwipeResult(isMatch: false));
+      return DiscoveryBloc(repo);
+    },
+    seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_maya]),
+    act: (b) => b.add(const CardSwiped(SwipeAction.pass)),
+    verify: (b) => expect(b.state.deck.map((p) => p.id), ['leo', 'dan']),
+  );
+
+  group('ComplimentCubit', () {
+    blocTest<ComplimentCubit, ComplimentState>(
+      'picking a suggestion replaces the text and rebuilds the field',
+      build: ComplimentCubit.new,
+      act: (c) => c.suggestionPicked('Your smile!'),
+      expect: () => [const ComplimentState(text: 'Your smile!', version: 1)],
+    );
+
+    test('needs at least 3 characters', () {
+      expect(const ComplimentState(text: 'hi').canSend, isFalse);
+      expect(const ComplimentState(text: 'Hello!').canSend, isTrue);
+    });
+  });
 }
