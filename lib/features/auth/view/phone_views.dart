@@ -48,12 +48,11 @@ class PhoneNumberView extends StatelessWidget {
             LumeButton(
               AppStrings.sendCode,
               loading: s.step == PhoneStep.sendingCode,
-              onPressed:
-                  s.phoneValid
-                      ? () async {
-                        if (await cubit.sendCode() && context.mounted) context.push(AppRoutes.verifyCode);
-                      }
-                      : null,
+              onPressed: s.phoneValid
+                  ? () async {
+                      if (await cubit.sendCode() && context.mounted) context.push(AppRoutes.verifyCode);
+                    }
+                  : null,
             ),
           ],
         );
@@ -88,24 +87,23 @@ class VerifyCodeView extends StatelessWidget {
               AppGaps.h24,
               AnimatedSwitcher(
                 duration: LumeMotion.dissolve,
-                child:
-                    s.codeError
-                        ? Column(
-                          key: const ValueKey('error'),
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            LumeNote(s.error ?? AppStrings.codeMismatch, danger: true),
-                            AppGaps.h24,
-                            _TextLink(AppStrings.sendNewCode, onTap: s.resendIn == 0 ? cubit.resend : null),
-                          ],
-                        )
-                        : s.resendIn > 0
-                        ? Text(
-                          s.resendLabel,
-                          key: const ValueKey('timer'),
-                          style: LumeText.labelM.copyWith(color: AppColors.muted),
-                        )
-                        : _TextLink(AppStrings.sendNewCode, key: const ValueKey('resend'), onTap: cubit.resend),
+                child: s.codeError
+                    ? Column(
+                        key: const ValueKey('error'),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LumeNote(s.error ?? AppStrings.codeMismatch, danger: true),
+                          AppGaps.h24,
+                          _TextLink(AppStrings.sendNewCode, onTap: s.resendIn == 0 ? cubit.resend : null),
+                        ],
+                      )
+                    : s.resendIn > 0
+                    ? Text(
+                        s.resendLabel,
+                        key: const ValueKey('timer'),
+                        style: LumeText.labelM.copyWith(color: AppColors.muted),
+                      )
+                    : _TextLink(AppStrings.sendNewCode, key: const ValueKey('resend'), onTap: cubit.resend),
               ),
               if (AppConfig.useMockApi) ...[
                 AppGaps.h24,

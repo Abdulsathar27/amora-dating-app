@@ -35,38 +35,37 @@ class VoiceIntroView extends StatelessWidget {
               spacing: 16,
               children: [
                 BlocBuilder<ValueCubit<bool>, bool>(
-                  builder:
-                      (context, playing) => Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(color: AppColors.plum, borderRadius: AppRadius.arch(358, bottom: 32)),
-                        child: Column(
-                          children: [
-                            AppGaps.h7,
-                            LumeAvatar(p?.mainPhoto, size: 104, ringColor: AppColors.coral),
-                            AppGaps.h16,
-                            Text(
-                              voice?.prompt ?? kVoicePrompt,
-                              textAlign: TextAlign.center,
-                              style: LumeText.quote.copyWith(color: AppColors.surface),
-                            ),
-                            AppGaps.h16,
-                            Waveform(
-                              heights: Waveform.priya,
-                              progress: 0,
-                              playing: playing,
-                              idleColor: AppColors.surface.withValues(alpha: 0.3),
-                              duration: Duration(seconds: voice?.seconds ?? 15),
-                            ),
-                            AppGaps.h16,
-                            _PlayButton(
-                              playing: playing,
-                              enabled: voice != null,
-                              onTap: () => context.read<ValueCubit<bool>>().set(!playing),
-                            ),
-                          ],
+                  builder: (context, playing) => Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(color: AppColors.plum, borderRadius: AppRadius.arch(358, bottom: 32)),
+                    child: Column(
+                      children: [
+                        AppGaps.h7,
+                        LumeAvatar(p?.mainPhoto, size: 104, ringColor: AppColors.coral),
+                        AppGaps.h16,
+                        Text(
+                          voice?.prompt ?? kVoicePrompt,
+                          textAlign: TextAlign.center,
+                          style: LumeText.quote.copyWith(color: AppColors.surface),
                         ),
-                      ),
+                        AppGaps.h16,
+                        Waveform(
+                          heights: Waveform.priya,
+                          progress: 0,
+                          playing: playing,
+                          idleColor: AppColors.surface.withValues(alpha: 0.3),
+                          duration: Duration(seconds: voice?.seconds ?? 15),
+                        ),
+                        AppGaps.h16,
+                        _PlayButton(
+                          playing: playing,
+                          enabled: voice != null,
+                          onTap: () => context.read<ValueCubit<bool>>().set(!playing),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 LumeCard(
                   children: [
@@ -74,12 +73,11 @@ class VoiceIntroView extends StatelessWidget {
                       icon: LumeIcons.mic,
                       title: voice == null ? AppStrings.recordYourVoiceIntro : AppStrings.recordNewOne,
                       subtitle: AppStrings.upTo30Seconds,
-                      onTap:
-                          () => context.read<ProfileBloc>().add(
-                            const ProfileSaved({
-                              'voice': {'prompt': kVoicePrompt, 'seconds': 15},
-                            }),
-                          ),
+                      onTap: () => context.read<ProfileBloc>().add(
+                        const ProfileSaved({
+                          'voice': {'prompt': kVoicePrompt, 'seconds': 15},
+                        }),
+                      ),
                     ),
                     if (voice != null)
                       LumeRow(

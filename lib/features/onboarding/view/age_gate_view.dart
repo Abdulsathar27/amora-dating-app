@@ -70,10 +70,9 @@ class AgeGateView extends StatelessWidget {
             bottom: [
               LumeButton(
                 AppStrings.confirmAdult,
-                onPressed:
-                    s.isComplete
-                        ? () => s.isAdult() ? context.push(AppRoutes.signIn) : context.go(AppRoutes.ageBlocked)
-                        : null,
+                onPressed: s.isComplete
+                    ? () => s.isAdult() ? context.push(AppRoutes.signIn) : context.go(AppRoutes.ageBlocked)
+                    : null,
               ),
             ],
           );

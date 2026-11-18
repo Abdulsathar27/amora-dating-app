@@ -18,18 +18,20 @@ class LumeTransitions {
     child: child,
     transitionDuration: LumeMotion.push,
     reverseTransitionDuration: LumeMotion.pushExit,
-    transitionsBuilder:
-        (context, a, secondary, child) => _reduced(context, a, child, () {
-          final inCurve = CurvedAnimation(parent: a, curve: Curves.easeInOut, reverseCurve: Curves.easeIn);
-          final outCurve = CurvedAnimation(parent: secondary, curve: Curves.easeInOut);
-          return SlideTransition(
-            position: Tween(begin: Offset.zero, end: const Offset(-0.25, 0)).animate(outCurve),
-            child: SlideTransition(
-              position: Tween(begin: const Offset(1, 0), end: Offset.zero).animate(inCurve),
-              child: DecoratedBox(decoration: const BoxDecoration(boxShadow: LumeShadows.card), child: child),
-            ),
-          );
-        }),
+    transitionsBuilder: (context, a, secondary, child) => _reduced(context, a, child, () {
+      final inCurve = CurvedAnimation(parent: a, curve: Curves.easeInOut, reverseCurve: Curves.easeIn);
+      final outCurve = CurvedAnimation(parent: secondary, curve: Curves.easeInOut);
+      return SlideTransition(
+        position: Tween(begin: Offset.zero, end: const Offset(-0.25, 0)).animate(outCurve),
+        child: SlideTransition(
+          position: Tween(begin: const Offset(1, 0), end: Offset.zero).animate(inCurve),
+          child: DecoratedBox(
+            decoration: const BoxDecoration(boxShadow: LumeShadows.card),
+            child: child,
+          ),
+        ),
+      );
+    }),
   );
 
   static Page<void> dissolve(GoRouterState state, Widget child, {Duration duration = LumeMotion.dissolve}) =>
@@ -38,9 +40,10 @@ class LumeTransitions {
         child: child,
         transitionDuration: duration,
         reverseTransitionDuration: LumeMotion.dissolve,
-        transitionsBuilder:
-            (context, a, _, child) =>
-                FadeTransition(opacity: CurvedAnimation(parent: a, curve: Curves.easeOut), child: child),
+        transitionsBuilder: (context, a, _, child) => FadeTransition(
+          opacity: CurvedAnimation(parent: a, curve: Curves.easeOut),
+          child: child,
+        ),
       );
 
   /// Slides up from the bottom (filters, full profile).
@@ -49,13 +52,12 @@ class LumeTransitions {
     child: child,
     transitionDuration: LumeMotion.sheet,
     reverseTransitionDuration: LumeMotion.pushExit,
-    transitionsBuilder:
-        (context, a, _, child) => _reduced(context, a, child, () {
-          final curve = CurvedAnimation(parent: a, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
-          return SlideTransition(
-            position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(curve),
-            child: child,
-          );
-        }),
+    transitionsBuilder: (context, a, _, child) => _reduced(context, a, child, () {
+      final curve = CurvedAnimation(parent: a, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
+      return SlideTransition(
+        position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(curve),
+        child: child,
+      );
+    }),
   );
 }

@@ -101,8 +101,14 @@ class _MatchMomentState extends State<_MatchMoment> with SingleTickerProviderSta
   // 0–0.24: arches slide in (≈480ms of 2000ms). 0.24–0.62: two heart pulses. 0.5–1: particle bloom.
   late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000));
 
-  late final _arches = CurvedAnimation(parent: _c, curve: const Interval(0, 0.24, curve: Curves.easeOutBack));
-  late final _heartIn = CurvedAnimation(parent: _c, curve: const Interval(0.16, 0.3, curve: Curves.elasticOut));
+  late final _arches = CurvedAnimation(
+    parent: _c,
+    curve: const Interval(0, 0.24, curve: Curves.easeOutBack),
+  );
+  late final _heartIn = CurvedAnimation(
+    parent: _c,
+    curve: const Interval(0.16, 0.3, curve: Curves.elasticOut),
+  );
   late final _pulse = TweenSequence([
     TweenSequenceItem(tween: ConstantTween(1.0), weight: 30),
     TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.18).chain(CurveTween(curve: Curves.easeOut)), weight: 8),
@@ -111,7 +117,10 @@ class _MatchMomentState extends State<_MatchMoment> with SingleTickerProviderSta
     TweenSequenceItem(tween: Tween(begin: 1.18, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 8),
     TweenSequenceItem(tween: ConstantTween(1.0), weight: 38),
   ]).animate(_c);
-  late final _bloom = CurvedAnimation(parent: _c, curve: const Interval(0.5, 1, curve: Curves.easeOutCubic));
+  late final _bloom = CurvedAnimation(
+    parent: _c,
+    curve: const Interval(0.5, 1, curve: Curves.easeOutCubic),
+  );
 
   @override
   void initState() {
@@ -154,7 +163,10 @@ class _MatchMomentState extends State<_MatchMoment> with SingleTickerProviderSta
                   Positioned(
                     left: box.maxWidth * x,
                     top: box.maxHeight * y,
-                    child: Opacity(opacity: a.clamp(0, 1), child: CircleAvatar(radius: r, backgroundColor: c)),
+                    child: Opacity(
+                      opacity: a.clamp(0, 1),
+                      child: CircleAvatar(radius: r, backgroundColor: c),
+                    ),
                   ),
                 if (!reduce)
                   Positioned.fill(child: CustomPaint(painter: _BloomPainter(_bloom.value, Offset(cx, cy + 40)))),

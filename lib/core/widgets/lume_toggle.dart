@@ -44,37 +44,35 @@ class _LumeToggleState extends State<LumeToggle> with SingleTickerProviderStateM
     return Semantics(
       toggled: widget.value,
       child: GestureDetector(
-        onTap:
-            widget.onChanged == null
-                ? null
-                : () {
-                  HapticFeedback.selectionClick();
-                  widget.onChanged!(!widget.value);
-                },
+        onTap: widget.onChanged == null
+            ? null
+            : () {
+                HapticFeedback.selectionClick();
+                widget.onChanged!(!widget.value);
+              },
         child: AnimatedBuilder(
           animation: _t,
-          builder:
-              (_, _) => Container(
-                width: 52,
-                height: 32,
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  color: Color.lerp(AppColors.line, AppColors.plum, _controller.value),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Align(
-                  alignment: Alignment(-1 + 2 * _t.value, 0),
-                  child: Container(
-                    width: 26,
-                    height: 26,
-                    decoration: const BoxDecoration(
-                      color: AppColors.surface,
-                      shape: BoxShape.circle,
-                      boxShadow: LumeShadows.soft,
-                    ),
-                  ),
+          builder: (_, _) => Container(
+            width: 52,
+            height: 32,
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: Color.lerp(AppColors.line, AppColors.plum, _controller.value),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Align(
+              alignment: Alignment(-1 + 2 * _t.value, 0),
+              child: Container(
+                width: 26,
+                height: 26,
+                decoration: const BoxDecoration(
+                  color: AppColors.surface,
+                  shape: BoxShape.circle,
+                  boxShadow: LumeShadows.soft,
                 ),
               ),
+            ),
+          ),
         ),
       ),
     );

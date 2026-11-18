@@ -146,13 +146,12 @@ class AccountView extends StatelessWidget {
     final auth = context.read<AuthBloc>();
     final ok = await showLumeSheet<bool>(
       context,
-      builder:
-          (sheet) => _ConfirmSheet(
-            title: AppStrings.signOutTitle,
-            body: AppStrings.signOutBody,
-            confirm: AppStrings.signOut,
-            onConfirm: () => Navigator.pop(sheet, true),
-          ),
+      builder: (sheet) => _ConfirmSheet(
+        title: AppStrings.signOutTitle,
+        body: AppStrings.signOutBody,
+        confirm: AppStrings.signOut,
+        onConfirm: () => Navigator.pop(sheet, true),
+      ),
     );
     if (ok == true) auth.add(const AuthLogoutRequested());
   }
@@ -161,14 +160,13 @@ class AccountView extends StatelessWidget {
     final auth = context.read<AuthBloc>();
     final ok = await showLumeSheet<bool>(
       context,
-      builder:
-          (sheet) => _ConfirmSheet(
-            title: AppStrings.deleteTitle,
-            body: AppStrings.deleteBody,
-            confirm: AppStrings.deleteAccount,
-            danger: true,
-            onConfirm: () => Navigator.pop(sheet, true),
-          ),
+      builder: (sheet) => _ConfirmSheet(
+        title: AppStrings.deleteTitle,
+        body: AppStrings.deleteBody,
+        confirm: AppStrings.deleteAccount,
+        danger: true,
+        onConfirm: () => Navigator.pop(sheet, true),
+      ),
     );
     if (ok == true) auth.add(const AuthDeleteRequested());
   }

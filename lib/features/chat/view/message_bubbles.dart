@@ -97,10 +97,9 @@ class _MessageRow extends StatelessWidget {
       children: [
         GestureDetector(
           onLongPress: m.isHidden ? null : () => showReactions(context, m),
-          child:
-              m.isHidden && !mine
-                  ? _HiddenPhoto(message: m, declined: declined)
-                  : MessageBubble(message: m, mine: mine, playing: playing),
+          child: m.isHidden && !mine
+              ? _HiddenPhoto(message: m, declined: declined)
+              : MessageBubble(message: m, mine: mine, playing: playing),
         ),
         if (hasReaction)
           Transform.translate(
@@ -168,7 +167,10 @@ class MessageBubble extends StatelessWidget {
             height: 150,
             child: Stack(
               fit: StackFit.expand,
-              children: [LumePhoto(m.mediaUrl), const Positioned(left: 10, top: 10, child: LumeTag(AppStrings.gif))],
+              children: [
+                LumePhoto(m.mediaUrl),
+                const Positioned(left: 10, top: 10, child: LumeTag(AppStrings.gif)),
+              ],
             ),
           ),
         );
@@ -258,35 +260,34 @@ class _HiddenPhoto extends StatelessWidget {
         ),
         AnimatedSize(
           duration: LumeMotion.dissolve,
-          child:
-              declined
-                  ? const SizedBox(width: 250)
-                  : Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        LumeButton(
-                          AppStrings.notNow,
-                          expand: false,
-                          variant: LumeButtonVariant.ghost,
-                          height: AppSizes.buttonHeightSm,
-                          onPressed: () => bloc.add(ChatPhotoDeclined(message.id)),
-                        ),
-                        AppGaps.w8,
-                        LumeButton(
-                          AppStrings.report,
-                          expand: false,
-                          variant: LumeButtonVariant.danger,
-                          height: AppSizes.buttonHeightSm,
-                          onPressed: () {
-                            final p = bloc.state.match.profile;
-                            context.push(AppRoutes.reportReason(p.id, p.name));
-                          },
-                        ),
-                      ],
-                    ),
+          child: declined
+              ? const SizedBox(width: 250)
+              : Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LumeButton(
+                        AppStrings.notNow,
+                        expand: false,
+                        variant: LumeButtonVariant.ghost,
+                        height: AppSizes.buttonHeightSm,
+                        onPressed: () => bloc.add(ChatPhotoDeclined(message.id)),
+                      ),
+                      AppGaps.w8,
+                      LumeButton(
+                        AppStrings.report,
+                        expand: false,
+                        variant: LumeButtonVariant.danger,
+                        height: AppSizes.buttonHeightSm,
+                        onPressed: () {
+                          final p = bloc.state.match.profile;
+                          context.push(AppRoutes.reportReason(p.id, p.name));
+                        },
+                      ),
+                    ],
                   ),
+                ),
         ),
       ],
     );

@@ -89,7 +89,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _onOnboarded(AuthOnboardingCompleted e, Emitter<AuthState> emit) {
     final user = state.user;
-    if (user != null) emit(AuthState(status: state.status, user: user.copyWith(isOnboarded: true, name: e.name)));
+    if (user != null) {
+      emit(
+        AuthState(
+          status: state.status,
+          user: user.copyWith(isOnboarded: true, name: e.name),
+        ),
+      );
+    }
   }
 
   Future<void> _onLogout(AuthLogoutRequested e, Emitter<AuthState> emit) async {

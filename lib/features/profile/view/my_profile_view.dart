@@ -29,12 +29,12 @@ class MyProfileView extends StatelessWidget {
             if (p == null) {
               return s.status == ProfileStatus.failure
                   ? LumeEmptyState(
-                    icon: LumeIcons.refresh,
-                    title: AppStrings.profileLoadFailed,
-                    body: s.error ?? AppStrings.pleaseTryAgain,
-                    actionLabel: AppStrings.tryAgain,
-                    onAction: () => context.read<ProfileBloc>().add(const ProfileRequested()),
-                  )
+                      icon: LumeIcons.refresh,
+                      title: AppStrings.profileLoadFailed,
+                      body: s.error ?? AppStrings.pleaseTryAgain,
+                      actionLabel: AppStrings.tryAgain,
+                      onAction: () => context.read<ProfileBloc>().add(const ProfileRequested()),
+                    )
                   : const Center(child: CircularProgressIndicator(color: AppColors.plum));
             }
             final pct = (s.completeness * 100).round();
@@ -75,16 +75,15 @@ class MyProfileView extends StatelessWidget {
                               tween: Tween(begin: 0, end: s.completeness),
                               duration: const Duration(milliseconds: 900),
                               curve: Curves.easeOutCubic,
-                              builder:
-                                  (_, v, _) => ClipRRect(
-                                    borderRadius: BorderRadius.circular(4),
-                                    child: LinearProgressIndicator(
-                                      value: v,
-                                      minHeight: 8,
-                                      color: AppColors.coral,
-                                      backgroundColor: AppColors.line,
-                                    ),
-                                  ),
+                              builder: (_, v, _) => ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: v,
+                                  minHeight: 8,
+                                  color: AppColors.coral,
+                                  backgroundColor: AppColors.line,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -181,12 +180,11 @@ class SaveProfileButton extends StatelessWidget {
         if (context.canPop()) context.pop();
       },
       buildWhen: (a, b) => a.status != b.status,
-      builder:
-          (context, s) => LumeButton(
-            label,
-            loading: s.status == ProfileStatus.saving,
-            onPressed: enabled ? () => context.read<ProfileBloc>().add(ProfileSaved(changes())) : null,
-          ),
+      builder: (context, s) => LumeButton(
+        label,
+        loading: s.status == ProfileStatus.saving,
+        onPressed: enabled ? () => context.read<ProfileBloc>().add(ProfileSaved(changes())) : null,
+      ),
     );
   }
 }

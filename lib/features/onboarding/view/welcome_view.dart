@@ -33,59 +33,51 @@ class WelcomeView extends StatelessWidget {
       child: Scaffold(
         body: SafeArea(
           child: _Pager(
-            builder:
-                (context, controller) => Column(
-                  children: [
-                    Expanded(
-                      child: PageView.builder(
-                        controller: controller,
-                        itemCount: _pages.length,
-                        onPageChanged: context.read<ValueCubit<int>>().set,
-                        itemBuilder:
-                            (_, i) =>
-                                _WelcomePage(index: i, title: _pages[i].$1, body: _pages[i].$2, controller: controller),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-                      child: BlocBuilder<ValueCubit<int>, int>(
-                        builder:
-                            (context, page) => AnimatedSwitcher(
-                              duration: LumeMotion.dissolve,
-                              child: Column(
-                                key: ValueKey(page == 0),
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  LumeButton(
-                                    switch (page) {
-                                      0 => AppStrings.getStarted,
-                                      1 => AppStrings.next,
-                                      _ => AppStrings.continueLabel,
-                                    },
-                                    onPressed:
-                                        () =>
-                                            page < 2
-                                                ? controller.nextPage(
-                                                  duration: LumeMotion.push,
-                                                  curve: Curves.easeInOut,
-                                                )
-                                                : context.push(AppRoutes.ageGate),
-                                  ),
-                                  if (page == 0) ...[
-                                    AppGaps.h4,
-                                    LumeButton(
-                                      AppStrings.alreadyHaveAccount,
-                                      variant: LumeButtonVariant.ghost,
-                                      onPressed: () => context.push(AppRoutes.signIn),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                      ),
-                    ),
-                  ],
+            builder: (context, controller) => Column(
+              children: [
+                Expanded(
+                  child: PageView.builder(
+                    controller: controller,
+                    itemCount: _pages.length,
+                    onPageChanged: context.read<ValueCubit<int>>().set,
+                    itemBuilder: (_, i) =>
+                        _WelcomePage(index: i, title: _pages[i].$1, body: _pages[i].$2, controller: controller),
+                  ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                  child: BlocBuilder<ValueCubit<int>, int>(
+                    builder: (context, page) => AnimatedSwitcher(
+                      duration: LumeMotion.dissolve,
+                      child: Column(
+                        key: ValueKey(page == 0),
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          LumeButton(
+                            switch (page) {
+                              0 => AppStrings.getStarted,
+                              1 => AppStrings.next,
+                              _ => AppStrings.continueLabel,
+                            },
+                            onPressed: () => page < 2
+                                ? controller.nextPage(duration: LumeMotion.push, curve: Curves.easeInOut)
+                                : context.push(AppRoutes.ageGate),
+                          ),
+                          if (page == 0) ...[
+                            AppGaps.h4,
+                            LumeButton(
+                              AppStrings.alreadyHaveAccount,
+                              variant: LumeButtonVariant.ghost,
+                              onPressed: () => context.push(AppRoutes.signIn),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -197,8 +189,14 @@ class _ArchesIllustration extends StatefulWidget {
 class _ArchesIllustrationState extends State<_ArchesIllustration> with SingleTickerProviderStateMixin {
   late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))
     ..forward();
-  late final _spread = CurvedAnimation(parent: _c, curve: const Interval(0.2, 1, curve: Curves.easeOutBack));
-  late final _rise = CurvedAnimation(parent: _c, curve: const Interval(0, 0.6, curve: Curves.easeOutCubic));
+  late final _spread = CurvedAnimation(
+    parent: _c,
+    curve: const Interval(0.2, 1, curve: Curves.easeOutBack),
+  );
+  late final _rise = CurvedAnimation(
+    parent: _c,
+    curve: const Interval(0, 0.6, curve: Curves.easeOutCubic),
+  );
 
   @override
   void dispose() {
@@ -214,36 +212,35 @@ class _ArchesIllustrationState extends State<_ArchesIllustration> with SingleTic
         final dx = (w - 150) / 2;
         return AnimatedBuilder(
           animation: _c,
-          builder:
-              (_, _) => Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.topCenter,
-                children: [
-                  for (final (photo, sign) in [('assets/images/leo.jpg', -1.0), ('assets/images/amara.jpg', 1.0)])
-                    Positioned(
-                      top: 90,
-                      left: box.maxWidth / 2 - 75 + sign * dx * _spread.value,
-                      child: Opacity(
-                        opacity: _spread.value.clamp(0.0, 1.0),
-                        child: ArchPhoto(source: photo, width: 150, height: 230),
-                      ),
-                    ),
-                  Positioned(
-                    top: 20 + 30 * (1 - _rise.value),
-                    child: Opacity(
-                      opacity: _rise.value,
-                      child: const ArchPhoto(
-                        source: 'assets/images/maya.jpg',
-                        width: 190,
-                        height: 300,
-                        borderColor: AppColors.background,
-                        borderWidth: 4,
-                        shadow: LumeShadows.card,
-                      ),
-                    ),
+          builder: (_, _) => Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              for (final (photo, sign) in [('assets/images/leo.jpg', -1.0), ('assets/images/amara.jpg', 1.0)])
+                Positioned(
+                  top: 90,
+                  left: box.maxWidth / 2 - 75 + sign * dx * _spread.value,
+                  child: Opacity(
+                    opacity: _spread.value.clamp(0.0, 1.0),
+                    child: ArchPhoto(source: photo, width: 150, height: 230),
                   ),
-                ],
+                ),
+              Positioned(
+                top: 20 + 30 * (1 - _rise.value),
+                child: Opacity(
+                  opacity: _rise.value,
+                  child: const ArchPhoto(
+                    source: 'assets/images/maya.jpg',
+                    width: 190,
+                    height: 300,
+                    borderColor: AppColors.background,
+                    borderWidth: 4,
+                    shadow: LumeShadows.card,
+                  ),
+                ),
               ),
+            ],
+          ),
         );
       },
     );
@@ -299,7 +296,9 @@ class _SafetyPromises extends StatelessWidget {
     ];
     return LumeCard(
       children: [
-        StaggeredEntrance(children: [for (final r in rows) LumeRow(icon: r.$1, title: r.$2, subtitle: r.$3)]),
+        StaggeredEntrance(
+          children: [for (final r in rows) LumeRow(icon: r.$1, title: r.$2, subtitle: r.$3)],
+        ),
       ],
     );
   }

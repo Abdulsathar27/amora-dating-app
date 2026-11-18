@@ -66,38 +66,35 @@ class RelationshipPrefsView extends StatelessWidget {
                       title: AppStrings.kids,
                       value: s.kids,
                       chevron: true,
-                      onTap:
-                          () => _pick(
-                            context,
-                            AppStrings.kids,
-                            RelationshipPrefsCubit.kidsOptions,
-                            s.kids,
-                            cubit.kidsChanged,
-                          ),
+                      onTap: () => _pick(
+                        context,
+                        AppStrings.kids,
+                        RelationshipPrefsCubit.kidsOptions,
+                        s.kids,
+                        cubit.kidsChanged,
+                      ),
                     ),
                     LumeRow(
                       title: AppStrings.smoking,
                       value: s.smoking,
-                      onTap:
-                          () => _pick(
-                            context,
-                            AppStrings.smoking,
-                            RelationshipPrefsCubit.smokingOptions,
-                            s.smoking,
-                            cubit.smokingChanged,
-                          ),
+                      onTap: () => _pick(
+                        context,
+                        AppStrings.smoking,
+                        RelationshipPrefsCubit.smokingOptions,
+                        s.smoking,
+                        cubit.smokingChanged,
+                      ),
                     ),
                     LumeRow(
                       title: AppStrings.distance,
                       value: AppStrings.km(s.distanceKm),
-                      onTap:
-                          () => _pick(
-                            context,
-                            AppStrings.distance,
-                            [for (final d in RelationshipPrefsCubit.distanceOptions) AppStrings.km(d)],
-                            AppStrings.km(s.distanceKm),
-                            (v) => cubit.distanceChanged(int.parse(v.split(' ').first)),
-                          ),
+                      onTap: () => _pick(
+                        context,
+                        AppStrings.distance,
+                        [for (final d in RelationshipPrefsCubit.distanceOptions) AppStrings.km(d)],
+                        AppStrings.km(s.distanceKm),
+                        (v) => cubit.distanceChanged(int.parse(v.split(' ').first)),
+                      ),
                     ),
                   ],
                 ),
@@ -134,27 +131,26 @@ class RelationshipPrefsView extends StatelessWidget {
   ) async {
     final picked = await showLumeSheet<String>(
       context,
-      builder:
-          (sheet) => Padding(
-            padding: const EdgeInsets.fromLTRB(8, 14, 8, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(title, style: LumeText.titleM.copyWith(color: AppColors.plum)),
-                ),
-                for (final o in options)
-                  LumeRow(
-                    title: o,
-                    chevron: false,
-                    trailing: o == current ? const Icon(Icons.check_rounded, color: AppColors.coral) : null,
-                    onTap: () => Navigator.pop(sheet, o),
-                  ),
-              ],
+      builder: (sheet) => Padding(
+        padding: const EdgeInsets.fromLTRB(8, 14, 8, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(title, style: LumeText.titleM.copyWith(color: AppColors.plum)),
             ),
-          ),
+            for (final o in options)
+              LumeRow(
+                title: o,
+                chevron: false,
+                trailing: o == current ? const Icon(Icons.check_rounded, color: AppColors.coral) : null,
+                onTap: () => Navigator.pop(sheet, o),
+              ),
+          ],
+        ),
+      ),
     );
     if (picked != null) onPick(picked);
   }

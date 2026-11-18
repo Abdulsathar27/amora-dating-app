@@ -50,8 +50,17 @@ void main() {
   blocTest<DiscoveryBloc, DiscoveryState>(
     'a mutual like removes the card and surfaces the match',
     build: () {
-      when(() => repo.swipe(profileId: 'maya', action: SwipeAction.like, comment: any(named: 'comment'))).thenAnswer(
-        (_) async => SwipeResult(isMatch: true, match: Match(id: 'm1', profile: _maya, matchedAt: DateTime(2026))),
+      when(
+        () => repo.swipe(
+          profileId: 'maya',
+          action: SwipeAction.like,
+          comment: any(named: 'comment'),
+        ),
+      ).thenAnswer(
+        (_) async => SwipeResult(
+          isMatch: true,
+          match: Match(id: 'm1', profile: _maya, matchedAt: DateTime(2026)),
+        ),
       );
       return DiscoveryBloc(repo);
     },
@@ -78,10 +87,9 @@ void main() {
     },
     seed: () => const DiscoveryState(status: DiscoveryStatus.ready, deck: [_maya, _leo, _dan]),
     act: (b) => b.add(const CardSwiped(SwipeAction.like, comment: 'Great bookshop taste')),
-    verify:
-        (_) => verify(
-          () => repo.swipe(profileId: 'maya', action: SwipeAction.like, comment: 'Great bookshop taste'),
-        ).called(1),
+    verify: (_) => verify(
+      () => repo.swipe(profileId: 'maya', action: SwipeAction.like, comment: 'Great bookshop taste'),
+    ).called(1),
   );
 
   blocTest<DiscoveryBloc, DiscoveryState>(

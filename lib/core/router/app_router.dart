@@ -85,11 +85,10 @@ GoRouter buildRouter(AuthBloc auth) {
       // ------------------------------------------------ create your profile
       GoRoute(path: AppRoutes.pledge, pageBuilder: (_, s) => LumeTransitions.push(s, const PledgeView())),
       ShellRoute(
-        builder:
-            (context, _, child) => BlocProvider(
-              create: (_) => ProfileSetupCubit(sl(), sl(), initialName: context.read<AuthBloc>().state.user?.name),
-              child: child,
-            ),
+        builder: (context, _, child) => BlocProvider(
+          create: (_) => ProfileSetupCubit(sl(), sl(), initialName: context.read<AuthBloc>().state.user?.name),
+          child: child,
+        ),
         routes: [
           GoRoute(path: AppRoutes.createName, pageBuilder: (_, s) => LumeTransitions.push(s, const CreateNameView())),
           GoRoute(
@@ -128,11 +127,21 @@ GoRouter buildRouter(AuthBloc auth) {
       StatefulShellRoute.indexedStack(
         pageBuilder: (_, s, shell) => LumeTransitions.dissolve(s, HomeShell(shell: shell)),
         branches: [
-          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.discover, builder: (_, _) => const DiscoverView())]),
-          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.likes, builder: (_, _) => const LikesView())]),
-          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.matches, builder: (_, _) => const MatchesView())]),
-          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.messages, builder: (_, _) => const MessagesView())]),
-          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.profile, builder: (_, _) => const MyProfileView())]),
+          StatefulShellBranch(
+            routes: [GoRoute(path: AppRoutes.discover, builder: (_, _) => const DiscoverView())],
+          ),
+          StatefulShellBranch(
+            routes: [GoRoute(path: AppRoutes.likes, builder: (_, _) => const LikesView())],
+          ),
+          StatefulShellBranch(
+            routes: [GoRoute(path: AppRoutes.matches, builder: (_, _) => const MatchesView())],
+          ),
+          StatefulShellBranch(
+            routes: [GoRoute(path: AppRoutes.messages, builder: (_, _) => const MessagesView())],
+          ),
+          StatefulShellBranch(
+            routes: [GoRoute(path: AppRoutes.profile, builder: (_, _) => const MyProfileView())],
+          ),
         ],
       ),
 
@@ -140,12 +149,11 @@ GoRouter buildRouter(AuthBloc auth) {
       GoRoute(path: AppRoutes.filters, pageBuilder: (_, s) => LumeTransitions.moveIn(s, const FiltersView())),
       GoRoute(
         path: AppRoutes.itsAMatch,
-        pageBuilder:
-            (_, s) => LumeTransitions.dissolve(
-              s,
-              MatchView(match: s.extra! as Match),
-              duration: const Duration(milliseconds: 480),
-            ),
+        pageBuilder: (_, s) => LumeTransitions.dissolve(
+          s,
+          MatchView(match: s.extra! as Match),
+          duration: const Duration(milliseconds: 480),
+        ),
       ),
       GoRoute(
         path: AppRoutes.person,
@@ -156,9 +164,8 @@ GoRouter buildRouter(AuthBloc auth) {
       ),
       GoRoute(
         path: '/chat/:matchId',
-        pageBuilder:
-            (_, s) =>
-                LumeTransitions.push(s, ChatView(matchId: s.pathParameters['matchId']!, initial: s.extra as Match?)),
+        pageBuilder: (_, s) =>
+            LumeTransitions.push(s, ChatView(matchId: s.pathParameters['matchId']!, initial: s.extra as Match?)),
       ),
       GoRoute(path: AppRoutes.editProfile, pageBuilder: (_, s) => LumeTransitions.push(s, const EditProfileView())),
       GoRoute(path: AppRoutes.managePhotos, pageBuilder: (_, s) => LumeTransitions.push(s, const ManagePhotosView())),
@@ -175,11 +182,10 @@ GoRouter buildRouter(AuthBloc auth) {
 
       // ------------------------------------------------ report flow
       ShellRoute(
-        builder:
-            (_, s, child) => BlocProvider(
-              create: (_) => ReportCubit(sl(), userId: s.uri.queryParameters['user'] ?? ''),
-              child: child,
-            ),
+        builder: (_, s, child) => BlocProvider(
+          create: (_) => ReportCubit(sl(), userId: s.uri.queryParameters['user'] ?? ''),
+          child: child,
+        ),
         routes: [
           GoRoute(
             path: '/report/reason',

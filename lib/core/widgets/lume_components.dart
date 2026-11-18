@@ -88,14 +88,14 @@ class LumeAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: ringColor == null ? null : Border.all(color: ringColor!, width: ringWidth),
-        ),
-        child: ClipOval(child: LumePhoto(source)),
-      );
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      border: ringColor == null ? null : Border.all(color: ringColor!, width: ringWidth),
+    ),
+    child: ClipOval(child: LumePhoto(source)),
+  );
 }
 
 enum TagVariant { normal, selected, lavender, blush }
@@ -121,17 +121,31 @@ class LumeTag extends StatelessWidget {
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(20), border: Border.all(color: border)),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: border),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[LumeIcon(icon!, size: 16, color: fg), AppGaps.w6],
-          Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: LumeText.labelM.copyWith(color: fg))),
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: LumeText.labelM.copyWith(color: fg),
+            ),
+          ),
         ],
       ),
     );
     if (onTap == null) return tag;
-    return Semantics(selected: variant == TagVariant.selected, button: true, child: PressScale(onTap: onTap, child: tag));
+    return Semantics(
+      selected: variant == TagVariant.selected,
+      button: true,
+      child: PressScale(onTap: onTap, child: tag),
+    );
   }
 }
 
@@ -145,26 +159,34 @@ class LumeNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: danger ? AppColors.dangerSoft : AppColors.lavenderSoft,
-          borderRadius: BorderRadius.circular(AppRadius.md),
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+    decoration: BoxDecoration(
+      color: danger ? AppColors.dangerSoft : AppColors.lavenderSoft,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        LumeIcon(icon, size: 20, color: danger ? AppColors.danger : AppColors.plum),
+        AppGaps.w10,
+        Expanded(
+          child: Text(text, style: LumeText.bodyM.copyWith(color: AppColors.ink)),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            LumeIcon(icon, size: 20, color: danger ? AppColors.danger : AppColors.plum),
-            AppGaps.w10,
-            Expanded(child: Text(text, style: LumeText.bodyM.copyWith(color: AppColors.ink))),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 }
 
 /// White grouped card with soft elevation (rows separated by nothing, as in the design).
 class LumeCard extends StatelessWidget {
-  const LumeCard({super.key, required this.children, this.padding = EdgeInsets.zero, this.color = AppColors.surface, this.radius = AppRadius.lg});
+  const LumeCard({
+    super.key,
+    required this.children,
+    this.padding = EdgeInsets.zero,
+    this.color = AppColors.surface,
+    this.radius = AppRadius.lg,
+  });
 
   final List<Widget> children;
   final EdgeInsets padding;
@@ -173,11 +195,11 @@ class LumeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: double.infinity,
-        padding: padding,
-        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(radius), boxShadow: LumeShadows.soft),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
-      );
+    width: double.infinity,
+    padding: padding,
+    decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(radius), boxShadow: LumeShadows.soft),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
+  );
 }
 
 /// 40x40 lavender icon tile used at the start of rows.
@@ -190,15 +212,15 @@ class IconTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: danger ? AppColors.dangerSoft : AppColors.lavenderSoft,
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-        ),
-        alignment: Alignment.center,
-        child: LumeIcon(icon, size: 20, color: danger ? AppColors.danger : AppColors.plum),
-      );
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: danger ? AppColors.dangerSoft : AppColors.lavenderSoft,
+      borderRadius: BorderRadius.circular(AppRadius.sm),
+    ),
+    alignment: Alignment.center,
+    child: LumeIcon(icon, size: 20, color: danger ? AppColors.danger : AppColors.plum),
+  );
 }
 
 /// Settings / list row: optional icon tile, title, subtitle, and a trailing value,
@@ -243,14 +265,20 @@ class LumeRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(title, style: titleStyle ?? LumeText.titleS.copyWith(color: danger ? AppColors.danger : AppColors.ink)),
+                Text(
+                  title,
+                  style: titleStyle ?? LumeText.titleS.copyWith(color: danger ? AppColors.danger : AppColors.ink),
+                ),
                 if (subtitle != null) ...[AppGaps.h2, Text(subtitle!, style: LumeText.bodyM)],
               ],
             ),
           ),
           if (value != null) ...[
             AppGaps.w8,
-            Text(value!, style: LumeText.bodyM.copyWith(color: value == AppStrings.verified ? AppColors.success : AppColors.muted)),
+            Text(
+              value!,
+              style: LumeText.bodyM.copyWith(color: value == AppStrings.verified ? AppColors.success : AppColors.muted),
+            ),
           ],
           ?trailing,
           if (toggle != null) ...[AppGaps.w12, LumeToggle(value: toggle!, onChanged: onToggle)],
@@ -262,7 +290,10 @@ class LumeRow extends StatelessWidget {
       ),
     );
     if (onTap == null) return row;
-    return Semantics(button: true, child: PressScale(onTap: onTap, scale: 0.98, child: row));
+    return Semantics(
+      button: true,
+      child: PressScale(onTap: onTap, scale: 0.98, child: row),
+    );
   }
 }
 
@@ -282,11 +313,20 @@ class LumeHeader extends StatelessWidget {
       child: Row(
         children: [
           if (onBack != null)
-            LumeIconButton(close ? LumeIcons.close : LumeIcons.back, onPressed: onBack, tooltip: close ? AppStrings.close : AppStrings.back)
+            LumeIconButton(
+              close ? LumeIcons.close : LumeIcons.back,
+              onPressed: onBack,
+              tooltip: close ? AppStrings.close : AppStrings.back,
+            )
           else
             AppGaps.w44,
           Expanded(
-            child: Text(title ?? '', textAlign: TextAlign.center, style: LumeText.titleM, overflow: TextOverflow.ellipsis),
+            child: Text(
+              title ?? '',
+              textAlign: TextAlign.center,
+              style: LumeText.titleM,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           trailing ?? AppGaps.w44,
         ],
@@ -305,15 +345,15 @@ class LumeTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-        children: [
-          Text(title, style: LumeText.displayL, textAlign: center ? TextAlign.center : TextAlign.start),
-          if (subtitle != null) ...[
-            AppGaps.h8,
-            Text(subtitle!, style: LumeText.bodyL, textAlign: center ? TextAlign.center : TextAlign.start),
-          ],
-        ],
-      );
+    crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+    children: [
+      Text(title, style: LumeText.displayL, textAlign: center ? TextAlign.center : TextAlign.start),
+      if (subtitle != null) ...[
+        AppGaps.h8,
+        Text(subtitle!, style: LumeText.bodyL, textAlign: center ? TextAlign.center : TextAlign.start),
+      ],
+    ],
+  );
 }
 
 /// Standard full-page layout: header + scrollable body + pinned bottom actions.
@@ -351,9 +391,12 @@ class LumeScaffold extends StatelessWidget {
             if (bottom != null)
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  for (var i = 0; i < bottom!.length; i++) ...[if (i > 0) AppGaps.h4, bottom![i]],
-                ]),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var i = 0; i < bottom!.length; i++) ...[if (i > 0) AppGaps.h4, bottom![i]],
+                  ],
+                ),
               ),
           ],
         ),
@@ -397,7 +440,11 @@ class LumeEmptyState extends StatelessWidget {
                   height: 220,
                   decoration: BoxDecoration(color: archColor, borderRadius: AppRadius.arch(180, bottom: 24)),
                   alignment: Alignment.center,
-                  child: LumeIcon(icon ?? LumeIcons.heart, size: 56, color: archColor == AppColors.blush ? AppColors.coralDeep : AppColors.plum),
+                  child: LumeIcon(
+                    icon ?? LumeIcons.heart,
+                    size: 56,
+                    color: archColor == AppColors.blush ? AppColors.coralDeep : AppColors.plum,
+                  ),
                 ),
             AppGaps.h20,
             Text(title, textAlign: TextAlign.center, style: LumeText.displayL),
@@ -440,7 +487,9 @@ class StepProgress extends StatelessWidget {
                   curve: Curves.easeOutCubic,
                   builder: (_, v, _) => FractionallySizedBox(
                     widthFactor: v,
-                    child: Container(decoration: BoxDecoration(color: AppColors.coral, borderRadius: BorderRadius.circular(2))),
+                    child: Container(
+                      decoration: BoxDecoration(color: AppColors.coral, borderRadius: BorderRadius.circular(2)),
+                    ),
                   ),
                 ),
               ),
@@ -485,8 +534,10 @@ class LumeField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OutlineInputBorder border(Color c, double w) =>
-        OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: c, width: w));
+    OutlineInputBorder border(Color c, double w) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      borderSide: BorderSide(color: c, width: w),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -515,7 +566,10 @@ class LumeField extends StatelessWidget {
         ),
         if (error != null || helper != null) ...[
           AppGaps.h8,
-          Text(error ?? helper!, style: LumeText.caption.copyWith(color: error != null ? AppColors.danger : AppColors.muted)),
+          Text(
+            error ?? helper!,
+            style: LumeText.caption.copyWith(color: error != null ? AppColors.danger : AppColors.muted),
+          ),
         ],
       ],
     );
@@ -538,7 +592,11 @@ Future<T?> showLumeSheet<T>(BuildContext context, {required WidgetBuilder builde
         mainAxisSize: MainAxisSize.min,
         children: [
           AppGaps.h10,
-          Container(width: 40, height: 5, decoration: BoxDecoration(color: AppColors.line, borderRadius: BorderRadius.circular(3))),
+          Container(
+            width: 40,
+            height: 5,
+            decoration: BoxDecoration(color: AppColors.line, borderRadius: BorderRadius.circular(3)),
+          ),
           Flexible(child: builder(ctx)),
         ],
       ),
@@ -549,17 +607,25 @@ Future<T?> showLumeSheet<T>(BuildContext context, {required WidgetBuilder builde
 void showLumeSnack(BuildContext context, String message) {
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(
-      content: Text(message, style: LumeText.bodyM.copyWith(color: AppColors.surface)),
-      backgroundColor: AppColors.plum,
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-    ));
+    ..showSnackBar(
+      SnackBar(
+        content: Text(message, style: LumeText.bodyM.copyWith(color: AppColors.surface)),
+        backgroundColor: AppColors.plum,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+      ),
+    );
 }
 
 /// Small rounded status chip (Verified / Approved / In review / Not approved).
 class StatusChip extends StatelessWidget {
-  const StatusChip({super.key, required this.label, required this.icon, this.color = AppColors.success, this.background = AppColors.successSoft});
+  const StatusChip({
+    super.key,
+    required this.label,
+    required this.icon,
+    this.color = AppColors.success,
+    this.background = AppColors.successSoft,
+  });
 
   final String label;
   final String icon;
@@ -568,12 +634,21 @@ class StatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(10, 6, 12, 6),
-        decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(16)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          LumeIcon(icon, size: 16, color: color),
-          AppGaps.w6,
-          Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: LumeText.caption.copyWith(color: color))),
-        ]),
-      );
+    padding: const EdgeInsets.fromLTRB(10, 6, 12, 6),
+    decoration: BoxDecoration(color: background, borderRadius: BorderRadius.circular(16)),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        LumeIcon(icon, size: 16, color: color),
+        AppGaps.w6,
+        Flexible(
+          child: Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: LumeText.caption.copyWith(color: color),
+          ),
+        ),
+      ],
+    ),
+  );
 }

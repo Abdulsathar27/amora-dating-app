@@ -73,22 +73,21 @@ class CreateNameView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileSetupCubit, ProfileSetupState>(
-      builder:
-          (context, s) => CreateStepScaffold(
-            step: 1,
-            title: AppStrings.nameTitle,
-            onContinue: s.nameValid ? () => context.push(AppRoutes.createIdentity) : null,
-            children: [
-              LumeField(
-                label: AppStrings.firstName,
-                initialValue: s.name,
-                onChanged: context.read<ProfileSetupCubit>().nameChanged,
-                helper: AppStrings.firstNameHelper,
-                autofocus: true,
-                textCapitalization: TextCapitalization.words,
-              ),
-            ],
+      builder: (context, s) => CreateStepScaffold(
+        step: 1,
+        title: AppStrings.nameTitle,
+        onContinue: s.nameValid ? () => context.push(AppRoutes.createIdentity) : null,
+        children: [
+          LumeField(
+            label: AppStrings.firstName,
+            initialValue: s.name,
+            onChanged: context.read<ProfileSetupCubit>().nameChanged,
+            helper: AppStrings.firstNameHelper,
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
           ),
+        ],
+      ),
     );
   }
 }
@@ -157,13 +156,12 @@ class CreatePhotosView extends StatelessWidget {
               onLongPress: () => cubit.removePhoto(i),
               child: FadeRise(
                 key: ValueKey(s.photos[i]),
-                child:
-                    arch
-                        ? ArchPhoto(source: s.photos[i], width: w, height: h)
-                        : ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: SizedBox(width: w, height: h, child: LumePhoto(s.photos[i])),
-                        ),
+                child: arch
+                    ? ArchPhoto(source: s.photos[i], width: w, height: h)
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: SizedBox(width: w, height: h, child: LumePhoto(s.photos[i])),
+                      ),
               ),
             );
           }
@@ -219,26 +217,25 @@ class CreateIntentionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileSetupCubit, ProfileSetupState>(
-      builder:
-          (context, s) => CreateStepScaffold(
-            step: 4,
-            title: AppStrings.intentionTitle,
-            subtitle: AppStrings.intentionSubtitle,
-            onContinue: () => context.push(AppRoutes.createInterests),
+      builder: (context, s) => CreateStepScaffold(
+        step: 4,
+        title: AppStrings.intentionTitle,
+        subtitle: AppStrings.intentionSubtitle,
+        onContinue: () => context.push(AppRoutes.createInterests),
+        children: [
+          StaggeredEntrance(
+            spacing: 10,
             children: [
-              StaggeredEntrance(
-                spacing: 10,
-                children: [
-                  for (final i in RelationshipIntent.values)
-                    IntentOption(
-                      intent: i,
-                      selected: s.intent == i,
-                      onTap: () => context.read<ProfileSetupCubit>().intentSelected(i),
-                    ),
-                ],
-              ),
+              for (final i in RelationshipIntent.values)
+                IntentOption(
+                  intent: i,
+                  selected: s.intent == i,
+                  onTap: () => context.read<ProfileSetupCubit>().intentSelected(i),
+                ),
             ],
           ),
+        ],
+      ),
     );
   }
 }
@@ -307,27 +304,26 @@ class CreateInterestsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileSetupCubit, ProfileSetupState>(
-      builder:
-          (context, s) => CreateStepScaffold(
-            step: 5,
-            title: AppStrings.interestsTitle,
-            subtitle: AppStrings.pickUpToFive(s.interests.length),
-            onContinue: s.interests.isNotEmpty ? () => context.push(AppRoutes.createVoice) : null,
+      builder: (context, s) => CreateStepScaffold(
+        step: 5,
+        title: AppStrings.interestsTitle,
+        subtitle: AppStrings.pickUpToFive(s.interests.length),
+        onContinue: s.interests.isNotEmpty ? () => context.push(AppRoutes.createVoice) : null,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final i in kInterestOptions)
-                    LumeTag(
-                      i,
-                      variant: s.interests.contains(i) ? TagVariant.selected : TagVariant.normal,
-                      onTap: () => context.read<ProfileSetupCubit>().interestToggled(i),
-                    ),
-                ],
-              ),
+              for (final i in kInterestOptions)
+                LumeTag(
+                  i,
+                  variant: s.interests.contains(i) ? TagVariant.selected : TagVariant.normal,
+                  onTap: () => context.read<ProfileSetupCubit>().interestToggled(i),
+                ),
             ],
           ),
+        ],
+      ),
     );
   }
 }
@@ -339,16 +335,15 @@ class CreateVoiceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileSetupCubit, ProfileSetupState>(
-      builder:
-          (context, s) => CreateStepScaffold(
-            step: 6,
-            title: AppStrings.voiceTitle,
-            subtitle: AppStrings.voiceSubtitle,
-            continueLabel: AppStrings.saveVoiceIntro,
-            onContinue: s.hasVoice ? () => context.push(AppRoutes.verifySelfie) : null,
-            skip: () => context.push(AppRoutes.verifySelfie),
-            children: [VoiceRecorderCard(state: s, onToggle: context.read<ProfileSetupCubit>().toggleRecording)],
-          ),
+      builder: (context, s) => CreateStepScaffold(
+        step: 6,
+        title: AppStrings.voiceTitle,
+        subtitle: AppStrings.voiceSubtitle,
+        continueLabel: AppStrings.saveVoiceIntro,
+        onContinue: s.hasVoice ? () => context.push(AppRoutes.verifySelfie) : null,
+        skip: () => context.push(AppRoutes.verifySelfie),
+        children: [VoiceRecorderCard(state: s, onToggle: context.read<ProfileSetupCubit>().toggleRecording)],
+      ),
     );
   }
 }
@@ -397,10 +392,9 @@ class VoiceRecorderCard extends StatelessWidget {
           Semantics(
             button: true,
             label: state.isRecording ? AppStrings.stopRecording : AppStrings.recordVoiceIntro,
-            child:
-                state.isRecording
-                    ? Pulse(min: 1, max: 1.1, period: const Duration(milliseconds: 700), child: button)
-                    : button,
+            child: state.isRecording
+                ? Pulse(min: 1, max: 1.1, period: const Duration(milliseconds: 700), child: button)
+                : button,
           ),
         ],
       ),

@@ -71,12 +71,11 @@ class LikesView extends StatelessWidget {
                           childAspectRatio: 173 / 270,
                         ),
                         itemCount: s.likes.length,
-                        itemBuilder:
-                            (_, i) => FadeRise(
-                              key: ValueKey(s.likes[i].profile.id),
-                              delay: Duration(milliseconds: 60 * i),
-                              child: _LikeTile(like: s.likes[i]),
-                            ),
+                        itemBuilder: (_, i) => FadeRise(
+                          key: ValueKey(s.likes[i].profile.id),
+                          delay: Duration(milliseconds: 60 * i),
+                          child: _LikeTile(like: s.likes[i]),
+                        ),
                       ),
                     ),
                   ],
@@ -114,16 +113,18 @@ class _LikeTile extends StatelessWidget {
           children: [
             Expanded(
               child: LayoutBuilder(
-                builder:
-                    (_, b) => ArchPhoto(
-                      source: p.mainPhoto,
-                      width: b.maxWidth,
-                      height: b.maxHeight,
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Padding(padding: const EdgeInsets.all(10), child: _Badge(like: like)),
-                      ),
+                builder: (_, b) => ArchPhoto(
+                  source: p.mainPhoto,
+                  width: b.maxWidth,
+                  height: b.maxHeight,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: _Badge(like: like),
                     ),
+                  ),
+                ),
               ),
             ),
             AppGaps.h8,

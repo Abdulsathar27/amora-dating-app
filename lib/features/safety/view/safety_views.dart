@@ -104,7 +104,9 @@ class DatingSafelyView extends StatelessWidget {
           AppGaps.h16,
           LumeCard(
             children: [
-              StaggeredEntrance(children: [for (final r in rows) LumeRow(icon: r.$1, title: r.$2, subtitle: r.$3)]),
+              StaggeredEntrance(
+                children: [for (final r in rows) LumeRow(icon: r.$1, title: r.$2, subtitle: r.$3)],
+              ),
             ],
           ),
         ],
@@ -121,47 +123,41 @@ Future<void> showBlockSheet(BuildContext context, Profile profile) {
   final settings = context.read<SettingsCubit>();
   return showLumeSheet<void>(
     context,
-    builder:
-        (sheet) => BlocProvider(
-          create: (_) => ReportCubit(sl(), userId: profile.id),
-          child: BlocBuilder<ReportCubit, ReportState>(
-            builder:
-                (ctx, s) => Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LumeAvatar(profile.mainPhoto, size: AppSizes.avatarXl),
-                      AppGaps.h12,
-                      Text(AppStrings.blockQuestion(profile.name), style: LumeText.displayM),
-                      AppGaps.h12,
-                      Text(AppStrings.blockBody(profile.name), textAlign: TextAlign.center, style: LumeText.bodyL),
-                      if (s.error != null) ...[AppGaps.h12, LumeNote(s.error!, danger: true)],
-                      AppGaps.h12,
-                      LumeButton(
-                        AppStrings.block,
-                        variant: LumeButtonVariant.danger,
-                        loading: s.submitting,
-                        onPressed: () async {
-                          if (!await ctx.read<ReportCubit>().block()) return;
-                          matches.add(MatchRemoved(profile.id));
-                          discovery.add(const DiscoveryStarted());
-                          settings.load();
-                          if (sheet.mounted) Navigator.pop(sheet);
-                          if (context.mounted) context.go(AppRoutes.reportSent);
-                        },
-                      ),
-                      AppGaps.h12,
-                      LumeButton(
-                        AppStrings.cancel,
-                        variant: LumeButtonVariant.ghost,
-                        onPressed: () => Navigator.pop(sheet),
-                      ),
-                    ],
-                  ),
-                ),
+    builder: (sheet) => BlocProvider(
+      create: (_) => ReportCubit(sl(), userId: profile.id),
+      child: BlocBuilder<ReportCubit, ReportState>(
+        builder: (ctx, s) => Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LumeAvatar(profile.mainPhoto, size: AppSizes.avatarXl),
+              AppGaps.h12,
+              Text(AppStrings.blockQuestion(profile.name), style: LumeText.displayM),
+              AppGaps.h12,
+              Text(AppStrings.blockBody(profile.name), textAlign: TextAlign.center, style: LumeText.bodyL),
+              if (s.error != null) ...[AppGaps.h12, LumeNote(s.error!, danger: true)],
+              AppGaps.h12,
+              LumeButton(
+                AppStrings.block,
+                variant: LumeButtonVariant.danger,
+                loading: s.submitting,
+                onPressed: () async {
+                  if (!await ctx.read<ReportCubit>().block()) return;
+                  matches.add(MatchRemoved(profile.id));
+                  discovery.add(const DiscoveryStarted());
+                  settings.load();
+                  if (sheet.mounted) Navigator.pop(sheet);
+                  if (context.mounted) context.go(AppRoutes.reportSent);
+                },
+              ),
+              AppGaps.h12,
+              LumeButton(AppStrings.cancel, variant: LumeButtonVariant.ghost, onPressed: () => Navigator.pop(sheet)),
+            ],
           ),
         ),
+      ),
+    ),
   );
 }
 
@@ -169,34 +165,33 @@ Future<void> showBlockSheet(BuildContext context, Profile profile) {
 Future<void> showProfileSafetySheet(BuildContext context, Profile profile) {
   return showLumeSheet<void>(
     context,
-    builder:
-        (sheet) => Padding(
-          padding: const EdgeInsets.fromLTRB(8, 12, 8, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LumeRow(
-                icon: LumeIcons.ban,
-                title: AppStrings.block,
-                subtitle: AppStrings.wontBeTold(profile.name),
-                danger: true,
-                onTap: () {
-                  Navigator.pop(sheet);
-                  showBlockSheet(context, profile);
-                },
-              ),
-              LumeRow(
-                icon: LumeIcons.flag,
-                title: AppStrings.report,
-                subtitle: AppStrings.ourTeamReviewsEveryReport,
-                danger: true,
-                onTap: () {
-                  Navigator.pop(sheet);
-                  context.push(AppRoutes.reportReason(profile.id, profile.name));
-                },
-              ),
-            ],
+    builder: (sheet) => Padding(
+      padding: const EdgeInsets.fromLTRB(8, 12, 8, 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LumeRow(
+            icon: LumeIcons.ban,
+            title: AppStrings.block,
+            subtitle: AppStrings.wontBeTold(profile.name),
+            danger: true,
+            onTap: () {
+              Navigator.pop(sheet);
+              showBlockSheet(context, profile);
+            },
           ),
-        ),
+          LumeRow(
+            icon: LumeIcons.flag,
+            title: AppStrings.report,
+            subtitle: AppStrings.ourTeamReviewsEveryReport,
+            danger: true,
+            onTap: () {
+              Navigator.pop(sheet);
+              context.push(AppRoutes.reportReason(profile.id, profile.name));
+            },
+          ),
+        ],
+      ),
+    ),
   );
 }

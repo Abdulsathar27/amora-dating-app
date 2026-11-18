@@ -171,18 +171,17 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
                             child: SizedBox(
                               width: _size.width,
                               height: _size.height,
-                              child:
-                                  progress < 0.6
-                                      ? Align(
-                                        alignment: Alignment.topCenter,
-                                        child: ArchPhoto(
-                                          source: widget.next!.mainPhoto,
-                                          width: _size.width * 330 / 358,
-                                          height: _size.width * 340 / 358,
-                                          bottomRadius: 28,
-                                        ),
-                                      )
-                                      : ProfileCard(profile: widget.next!),
+                              child: progress < 0.6
+                                  ? Align(
+                                      alignment: Alignment.topCenter,
+                                      child: ArchPhoto(
+                                        source: widget.next!.mainPhoto,
+                                        width: _size.width * 330 / 358,
+                                        height: _size.width * 340 / 358,
+                                        bottomRadius: 28,
+                                      ),
+                                    )
+                                  : ProfileCard(profile: widget.next!),
                             ),
                           ),
                         ),
@@ -210,13 +209,12 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
                                   voicePlaying: _voicePlaying,
                                   onVoiceTap: () => setState(() => _voicePlaying = !_voicePlaying),
                                   onExpand: _expand,
-                                  onPhotoTap:
-                                      (forward) => setState(() {
-                                        _photo = (_photo + (forward ? 1 : -1)).clamp(
-                                          0,
-                                          math.max(0, widget.top.photos.length - 1),
-                                        );
-                                      }),
+                                  onPhotoTap: (forward) => setState(() {
+                                    _photo = (_photo + (forward ? 1 : -1)).clamp(
+                                      0,
+                                      math.max(0, widget.top.photos.length - 1),
+                                    );
+                                  }),
                                 ),
                                 if (likeT > 0.05)
                                   _Stamp(

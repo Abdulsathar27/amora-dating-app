@@ -30,7 +30,9 @@ class PledgeView extends StatelessWidget {
           AppGaps.h20,
           LumeCard(
             children: [
-              StaggeredEntrance(children: [for (final r in rows) LumeRow(icon: r.$1, title: r.$2, subtitle: r.$3)]),
+              StaggeredEntrance(
+                children: [for (final r in rows) LumeRow(icon: r.$1, title: r.$2, subtitle: r.$3)],
+              ),
             ],
           ),
         ],

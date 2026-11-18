@@ -43,7 +43,13 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
   void promptAnswerChanged(String v) {
     final p = state.prompt;
-    if (p != null) emit(state.copyWith(prompt: ProfilePrompt(question: p.question, answer: v)));
+    if (p != null) {
+      emit(
+        state.copyWith(
+          prompt: ProfilePrompt(question: p.question, answer: v),
+        ),
+      );
+    }
   }
 
   void interestToggled(String i) {

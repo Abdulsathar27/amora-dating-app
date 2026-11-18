@@ -68,19 +68,17 @@ class _ChatScaffold extends StatelessWidget {
               const _ChatHeader(),
               Expanded(
                 child: BlocBuilder<ChatBloc, ChatState>(
-                  buildWhen:
-                      (a, b) =>
-                          a.status != b.status ||
-                          a.messages != b.messages ||
-                          a.partnerTyping != b.partnerTyping ||
-                          a.declined != b.declined ||
-                          a.playingId != b.playingId,
-                  builder:
-                      (context, s) => switch (s.status) {
-                        ChatStatus.loading => const Center(child: CircularProgressIndicator(color: AppColors.plum)),
-                        _ when s.isNew => _NewMatchStarters(state: s),
-                        _ => _MessageList(state: s),
-                      },
+                  buildWhen: (a, b) =>
+                      a.status != b.status ||
+                      a.messages != b.messages ||
+                      a.partnerTyping != b.partnerTyping ||
+                      a.declined != b.declined ||
+                      a.playingId != b.playingId,
+                  builder: (context, s) => switch (s.status) {
+                    ChatStatus.loading => const Center(child: CircularProgressIndicator(color: AppColors.plum)),
+                    _ when s.isNew => _NewMatchStarters(state: s),
+                    _ => _MessageList(state: s),
+                  },
                 ),
               ),
               const _Composer(),
@@ -202,7 +200,12 @@ class _MessageList extends StatelessWidget {
       itemCount: items.length + (state.partnerTyping ? 1 : 0),
       itemBuilder: (_, i) {
         if (state.partnerTyping) {
-          if (i == 0) return const Align(alignment: Alignment.centerLeft, child: FadeRise(child: TypingBubble()));
+          if (i == 0) {
+            return const Align(
+              alignment: Alignment.centerLeft,
+              child: FadeRise(child: TypingBubble()),
+            );
+          }
           i -= 1;
         }
         return items[items.length - 1 - i];
@@ -221,87 +224,85 @@ class _Composer extends StatelessWidget {
     final bloc = context.read<ChatBloc>();
     return BlocBuilder<ChatBloc, ChatState>(
       buildWhen: (a, b) => a.draftVersion != b.draftVersion || a.hasDraft != b.hasDraft || a.isSending != b.isSending,
-      builder:
-          (context, s) => Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                LumeIconButton(
-                  LumeIcons.plus,
-                  tooltip: AppStrings.shareSomething,
-                  background: AppColors.surface,
-                  bordered: true,
-                  onPressed: () => showShareSheet(context),
-                ),
-                AppGaps.w8,
-                Expanded(
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 44),
-                    padding: const EdgeInsets.only(left: 16, right: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: AppColors.line),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            key: ValueKey(s.draftVersion),
-                            onChanged: (t) => bloc.add(ChatDraftChanged(t)),
-                            onSubmitted: (_) => bloc.add(const ChatSendPressed()),
-                            minLines: 1,
-                            maxLines: 4,
-                            textCapitalization: TextCapitalization.sentences,
-                            style: LumeText.bodyL.copyWith(color: AppColors.ink),
-                            decoration: InputDecoration(
-                              isCollapsed: true,
-                              border: InputBorder.none,
-                              hintText: AppStrings.messageName(s.match.profile.name),
-                              hintStyle: LumeText.bodyL,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                            ),
-                          ),
-                        ),
-                        LumeIconButton(
-                          LumeIcons.smile,
-                          size: 36,
-                          iconSize: 20,
-                          color: AppColors.muted,
-                          tooltip: AppStrings.gifs,
-                          onPressed: () => showGifPicker(context),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                AppGaps.w8,
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 180),
-                  transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
-                  child:
-                      s.hasDraft
-                          ? LumeIconButton(
-                            LumeIcons.send,
-                            key: const ValueKey('send'),
-                            tooltip: AppStrings.send,
-                            color: AppColors.ink,
-                            background: AppColors.coral,
-                            onPressed: s.isSending ? null : () => bloc.add(const ChatSendPressed()),
-                          )
-                          : LumeIconButton(
-                            LumeIcons.mic,
-                            key: const ValueKey('mic'),
-                            tooltip: AppStrings.recordVoiceNote,
-                            color: AppColors.ink,
-                            background: AppColors.coral,
-                            onPressed: () => showLumeSnack(context, AppStrings.voiceNotesComingSoon),
-                          ),
-                ),
-              ],
+      builder: (context, s) => Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            LumeIconButton(
+              LumeIcons.plus,
+              tooltip: AppStrings.shareSomething,
+              background: AppColors.surface,
+              bordered: true,
+              onPressed: () => showShareSheet(context),
             ),
-          ),
+            AppGaps.w8,
+            Expanded(
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 44),
+                padding: const EdgeInsets.only(left: 16, right: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: AppColors.line),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        key: ValueKey(s.draftVersion),
+                        onChanged: (t) => bloc.add(ChatDraftChanged(t)),
+                        onSubmitted: (_) => bloc.add(const ChatSendPressed()),
+                        minLines: 1,
+                        maxLines: 4,
+                        textCapitalization: TextCapitalization.sentences,
+                        style: LumeText.bodyL.copyWith(color: AppColors.ink),
+                        decoration: InputDecoration(
+                          isCollapsed: true,
+                          border: InputBorder.none,
+                          hintText: AppStrings.messageName(s.match.profile.name),
+                          hintStyle: LumeText.bodyL,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                        ),
+                      ),
+                    ),
+                    LumeIconButton(
+                      LumeIcons.smile,
+                      size: 36,
+                      iconSize: 20,
+                      color: AppColors.muted,
+                      tooltip: AppStrings.gifs,
+                      onPressed: () => showGifPicker(context),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            AppGaps.w8,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 180),
+              transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
+              child: s.hasDraft
+                  ? LumeIconButton(
+                      LumeIcons.send,
+                      key: const ValueKey('send'),
+                      tooltip: AppStrings.send,
+                      color: AppColors.ink,
+                      background: AppColors.coral,
+                      onPressed: s.isSending ? null : () => bloc.add(const ChatSendPressed()),
+                    )
+                  : LumeIconButton(
+                      LumeIcons.mic,
+                      key: const ValueKey('mic'),
+                      tooltip: AppStrings.recordVoiceNote,
+                      color: AppColors.ink,
+                      background: AppColors.coral,
+                      onPressed: () => showLumeSnack(context, AppStrings.voiceNotesComingSoon),
+                    ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -315,7 +316,10 @@ Future<void> showReactions(BuildContext context, Message message) {
     barrierLabel: AppStrings.closeReactions,
     barrierColor: AppColors.ink.withValues(alpha: 0.55),
     transitionDuration: LumeMotion.dissolve,
-    pageBuilder: (ctx, _, _) => BlocProvider.value(value: bloc, child: _ReactionOverlay(message: message)),
+    pageBuilder: (ctx, _, _) => BlocProvider.value(
+      value: bloc,
+      child: _ReactionOverlay(message: message),
+    ),
     transitionBuilder: (_, a, _, child) => FadeTransition(opacity: a, child: child),
   ).whenComplete(() {
     if (!bloc.isClosed && bloc.state.selected != null) bloc.add(const ChatMessageSelected(null));
@@ -381,7 +385,9 @@ class _ReactionOverlay extends StatelessWidget {
               ),
             ),
             AppGaps.h10,
-            IgnorePointer(child: MessageBubble(message: message, mine: mine)),
+            IgnorePointer(
+              child: MessageBubble(message: message, mine: mine),
+            ),
             AppGaps.h8,
             _PopIn(
               delay: 60,

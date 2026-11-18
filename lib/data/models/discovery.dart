@@ -62,8 +62,9 @@ class DiscoveryPreferences extends Equatable {
     maxAge: (json['max_age'] as num?)?.toInt() ?? 34,
     maxDistanceKm: (json['max_distance_km'] as num?)?.toInt() ?? 15,
     interestedIn: InterestedIn.fromValue(json['interested_in'] as String?),
-    lookingFor:
-        (json['looking_for'] as List? ?? const []).map((e) => RelationshipIntent.fromValue(e as String)).toSet(),
+    lookingFor: (json['looking_for'] as List? ?? const [])
+        .map((e) => RelationshipIntent.fromValue(e as String))
+        .toSet(),
     verifiedOnly: json['verified_only'] as bool? ?? false,
     hasVoiceIntro: json['has_voice_intro'] as bool? ?? false,
   );

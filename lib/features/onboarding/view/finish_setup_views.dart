@@ -107,17 +107,16 @@ class _ScanPainter extends CustomPainter {
         ..strokeWidth = 4,
     );
     if (reduce) return;
-    final sweep =
-        Paint()
-          ..shader = SweepGradient(
-            startAngle: 0,
-            endAngle: 2 * math.pi,
-            transform: GradientRotation(t * 2 * math.pi),
-            colors: const [AppColors.coralTransparent, AppColors.coral, AppColors.coralTransparent],
-            stops: const [0.0, 0.12, 0.25],
-          ).createShader(Offset.zero & size)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 4;
+    final sweep = Paint()
+      ..shader = SweepGradient(
+        startAngle: 0,
+        endAngle: 2 * math.pi,
+        transform: GradientRotation(t * 2 * math.pi),
+        colors: const [AppColors.coralTransparent, AppColors.coral, AppColors.coralTransparent],
+        stops: const [0.0, 0.12, 0.25],
+      ).createShader(Offset.zero & size)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4;
     canvas.drawRRect(rrect, sweep);
   }
 
@@ -132,31 +131,30 @@ class LocationPrivacyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileSetupCubit, ProfileSetupState>(
-      builder:
-          (context, s) => LumeScaffold(
-            header: LumeHeader(onBack: () => context.pop()),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context, s) => LumeScaffold(
+        header: LumeHeader(onBack: () => context.pop()),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppGaps.h20,
+            const FadeRise(child: LumeTitle(AppStrings.locationTitle, subtitle: AppStrings.locationSubtitle)),
+            AppGaps.h20,
+            const FuzzyMap(),
+            AppGaps.h20,
+            LumeCard(
               children: [
-                AppGaps.h20,
-                const FadeRise(child: LumeTitle(AppStrings.locationTitle, subtitle: AppStrings.locationSubtitle)),
-                AppGaps.h20,
-                const FuzzyMap(),
-                AppGaps.h20,
-                LumeCard(
-                  children: [
-                    LumeRow(
-                      title: AppStrings.showApproxDistance,
-                      subtitle: AppStrings.approxDistanceExample,
-                      toggle: s.showDistance,
-                      onToggle: context.read<ProfileSetupCubit>().showDistanceChanged,
-                    ),
-                  ],
+                LumeRow(
+                  title: AppStrings.showApproxDistance,
+                  subtitle: AppStrings.approxDistanceExample,
+                  toggle: s.showDistance,
+                  onToggle: context.read<ProfileSetupCubit>().showDistanceChanged,
                 ),
               ],
             ),
-            bottom: [LumeButton(AppStrings.allowLocation, onPressed: () => context.push(AppRoutes.profileReady))],
-          ),
+          ],
+        ),
+        bottom: [LumeButton(AppStrings.allowLocation, onPressed: () => context.push(AppRoutes.profileReady))],
+      ),
     );
   }
 }
@@ -214,33 +212,32 @@ class ProfileReadyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileSetupCubit, ProfileSetupState>(
-      builder:
-          (context, s) => LumeScaffold(
-            padding: const EdgeInsets.fromLTRB(24, 48, 24, 0),
-            body: StaggeredEntrance(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ArchPhoto(source: s.photos.firstOrNull, width: 230, height: 300, shadow: LumeShadows.card),
-                AppGaps.h20,
-                LumeTitle(AppStrings.youreReady(s.name.trim()), subtitle: AppStrings.photosInReview, center: true),
-                AppGaps.h20,
-                const StatusChip(label: AppStrings.verified, icon: LumeIcons.verified),
-                if (s.error != null) ...[AppGaps.h16, LumeNote(s.error!, danger: true)],
-              ],
-            ),
-            bottom: [
-              LumeButton(
-                AppStrings.startDiscovering,
-                loading: s.isSubmitting,
-                onPressed: () async {
-                  final auth = context.read<AuthBloc>();
-                  if (await context.read<ProfileSetupCubit>().submit()) {
-                    auth.add(AuthOnboardingCompleted(name: s.name.trim()));
-                  }
-                },
-              ),
-            ],
+      builder: (context, s) => LumeScaffold(
+        padding: const EdgeInsets.fromLTRB(24, 48, 24, 0),
+        body: StaggeredEntrance(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ArchPhoto(source: s.photos.firstOrNull, width: 230, height: 300, shadow: LumeShadows.card),
+            AppGaps.h20,
+            LumeTitle(AppStrings.youreReady(s.name.trim()), subtitle: AppStrings.photosInReview, center: true),
+            AppGaps.h20,
+            const StatusChip(label: AppStrings.verified, icon: LumeIcons.verified),
+            if (s.error != null) ...[AppGaps.h16, LumeNote(s.error!, danger: true)],
+          ],
+        ),
+        bottom: [
+          LumeButton(
+            AppStrings.startDiscovering,
+            loading: s.isSubmitting,
+            onPressed: () async {
+              final auth = context.read<AuthBloc>();
+              if (await context.read<ProfileSetupCubit>().submit()) {
+                auth.add(AuthOnboardingCompleted(name: s.name.trim()));
+              }
+            },
           ),
+        ],
+      ),
     );
   }
 }

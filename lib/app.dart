@@ -53,19 +53,18 @@ class _SessionScope extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
       buildWhen: (a, b) => a.sessionKey != b.sessionKey,
-      builder:
-          (context, auth) => MultiBlocProvider(
-            key: ValueKey(auth.sessionKey),
-            providers: [
-              BlocProvider(create: (_) => ProfileBloc(sl())..add(const ProfileRequested())),
-              BlocProvider(create: (_) => DiscoveryBloc(sl())..add(const DiscoveryStarted())),
-              BlocProvider(create: (_) => LikesBloc(sl())..add(const LikesRequested())),
-              BlocProvider(create: (_) => MatchesBloc(sl())..add(const MatchesRequested())),
-              BlocProvider(create: (_) => SettingsCubit(sl())..load()),
-              BlocProvider(create: (_) => RelationshipBloc(sl())),
-            ],
-            child: child,
-          ),
+      builder: (context, auth) => MultiBlocProvider(
+        key: ValueKey(auth.sessionKey),
+        providers: [
+          BlocProvider(create: (_) => ProfileBloc(sl())..add(const ProfileRequested())),
+          BlocProvider(create: (_) => DiscoveryBloc(sl())..add(const DiscoveryStarted())),
+          BlocProvider(create: (_) => LikesBloc(sl())..add(const LikesRequested())),
+          BlocProvider(create: (_) => MatchesBloc(sl())..add(const MatchesRequested())),
+          BlocProvider(create: (_) => SettingsCubit(sl())..load()),
+          BlocProvider(create: (_) => RelationshipBloc(sl())),
+        ],
+        child: child,
+      ),
     );
   }
 }

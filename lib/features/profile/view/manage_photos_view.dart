@@ -68,15 +68,14 @@ class ManagePhotosView extends StatelessWidget {
                                 ProfileSaved({'photos': photos, 'photo_reviews': r.map((e) => e.value).toList()}),
                               );
                             },
-                            builder:
-                                (_, candidates, _) => AnimatedScale(
-                                  scale: candidates.isEmpty ? 1 : 1.04,
-                                  duration: const Duration(milliseconds: 150),
-                                  child: FadeRise(
-                                    delay: Duration(milliseconds: 60 * i),
-                                    child: _Slot(photo: p.photos[i], review: reviews[i], width: w),
-                                  ),
-                                ),
+                            builder: (_, candidates, _) => AnimatedScale(
+                              scale: candidates.isEmpty ? 1 : 1.04,
+                              duration: const Duration(milliseconds: 150),
+                              child: FadeRise(
+                                delay: Duration(milliseconds: 60 * i),
+                                child: _Slot(photo: p.photos[i], review: reviews[i], width: w),
+                              ),
+                            ),
                           ),
                         ),
                     ],

@@ -55,11 +55,10 @@ class MatchesView extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount: s.newMatches.length,
                         separatorBuilder: (_, _) => AppGaps.w14,
-                        itemBuilder:
-                            (_, i) => FadeRise(
-                              delay: Duration(milliseconds: 70 * i),
-                              child: _NewMatch(match: s.newMatches[i]),
-                            ),
+                        itemBuilder: (_, i) => FadeRise(
+                          delay: Duration(milliseconds: 70 * i),
+                          child: _NewMatch(match: s.newMatches[i]),
+                        ),
                       ),
                     ),
                   ],

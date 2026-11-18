@@ -233,6 +233,8 @@ Versions starting with `0.` are marked as pre-releases. The build number is the 
 dart format lib test && flutter analyze && flutter test
 ```
 
+Use the Dart that ships with Flutter (`flutter --version` shows it). A separately installed, older Dart SDK formats differently, and CI will reject the result. On Windows, run `C:\flutter\bin\dart format lib test` if `dart --version` doesn't match.
+
 ---
 
 ## 🔌 Backend API

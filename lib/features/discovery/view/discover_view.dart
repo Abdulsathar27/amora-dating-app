@@ -39,46 +39,45 @@ class DiscoverView extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 96),
                   child: BlocBuilder<DiscoveryBloc, DiscoveryState>(
-                    builder:
-                        (context, s) => AnimatedSwitcher(
-                          duration: LumeMotion.dissolve,
-                          child: switch (s.status) {
-                            DiscoveryStatus.loading => const _Skeleton(key: ValueKey('loading')),
-                            DiscoveryStatus.offline => LumeEmptyState(
-                              key: const ValueKey('offline'),
-                              illustration: Container(
-                                width: 120,
-                                height: 120,
-                                decoration: const BoxDecoration(color: AppColors.lavenderSoft, shape: BoxShape.circle),
-                                alignment: Alignment.center,
-                                child: const LumeIcon(LumeIcons.wifiOff, size: 54),
-                              ),
-                              title: AppStrings.offlineTitle,
-                              body: AppStrings.offlineBody,
-                              actionLabel: AppStrings.tryAgain,
-                              onAction: () => context.read<DiscoveryBloc>().add(const DiscoveryStarted()),
-                            ),
-                            DiscoveryStatus.ready when s.isEmpty => LumeEmptyState(
-                              key: const ValueKey('empty'),
-                              illustration: const ArchPhoto(
-                                source: 'assets/images/dunes.jpg',
-                                width: 200,
-                                height: 240,
-                                bottomRadius: 24,
-                              ),
-                              title: AppStrings.emptyDeckTitle,
-                              body: AppStrings.emptyDeckBody,
-                              actionLabel: AppStrings.widenSearch,
-                              onAction: () => context.push(AppRoutes.filters),
-                            ),
-                            DiscoveryStatus.ready => SwipeDeck(
-                              key: const ValueKey('deck'),
-                              top: s.top!,
-                              next: s.next,
-                              likes: s.likes,
-                            ),
-                          },
+                    builder: (context, s) => AnimatedSwitcher(
+                      duration: LumeMotion.dissolve,
+                      child: switch (s.status) {
+                        DiscoveryStatus.loading => const _Skeleton(key: ValueKey('loading')),
+                        DiscoveryStatus.offline => LumeEmptyState(
+                          key: const ValueKey('offline'),
+                          illustration: Container(
+                            width: 120,
+                            height: 120,
+                            decoration: const BoxDecoration(color: AppColors.lavenderSoft, shape: BoxShape.circle),
+                            alignment: Alignment.center,
+                            child: const LumeIcon(LumeIcons.wifiOff, size: 54),
+                          ),
+                          title: AppStrings.offlineTitle,
+                          body: AppStrings.offlineBody,
+                          actionLabel: AppStrings.tryAgain,
+                          onAction: () => context.read<DiscoveryBloc>().add(const DiscoveryStarted()),
                         ),
+                        DiscoveryStatus.ready when s.isEmpty => LumeEmptyState(
+                          key: const ValueKey('empty'),
+                          illustration: const ArchPhoto(
+                            source: 'assets/images/dunes.jpg',
+                            width: 200,
+                            height: 240,
+                            bottomRadius: 24,
+                          ),
+                          title: AppStrings.emptyDeckTitle,
+                          body: AppStrings.emptyDeckBody,
+                          actionLabel: AppStrings.widenSearch,
+                          onAction: () => context.push(AppRoutes.filters),
+                        ),
+                        DiscoveryStatus.ready => SwipeDeck(
+                          key: const ValueKey('deck'),
+                          top: s.top!,
+                          next: s.next,
+                          likes: s.likes,
+                        ),
+                      },
+                    ),
                   ),
                 ),
               ),

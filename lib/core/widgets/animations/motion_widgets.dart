@@ -172,19 +172,18 @@ class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: _controller,
     child: widget.child,
-    builder:
-        (_, child) => ShaderMask(
-          blendMode: BlendMode.srcATop,
-          shaderCallback: (rect) {
-            final x = -1.0 + _controller.value * 3;
-            return LinearGradient(
-              begin: Alignment(x - 1, 0),
-              end: Alignment(x, 0),
-              colors: const [AppColors.shimmerClear, AppColors.shimmerHighlight, AppColors.shimmerClear],
-            ).createShader(rect);
-          },
-          child: child,
-        ),
+    builder: (_, child) => ShaderMask(
+      blendMode: BlendMode.srcATop,
+      shaderCallback: (rect) {
+        final x = -1.0 + _controller.value * 3;
+        return LinearGradient(
+          begin: Alignment(x - 1, 0),
+          end: Alignment(x, 0),
+          colors: const [AppColors.shimmerClear, AppColors.shimmerHighlight, AppColors.shimmerClear],
+        ).createShader(rect);
+      },
+      child: child,
+    ),
   );
 }
 
@@ -211,26 +210,25 @@ class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: _controller,
-    builder:
-        (_, _) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < 3; i++)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 2),
-                width: 7,
-                height: 7,
-                transform: Matrix4.translationValues(
-                  0,
-                  -3 * math.max(0, math.sin((_controller.value - i * 0.18) * 2 * math.pi)),
-                  0,
-                ),
-                decoration: BoxDecoration(
-                  color: i == 0 ? AppColors.plum : AppColors.plum.withValues(alpha: 0.45),
-                  shape: BoxShape.circle,
-                ),
-              ),
-          ],
-        ),
+    builder: (_, _) => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < 3; i++)
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 2),
+            width: 7,
+            height: 7,
+            transform: Matrix4.translationValues(
+              0,
+              -3 * math.max(0, math.sin((_controller.value - i * 0.18) * 2 * math.pi)),
+              0,
+            ),
+            decoration: BoxDecoration(
+              color: i == 0 ? AppColors.plum : AppColors.plum.withValues(alpha: 0.45),
+              shape: BoxShape.circle,
+            ),
+          ),
+      ],
+    ),
   );
 }

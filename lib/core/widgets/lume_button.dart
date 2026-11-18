@@ -36,29 +36,31 @@ class LumeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final disabled = onPressed == null && !loading;
-    final (bg, fg, border, shadow) =
-        disabled
-            ? (AppColors.line, AppColors.muted, null, false)
-            : switch (variant) {
-              LumeButtonVariant.primary => (AppColors.coral, AppColors.ink, null, true),
-              LumeButtonVariant.plum => (AppColors.plum, AppColors.surface, null, false),
-              LumeButtonVariant.secondary => (AppColors.surface, AppColors.plum, AppColors.line, false),
-              LumeButtonVariant.ghost => (Colors.transparent, ghostColor, null, false),
-              LumeButtonVariant.danger => (AppColors.dangerSoft, AppColors.danger, null, false),
-            };
+    final (bg, fg, border, shadow) = disabled
+        ? (AppColors.line, AppColors.muted, null, false)
+        : switch (variant) {
+            LumeButtonVariant.primary => (AppColors.coral, AppColors.ink, null, true),
+            LumeButtonVariant.plum => (AppColors.plum, AppColors.surface, null, false),
+            LumeButtonVariant.secondary => (AppColors.surface, AppColors.plum, AppColors.line, false),
+            LumeButtonVariant.ghost => (Colors.transparent, ghostColor, null, false),
+            LumeButtonVariant.danger => (AppColors.dangerSoft, AppColors.danger, null, false),
+          };
 
-    final content =
-        loading
-            ? SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: fg))
-            : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) ...[LumeIcon(icon!, size: 20, color: fg), AppGaps.w8],
-                Flexible(
-                  child: Text(label, style: LumeText.labelL.copyWith(color: fg), overflow: TextOverflow.ellipsis),
+    final content = loading
+        ? SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: fg))
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[LumeIcon(icon!, size: 20, color: fg), AppGaps.w8],
+              Flexible(
+                child: Text(
+                  label,
+                  style: LumeText.labelL.copyWith(color: fg),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            );
+              ),
+            ],
+          );
 
     return Semantics(
       button: true,

@@ -45,13 +45,12 @@ class _PressScaleState extends State<PressScale> with SingleTickerProviderStateM
       onTapDown: enabled ? _down : null,
       onTapUp: enabled ? _up : null,
       onTapCancel: enabled ? _up : null,
-      onTap:
-          enabled
-              ? () {
-                if (widget.haptic) HapticFeedback.lightImpact();
-                widget.onTap!();
-              }
-              : null,
+      onTap: enabled
+          ? () {
+              if (widget.haptic) HapticFeedback.lightImpact();
+              widget.onTap!();
+            }
+          : null,
       child: ScaleTransition(scale: _scale, child: widget.child),
     );
   }

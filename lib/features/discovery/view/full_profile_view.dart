@@ -62,13 +62,12 @@ class FullProfileView extends StatelessWidget {
                   child: AspectRatio(
                     aspectRatio: 358 / 440,
                     child: LayoutBuilder(
-                      builder:
-                          (_, b) => ArchPhoto(
-                            source: p.mainPhoto,
-                            width: b.maxWidth,
-                            height: b.maxHeight,
-                            shadow: LumeShadows.card,
-                          ),
+                      builder: (_, b) => ArchPhoto(
+                        source: p.mainPhoto,
+                        width: b.maxWidth,
+                        height: b.maxHeight,
+                        shadow: LumeShadows.card,
+                      ),
                     ),
                   ),
                 ),
@@ -346,7 +345,9 @@ class StarterChip extends StatelessWidget {
         decoration: BoxDecoration(color: AppColors.lavenderSoft, borderRadius: BorderRadius.circular(18)),
         child: Row(
           children: [
-            Expanded(child: Text(text, style: LumeText.labelM.copyWith(color: AppColors.plum))),
+            Expanded(
+              child: Text(text, style: LumeText.labelM.copyWith(color: AppColors.plum)),
+            ),
             AppGaps.w10,
             const LumeIcon(LumeIcons.send, size: 20),
           ],
@@ -389,32 +390,36 @@ class _Personality extends StatelessWidget {
       Text(AppStrings.personality, style: LumeText.titleS.copyWith(color: AppColors.plum)),
       for (final t in traits) ...[
         AppGaps.h12,
-        Row(children: [Text(t.left, style: LumeText.caption), const Spacer(), Text(t.right, style: LumeText.caption)]),
+        Row(
+          children: [
+            Text(t.left, style: LumeText.caption),
+            const Spacer(),
+            Text(t.right, style: LumeText.caption),
+          ],
+        ),
         AppGaps.h6,
         LayoutBuilder(
-          builder:
-              (_, b) => SizedBox(
-                height: 16,
-                child: Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    Container(
-                      height: 8,
-                      decoration: BoxDecoration(color: AppColors.lavenderSoft, borderRadius: BorderRadius.circular(4)),
-                    ),
-                    TweenAnimationBuilder<double>(
-                      tween: Tween(begin: 0.5, end: t.value),
-                      duration: const Duration(milliseconds: 700),
-                      curve: Curves.easeOutBack,
-                      builder:
-                          (_, v, _) => Positioned(
-                            left: (b.maxWidth - 16) * v,
-                            child: const CircleAvatar(radius: 8, backgroundColor: AppColors.plum),
-                          ),
-                    ),
-                  ],
+          builder: (_, b) => SizedBox(
+            height: 16,
+            child: Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                Container(
+                  height: 8,
+                  decoration: BoxDecoration(color: AppColors.lavenderSoft, borderRadius: BorderRadius.circular(4)),
                 ),
-              ),
+                TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0.5, end: t.value),
+                  duration: const Duration(milliseconds: 700),
+                  curve: Curves.easeOutBack,
+                  builder: (_, v, _) => Positioned(
+                    left: (b.maxWidth - 16) * v,
+                    child: const CircleAvatar(radius: 8, backgroundColor: AppColors.plum),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     ],
@@ -452,7 +457,10 @@ class _OnRepeat extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Text(s.title, style: LumeText.labelM), Text(s.note, style: LumeText.caption)],
+                children: [
+                  Text(s.title, style: LumeText.labelM),
+                  Text(s.note, style: LumeText.caption),
+                ],
               ),
             ),
           ],

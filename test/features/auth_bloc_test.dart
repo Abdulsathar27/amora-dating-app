@@ -33,11 +33,9 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'signed in without a profile needs onboarding, then completes',
       build: () => AuthBloc(repo),
-      act:
-          (b) =>
-              b
-                ..add(const AuthSignedIn(user))
-                ..add(const AuthOnboardingCompleted(name: 'Maya')),
+      act: (b) => b
+        ..add(const AuthSignedIn(user))
+        ..add(const AuthOnboardingCompleted(name: 'Maya')),
       verify: (b) {
         expect(b.state.status, AuthStatus.authenticated);
         expect(b.state.needsOnboarding, isFalse);
@@ -51,7 +49,10 @@ void main() {
       'wrong code marks the digits as an error and bumps the shake',
       build: () {
         when(
-          () => repo.verifyPhone(phone: any(named: 'phone'), code: any(named: 'code')),
+          () => repo.verifyPhone(
+            phone: any(named: 'phone'),
+            code: any(named: 'code'),
+          ),
         ).thenThrow(const ApiException('That code didn’t match.', statusCode: 400));
         return PhoneAuthCubit(repo);
       },
@@ -67,7 +68,12 @@ void main() {
     blocTest<PhoneAuthCubit, PhoneAuthState>(
       'right code -> verified with the user',
       build: () {
-        when(() => repo.verifyPhone(phone: any(named: 'phone'), code: '482613')).thenAnswer((_) async => user);
+        when(
+          () => repo.verifyPhone(
+            phone: any(named: 'phone'),
+            code: '482613',
+          ),
+        ).thenAnswer((_) async => user);
         return PhoneAuthCubit(repo);
       },
       seed: () => const PhoneAuthState(step: PhoneStep.enterCode, phone: '+44 7700 900123', code: '482613'),

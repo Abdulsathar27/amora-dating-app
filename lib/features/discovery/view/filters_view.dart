@@ -120,7 +120,13 @@ class _RangeRow extends StatelessWidget {
     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
     child: Column(
       children: [
-        Row(children: [Text(title, style: LumeText.titleS), const Spacer(), Text(value, style: LumeText.bodyM)]),
+        Row(
+          children: [
+            Text(title, style: LumeText.titleS),
+            const Spacer(),
+            Text(value, style: LumeText.bodyM),
+          ],
+        ),
         SizedBox(height: 36, child: child),
       ],
     ),
