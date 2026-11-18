@@ -18,7 +18,10 @@ class SplashView extends StatelessWidget {
 
   Future<void> _continue(BuildContext context) async {
     final auth = context.read<AuthBloc>();
-    final state = auth.state.status == AuthStatus.unknown ? await auth.stream.firstWhere((s) => s.status != AuthStatus.unknown) : auth.state;
+    final state =
+        auth.state.status == AuthStatus.unknown
+            ? await auth.stream.firstWhere((s) => s.status != AuthStatus.unknown)
+            : auth.state;
     if (!context.mounted) return;
     context.go(switch (state.status) {
       AuthStatus.authenticated when state.needsOnboarding => AppRoutes.pledge,
@@ -31,7 +34,10 @@ class SplashView extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
-      child: Scaffold(backgroundColor: AppColors.plum, body: Center(child: _SplashArt(onFinished: () => _continue(context)))),
+      child: Scaffold(
+        backgroundColor: AppColors.plum,
+        body: Center(child: _SplashArt(onFinished: () => _continue(context))),
+      ),
     );
   }
 }
@@ -95,7 +101,9 @@ class _SplashArtState extends State<_SplashArt> with SingleTickerProviderStateMi
                           decoration: BoxDecoration(
                             borderRadius: AppRadius.arch(260, bottom: 0),
                             border: Border.all(color: AppColors.coral, width: 1.5),
-                            boxShadow: [BoxShadow(color: AppColors.coral.withValues(alpha: 0.25 * _glow.value), blurRadius: 40)],
+                            boxShadow: [
+                              BoxShadow(color: AppColors.coral.withValues(alpha: 0.25 * _glow.value), blurRadius: 40),
+                            ],
                           ),
                         ),
                       ),
@@ -108,12 +116,21 @@ class _SplashArtState extends State<_SplashArt> with SingleTickerProviderStateMi
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           heightFactor: _photo.value.clamp(0.0, 1.0),
-                          child: const ArchPhoto(source: 'assets/images/maya.jpg', width: 220, height: 300, bottomRadius: 0),
+                          child: const ArchPhoto(
+                            source: 'assets/images/maya.jpg',
+                            width: 220,
+                            height: 300,
+                            bottomRadius: 0,
+                          ),
                         ),
                       ),
                     ),
                     // Ground line
-                    Positioned(left: 130 - 130 * _ground.value, top: 321, child: Container(width: 260 * _ground.value, height: 3, color: AppColors.coral)),
+                    Positioned(
+                      left: 130 - 130 * _ground.value,
+                      top: 321,
+                      child: Container(width: 260 * _ground.value, height: 3, color: AppColors.coral),
+                    ),
                   ],
                 ),
               ),
@@ -126,7 +143,10 @@ class _SplashArtState extends State<_SplashArt> with SingleTickerProviderStateMi
                 ),
               ),
               AppGaps.h6,
-              Opacity(opacity: _tag.value, child: Text(AppStrings.tagline, style: LumeText.quote.copyWith(color: AppColors.lavender))),
+              Opacity(
+                opacity: _tag.value,
+                child: Text(AppStrings.tagline, style: LumeText.quote.copyWith(color: AppColors.lavender)),
+              ),
             ],
           ),
     );

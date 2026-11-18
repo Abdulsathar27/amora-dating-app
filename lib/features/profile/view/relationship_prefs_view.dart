@@ -40,7 +40,11 @@ class RelationshipPrefsView extends StatelessWidget {
                   runSpacing: 8,
                   children: [
                     for (final i in RelationshipIntent.values)
-                      LumeTag(i.label, variant: s.intent == i ? TagVariant.selected : TagVariant.normal, onTap: () => cubit.intentSelected(i)),
+                      LumeTag(
+                        i.label,
+                        variant: s.intent == i ? TagVariant.selected : TagVariant.normal,
+                        onTap: () => cubit.intentSelected(i),
+                      ),
                   ],
                 ),
                 Text(AppStrings.openToMeeting, style: LumeText.titleS.copyWith(color: AppColors.plum)),
@@ -49,7 +53,11 @@ class RelationshipPrefsView extends StatelessWidget {
                   runSpacing: 8,
                   children: [
                     for (final i in InterestedIn.values)
-                      LumeTag(i.label, variant: s.interestedIn == i ? TagVariant.selected : TagVariant.normal, onTap: () => cubit.interestedInSelected(i)),
+                      LumeTag(
+                        i.label,
+                        variant: s.interestedIn == i ? TagVariant.selected : TagVariant.normal,
+                        onTap: () => cubit.interestedInSelected(i),
+                      ),
                   ],
                 ),
                 LumeCard(
@@ -58,12 +66,26 @@ class RelationshipPrefsView extends StatelessWidget {
                       title: AppStrings.kids,
                       value: s.kids,
                       chevron: true,
-                      onTap: () => _pick(context, AppStrings.kids, RelationshipPrefsCubit.kidsOptions, s.kids, cubit.kidsChanged),
+                      onTap:
+                          () => _pick(
+                            context,
+                            AppStrings.kids,
+                            RelationshipPrefsCubit.kidsOptions,
+                            s.kids,
+                            cubit.kidsChanged,
+                          ),
                     ),
                     LumeRow(
                       title: AppStrings.smoking,
                       value: s.smoking,
-                      onTap: () => _pick(context, AppStrings.smoking, RelationshipPrefsCubit.smokingOptions, s.smoking, cubit.smokingChanged),
+                      onTap:
+                          () => _pick(
+                            context,
+                            AppStrings.smoking,
+                            RelationshipPrefsCubit.smokingOptions,
+                            s.smoking,
+                            cubit.smokingChanged,
+                          ),
                     ),
                     LumeRow(
                       title: AppStrings.distance,
@@ -85,7 +107,11 @@ class RelationshipPrefsView extends StatelessWidget {
               SaveProfileButton(
                 label: AppStrings.save,
                 changes: () {
-                  discovery.add(PreferencesApplied(discovery.state.preferences.copyWith(interestedIn: s.interestedIn, maxDistanceKm: s.distanceKm)));
+                  discovery.add(
+                    PreferencesApplied(
+                      discovery.state.preferences.copyWith(interestedIn: s.interestedIn, maxDistanceKm: s.distanceKm),
+                    ),
+                  );
                   return {
                     'intent': s.intent.value,
                     'lifestyle': {...profile.lifestyle, Lifestyle.kids: s.kids, Lifestyle.smoking: s.smoking},
@@ -99,7 +125,13 @@ class RelationshipPrefsView extends StatelessWidget {
     );
   }
 
-  Future<void> _pick(BuildContext context, String title, List<String> options, String current, ValueChanged<String> onPick) async {
+  Future<void> _pick(
+    BuildContext context,
+    String title,
+    List<String> options,
+    String current,
+    ValueChanged<String> onPick,
+  ) async {
     final picked = await showLumeSheet<String>(
       context,
       builder:
@@ -109,7 +141,10 @@ class RelationshipPrefsView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Padding(padding: const EdgeInsets.all(16), child: Text(title, style: LumeText.titleM.copyWith(color: AppColors.plum))),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(title, style: LumeText.titleM.copyWith(color: AppColors.plum)),
+                ),
                 for (final o in options)
                   LumeRow(
                     title: o,

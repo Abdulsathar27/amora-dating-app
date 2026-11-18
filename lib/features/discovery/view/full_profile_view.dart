@@ -40,7 +40,13 @@ class FullProfileView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    LumeIconButton(LumeIcons.down, tooltip: AppStrings.close, background: AppColors.surface, bordered: true, onPressed: () => context.pop()),
+                    LumeIconButton(
+                      LumeIcons.down,
+                      tooltip: AppStrings.close,
+                      background: AppColors.surface,
+                      bordered: true,
+                      onPressed: () => context.pop(),
+                    ),
                     const Spacer(),
                     LumeIconButton(
                       LumeIcons.more,
@@ -55,7 +61,15 @@ class FullProfileView extends StatelessWidget {
                 FadeRise(
                   child: AspectRatio(
                     aspectRatio: 358 / 440,
-                    child: LayoutBuilder(builder: (_, b) => ArchPhoto(source: p.mainPhoto, width: b.maxWidth, height: b.maxHeight, shadow: LumeShadows.card)),
+                    child: LayoutBuilder(
+                      builder:
+                          (_, b) => ArchPhoto(
+                            source: p.mainPhoto,
+                            width: b.maxWidth,
+                            height: b.maxHeight,
+                            shadow: LumeShadows.card,
+                          ),
+                    ),
                   ),
                 ),
                 AppGaps.h20,
@@ -77,12 +91,18 @@ class FullProfileView extends StatelessWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Padding(padding: EdgeInsets.only(top: 2), child: LumeIcon(LumeIcons.pin, size: 16, color: AppColors.muted)),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 2),
+                            child: LumeIcon(LumeIcons.pin, size: 16, color: AppColors.muted),
+                          ),
                           AppGaps.w5,
                           Expanded(child: Text(AppStrings.locationHidden(p.distanceLabel), style: LumeText.bodyM)),
                         ],
                       ),
-                      if (p.bio.isNotEmpty) ...[AppGaps.h6, Text(p.bio, style: LumeText.bodyL.copyWith(color: AppColors.ink))],
+                      if (p.bio.isNotEmpty) ...[
+                        AppGaps.h6,
+                        Text(p.bio, style: LumeText.bodyL.copyWith(color: AppColors.ink)),
+                      ],
                     ],
                   ),
                 ),
@@ -127,9 +147,17 @@ class FullProfileView extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(AppStrings.voiceIntro, style: LumeText.labelM.copyWith(color: AppColors.lavender)),
+                                  Text(
+                                    AppStrings.voiceIntro,
+                                    style: LumeText.labelM.copyWith(color: AppColors.lavender),
+                                  ),
                                   const Spacer(),
-                                  Text(p.voice!.prompt, style: LumeText.quote.copyWith(color: AppColors.surface), maxLines: 3, overflow: TextOverflow.ellipsis),
+                                  Text(
+                                    p.voice!.prompt,
+                                    style: LumeText.quote.copyWith(color: AppColors.surface),
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   const Spacer(),
                                   Waveform(
                                     heights: Waveform.chip.followedBy(Waveform.chip.take(6)).toList(),
@@ -149,7 +177,10 @@ class FullProfileView extends StatelessWidget {
                 for (final prompt in p.prompts) ...[AppGaps.h20, PromptCard(prompt: prompt)],
                 if (p.photos.length > 1) ...[
                   AppGaps.h20,
-                  ClipRRect(borderRadius: BorderRadius.circular(28), child: AspectRatio(aspectRatio: 358 / 320, child: LumePhoto(p.photos[1]))),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(28),
+                    child: AspectRatio(aspectRatio: 358 / 320, child: LumePhoto(p.photos[1])),
+                  ),
                 ],
                 if (p.personality.isNotEmpty) ...[AppGaps.h20, _Personality(traits: p.personality)],
                 if (p.activities.isNotEmpty) ...[
@@ -157,7 +188,10 @@ class FullProfileView extends StatelessWidget {
                   _TagSection(title: AppStrings.favouriteActivities, tags: p.activities, variant: TagVariant.lavender),
                 ],
                 if (p.onRepeat.isNotEmpty) ...[AppGaps.h20, _OnRepeat(songs: p.onRepeat)],
-                if (p.interests.isNotEmpty) ...[AppGaps.h20, _TagSection(title: AppStrings.hobbiesAndInterests, tags: p.interests)],
+                if (p.interests.isNotEmpty) ...[
+                  AppGaps.h20,
+                  _TagSection(title: AppStrings.hobbiesAndInterests, tags: p.interests),
+                ],
                 if (p.relationshipGoal != null) ...[
                   AppGaps.h20,
                   Container(
@@ -178,7 +212,8 @@ class FullProfileView extends StatelessWidget {
                   LumeCard(
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     children: [
-                      for (final e in p.lifestyle.entries) LumeRow(icon: lifestyleIcon(e.key), title: Lifestyle.labels[e.key] ?? e.key, value: e.value),
+                      for (final e in p.lifestyle.entries)
+                        LumeRow(icon: lifestyleIcon(e.key), title: Lifestyle.labels[e.key] ?? e.key, value: e.value),
                     ],
                   ),
                 ],
@@ -186,12 +221,21 @@ class FullProfileView extends StatelessWidget {
                   AppGaps.h20,
                   Text(AppStrings.conversationStarters, style: LumeText.titleS.copyWith(color: AppColors.plum)),
                   AppGaps.h10,
-                  for (final s in p.starters) ...[StarterChip(text: s, onTap: fromDiscover ? () => context.pop(SwipeAction.like) : null), AppGaps.h10],
+                  for (final s in p.starters) ...[
+                    StarterChip(text: s, onTap: fromDiscover ? () => context.pop(SwipeAction.like) : null),
+                    AppGaps.h10,
+                  ],
                 ],
                 AppGaps.h10,
                 Row(
                   children: [
-                    Expanded(child: LumeButton(AppStrings.blockName(p.name), variant: LumeButtonVariant.ghost, onPressed: () => showBlockSheet(context, p))),
+                    Expanded(
+                      child: LumeButton(
+                        AppStrings.blockName(p.name),
+                        variant: LumeButtonVariant.ghost,
+                        onPressed: () => showBlockSheet(context, p),
+                      ),
+                    ),
                     AppGaps.w8,
                     Expanded(
                       child: LumeButton(
@@ -235,7 +279,9 @@ class FullProfileView extends StatelessWidget {
                       label: AppStrings.sendACompliment,
                       onTap: () async {
                         final text = await showComplimentSheet(context, p);
-                        if (text != null && context.mounted) context.pop(DiscoveryActionResult(SwipeAction.like, comment: text));
+                        if (text != null && context.mounted) {
+                          context.pop(DiscoveryActionResult(SwipeAction.like, comment: text));
+                        }
                       },
                     ),
                     AppGaps.w14,
@@ -275,7 +321,11 @@ class PromptCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => LumeCard(
     padding: const EdgeInsets.all(20),
-    children: [Text(prompt.question, style: LumeText.labelM.copyWith(color: AppColors.muted)), AppGaps.h10, Text(prompt.answer, style: LumeText.quote)],
+    children: [
+      Text(prompt.question, style: LumeText.labelM.copyWith(color: AppColors.muted)),
+      AppGaps.h10,
+      Text(prompt.answer, style: LumeText.quote),
+    ],
   );
 }
 
@@ -348,12 +398,19 @@ class _Personality extends StatelessWidget {
                 child: Stack(
                   alignment: Alignment.centerLeft,
                   children: [
-                    Container(height: 8, decoration: BoxDecoration(color: AppColors.lavenderSoft, borderRadius: BorderRadius.circular(4))),
+                    Container(
+                      height: 8,
+                      decoration: BoxDecoration(color: AppColors.lavenderSoft, borderRadius: BorderRadius.circular(4)),
+                    ),
                     TweenAnimationBuilder<double>(
                       tween: Tween(begin: 0.5, end: t.value),
                       duration: const Duration(milliseconds: 700),
                       curve: Curves.easeOutBack,
-                      builder: (_, v, _) => Positioned(left: (b.maxWidth - 16) * v, child: const CircleAvatar(radius: 8, backgroundColor: AppColors.plum)),
+                      builder:
+                          (_, v, _) => Positioned(
+                            left: (b.maxWidth - 16) * v,
+                            child: const CircleAvatar(radius: 8, backgroundColor: AppColors.plum),
+                          ),
                     ),
                   ],
                 ),
@@ -373,12 +430,24 @@ class _OnRepeat extends StatelessWidget {
   Widget build(BuildContext context) => LumeCard(
     padding: const EdgeInsets.all(16),
     children: [
-      Row(children: [const LumeIcon(LumeIcons.music, size: 20), AppGaps.w8, Text(AppStrings.onRepeat, style: LumeText.titleS.copyWith(color: AppColors.plum))]),
+      Row(
+        children: [
+          const LumeIcon(LumeIcons.music, size: 20),
+          AppGaps.w8,
+          Text(AppStrings.onRepeat, style: LumeText.titleS.copyWith(color: AppColors.plum)),
+        ],
+      ),
       for (final s in songs) ...[
         AppGaps.h10,
         Row(
           children: [
-            const LumeIconButton(LumeIcons.play, onPressed: null, iconSize: 18, background: AppColors.lavenderSoft, color: AppColors.ink),
+            const LumeIconButton(
+              LumeIcons.play,
+              onPressed: null,
+              iconSize: 18,
+              background: AppColors.lavenderSoft,
+              color: AppColors.ink,
+            ),
             AppGaps.w12,
             Expanded(
               child: Column(

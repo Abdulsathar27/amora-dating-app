@@ -40,10 +40,7 @@ class AuthInterceptor extends QueuedInterceptor {
     }
 
     try {
-      final res = await dio.post(
-        ApiEndpoints.refresh,
-        data: {'refresh_token': refreshToken},
-      );
+      final res = await dio.post(ApiEndpoints.refresh, data: {'refresh_token': refreshToken});
       await tokenStorage.save(
         accessToken: res.data['access_token'] as String,
         refreshToken: (res.data['refresh_token'] ?? refreshToken) as String,

@@ -46,8 +46,17 @@ class SafetyCentreView extends StatelessWidget {
           ),
           LumeCard(
             children: [
-              LumeRow(icon: LumeIcons.flag, title: AppStrings.reportSomeone, onTap: () => context.go(AppRoutes.messages)),
-              LumeRow(icon: LumeIcons.ban, title: AppStrings.blockedPeople, value: '$blocked', onTap: () => info(AppStrings.blockedPeopleInfo)),
+              LumeRow(
+                icon: LumeIcons.flag,
+                title: AppStrings.reportSomeone,
+                onTap: () => context.go(AppRoutes.messages),
+              ),
+              LumeRow(
+                icon: LumeIcons.ban,
+                title: AppStrings.blockedPeople,
+                value: '$blocked',
+                onTap: () => info(AppStrings.blockedPeopleInfo),
+              ),
               LumeRow(
                 icon: LumeIcons.image,
                 title: AppStrings.photoModeration,
@@ -60,7 +69,11 @@ class SafetyCentreView extends StatelessWidget {
                 subtitle: AppStrings.approximateOnly,
                 onTap: () => context.push(AppRoutes.privacy),
               ),
-              LumeRow(icon: LumeIcons.compliment, title: AppStrings.datingSafelyAndConsent, onTap: () => context.push(AppRoutes.datingSafely)),
+              LumeRow(
+                icon: LumeIcons.compliment,
+                title: AppStrings.datingSafelyAndConsent,
+                onTap: () => context.push(AppRoutes.datingSafely),
+              ),
             ],
           ),
         ],
@@ -139,7 +152,11 @@ Future<void> showBlockSheet(BuildContext context, Profile profile) {
                         },
                       ),
                       AppGaps.h12,
-                      LumeButton(AppStrings.cancel, variant: LumeButtonVariant.ghost, onPressed: () => Navigator.pop(sheet)),
+                      LumeButton(
+                        AppStrings.cancel,
+                        variant: LumeButtonVariant.ghost,
+                        onPressed: () => Navigator.pop(sheet),
+                      ),
                     ],
                   ),
                 ),

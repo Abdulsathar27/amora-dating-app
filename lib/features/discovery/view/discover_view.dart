@@ -60,13 +60,23 @@ class DiscoverView extends StatelessWidget {
                             ),
                             DiscoveryStatus.ready when s.isEmpty => LumeEmptyState(
                               key: const ValueKey('empty'),
-                              illustration: const ArchPhoto(source: 'assets/images/dunes.jpg', width: 200, height: 240, bottomRadius: 24),
+                              illustration: const ArchPhoto(
+                                source: 'assets/images/dunes.jpg',
+                                width: 200,
+                                height: 240,
+                                bottomRadius: 24,
+                              ),
                               title: AppStrings.emptyDeckTitle,
                               body: AppStrings.emptyDeckBody,
                               actionLabel: AppStrings.widenSearch,
                               onAction: () => context.push(AppRoutes.filters),
                             ),
-                            DiscoveryStatus.ready => SwipeDeck(key: const ValueKey('deck'), top: s.top!, next: s.next, likes: s.likes),
+                            DiscoveryStatus.ready => SwipeDeck(
+                              key: const ValueKey('deck'),
+                              top: s.top!,
+                              next: s.next,
+                              likes: s.likes,
+                            ),
                           },
                         ),
                   ),
@@ -111,8 +121,11 @@ class _Skeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget line(double w, [double h = 14]) =>
-        Container(width: w, height: h, decoration: BoxDecoration(color: AppColors.line, borderRadius: BorderRadius.circular(h / 2)));
+    Widget line(double w, [double h = 14]) => Container(
+      width: w,
+      height: h,
+      decoration: BoxDecoration(color: AppColors.line, borderRadius: BorderRadius.circular(h / 2)),
+    );
     return Shimmer(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -122,7 +135,11 @@ class _Skeleton extends StatelessWidget {
             return Stack(
               alignment: Alignment.topCenter,
               children: [
-                Container(width: w, height: w * 362 / 358, decoration: BoxDecoration(color: AppColors.line, borderRadius: AppRadius.arch(w, bottom: 28))),
+                Container(
+                  width: w,
+                  height: w * 362 / 358,
+                  decoration: BoxDecoration(color: AppColors.line, borderRadius: AppRadius.arch(w, bottom: 28)),
+                ),
                 Positioned(
                   top: w * 362 / 358 - 56,
                   left: 12,
@@ -130,7 +147,11 @@ class _Skeleton extends StatelessWidget {
                   child: FadeRise(
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(18, 20, 18, 44),
-                      decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(28), boxShadow: LumeShadows.card),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: LumeShadows.card,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

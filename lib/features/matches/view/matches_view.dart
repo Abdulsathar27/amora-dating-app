@@ -26,7 +26,9 @@ class MatchesView extends StatelessWidget {
         bottom: false,
         child: BlocBuilder<MatchesBloc, MatchesState>(
           builder: (context, s) {
-            if (s.status == MatchesStatus.loading) return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+            if (s.status == MatchesStatus.loading) {
+              return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+            }
             if (s.matches.isEmpty) {
               return LumeEmptyState(
                 illustration: const _OverlappingArches(),
@@ -53,7 +55,11 @@ class MatchesView extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount: s.newMatches.length,
                         separatorBuilder: (_, _) => AppGaps.w14,
-                        itemBuilder: (_, i) => FadeRise(delay: Duration(milliseconds: 70 * i), child: _NewMatch(match: s.newMatches[i])),
+                        itemBuilder:
+                            (_, i) => FadeRise(
+                              delay: Duration(milliseconds: 70 * i),
+                              child: _NewMatch(match: s.newMatches[i]),
+                            ),
                       ),
                     ),
                   ],
@@ -90,7 +96,13 @@ class _NewMatch extends StatelessWidget {
       onTap: () => context.push(AppRoutes.chat(match.id), extra: match),
       child: Column(
         children: [
-          ArchPhoto(source: match.profile.mainPhoto, width: 100, height: 134, borderColor: AppColors.coral, borderWidth: 2.5),
+          ArchPhoto(
+            source: match.profile.mainPhoto,
+            width: 100,
+            height: 134,
+            borderColor: AppColors.coral,
+            borderWidth: 2.5,
+          ),
           AppGaps.h6,
           Text(match.profile.name, style: LumeText.labelM),
         ],
@@ -115,7 +127,10 @@ class _Connection extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [Text(match.profile.name, style: LumeText.titleS), Text(matchedLabel(match.matchedAt), style: LumeText.bodyM)],
+              children: [
+                Text(match.profile.name, style: LumeText.titleS),
+                Text(matchedLabel(match.matchedAt), style: LumeText.bodyM),
+              ],
             ),
           ),
           LumeIconButton(
@@ -146,7 +161,11 @@ class _OverlappingArches extends StatelessWidget {
     Widget arch(Color fill, Color stroke) => Container(
       width: 140,
       height: 200,
-      decoration: BoxDecoration(color: fill, borderRadius: AppRadius.arch(140), border: Border.all(color: stroke, width: 1.5)),
+      decoration: BoxDecoration(
+        color: fill,
+        borderRadius: AppRadius.arch(140),
+        border: Border.all(color: stroke, width: 1.5),
+      ),
     );
     return SizedBox(
       width: 250,

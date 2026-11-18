@@ -133,7 +133,9 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
   }
 
   Future<void> _expand() async {
-    final result = DiscoveryActionResult.from(await context.push<Object?>(AppRoutes.person, extra: FullProfileArgs(widget.top, fromDiscover: true)));
+    final result = DiscoveryActionResult.from(
+      await context.push<Object?>(AppRoutes.person, extra: FullProfileArgs(widget.top, fromDiscover: true)),
+    );
     if (result != null && mounted) _fly(result.action, comment: result.comment);
   }
 
@@ -210,15 +212,39 @@ class _SwipeDeckState extends State<SwipeDeck> with SingleTickerProviderStateMix
                                   onExpand: _expand,
                                   onPhotoTap:
                                       (forward) => setState(() {
-                                        _photo = (_photo + (forward ? 1 : -1)).clamp(0, math.max(0, widget.top.photos.length - 1));
+                                        _photo = (_photo + (forward ? 1 : -1)).clamp(
+                                          0,
+                                          math.max(0, widget.top.photos.length - 1),
+                                        );
                                       }),
                                 ),
                                 if (likeT > 0.05)
-                                  _Stamp(label: AppStrings.like, icon: LumeIcons.heart, color: AppColors.coral, opacity: likeT, angle: -12, left: 40),
+                                  _Stamp(
+                                    label: AppStrings.like,
+                                    icon: LumeIcons.heart,
+                                    color: AppColors.coral,
+                                    opacity: likeT,
+                                    angle: -12,
+                                    left: 40,
+                                  ),
                                 if (likeT < -0.05)
-                                  _Stamp(label: AppStrings.pass, icon: LumeIcons.close, color: AppColors.lavender, opacity: -likeT, angle: 12, right: 40),
+                                  _Stamp(
+                                    label: AppStrings.pass,
+                                    icon: LumeIcons.close,
+                                    color: AppColors.lavender,
+                                    opacity: -likeT,
+                                    angle: 12,
+                                    right: 40,
+                                  ),
                                 if (upT > 0.05 && likeT.abs() < 0.3)
-                                  _Stamp(label: AppStrings.superLike, icon: LumeIcons.star, color: AppColors.lavender, opacity: upT, angle: 0, center: true),
+                                  _Stamp(
+                                    label: AppStrings.superLike,
+                                    icon: LumeIcons.star,
+                                    color: AppColors.lavender,
+                                    opacity: upT,
+                                    angle: 0,
+                                    center: true,
+                                  ),
                               ],
                             ),
                           ),
@@ -274,10 +300,18 @@ class _Stamp extends StatelessWidget {
           scale: 0.8 + 0.2 * opacity.clamp(0.0, 1.0),
           child: Container(
             padding: const EdgeInsets.fromLTRB(14, 10, 18, 10),
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(24), boxShadow: LumeShadows.soft),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: LumeShadows.soft,
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [LumeIcon(icon, size: 24, color: AppColors.ink), AppGaps.w8, Text(label, style: LumeText.titleL)],
+              children: [
+                LumeIcon(icon, size: 24, color: AppColors.ink),
+                AppGaps.w8,
+                Text(label, style: LumeText.titleL),
+              ],
             ),
           ),
         ),
@@ -290,7 +324,13 @@ class _Stamp extends StatelessWidget {
 
 /// Pass · Compliment · Like · Super Like.
 class _ActionBar extends StatelessWidget {
-  const _ActionBar({required this.likes, required this.onPass, required this.onCompliment, required this.onLike, required this.onSuperLike});
+  const _ActionBar({
+    required this.likes,
+    required this.onPass,
+    required this.onCompliment,
+    required this.onLike,
+    required this.onSuperLike,
+  });
 
   final int likes;
   final VoidCallback onPass;
@@ -305,7 +345,13 @@ class _ActionBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          DiscoveryActionButton(icon: LumeIcons.close, size: AppSizes.actionPass, iconSize: AppSizes.actionPassIcon, label: AppStrings.pass, onTap: onPass),
+          DiscoveryActionButton(
+            icon: LumeIcons.close,
+            size: AppSizes.actionPass,
+            iconSize: AppSizes.actionPassIcon,
+            label: AppStrings.pass,
+            onTap: onPass,
+          ),
           AppGaps.w14,
           DiscoveryActionButton(
             icon: LumeIcons.compliment,

@@ -36,14 +36,26 @@ class MatchView extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: [
-                Expanded(child: _MatchMoment(myPhoto: myPhoto ?? 'assets/images/maya.jpg', theirPhoto: match.profile.mainPhoto)),
+                Expanded(
+                  child: _MatchMoment(
+                    myPhoto: myPhoto ?? 'assets/images/maya.jpg',
+                    theirPhoto: match.profile.mainPhoto,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(
                     children: [
-                      Text(AppStrings.itsAMatch, style: LumeText.wordmark.copyWith(fontSize: 52, height: 60 / 52, color: AppColors.surface)),
+                      Text(
+                        AppStrings.itsAMatch,
+                        style: LumeText.wordmark.copyWith(fontSize: 52, height: 60 / 52, color: AppColors.surface),
+                      ),
                       AppGaps.h10,
-                      Text(AppStrings.matchBody(match.profile.name), textAlign: TextAlign.center, style: LumeText.bodyL.copyWith(color: AppColors.lavender)),
+                      Text(
+                        AppStrings.matchBody(match.profile.name),
+                        textAlign: TextAlign.center,
+                        style: LumeText.bodyL.copyWith(color: AppColors.lavender),
+                      ),
                     ],
                   ),
                 ),
@@ -52,7 +64,10 @@ class MatchView extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
                   child: Column(
                     children: [
-                      LumeButton(AppStrings.startConversation, onPressed: () => context.pushReplacement(AppRoutes.chat(match.id), extra: match)),
+                      LumeButton(
+                        AppStrings.startConversation,
+                        onPressed: () => context.pushReplacement(AppRoutes.chat(match.id), extra: match),
+                      ),
                       AppGaps.h6,
                       LumeButton(
                         AppStrings.continueDiscovering,
@@ -141,7 +156,8 @@ class _MatchMomentState extends State<_MatchMoment> with SingleTickerProviderSta
                     top: box.maxHeight * y,
                     child: Opacity(opacity: a.clamp(0, 1), child: CircleAvatar(radius: r, backgroundColor: c)),
                   ),
-                if (!reduce) Positioned.fill(child: CustomPaint(painter: _BloomPainter(_bloom.value, Offset(cx, cy + 40)))),
+                if (!reduce)
+                  Positioned.fill(child: CustomPaint(painter: _BloomPainter(_bloom.value, Offset(cx, cy + 40)))),
                 // Arches slide in from either side and overlap, tilted ±6°.
                 Positioned(
                   left: cx - 168 - (1 - a) * 220,

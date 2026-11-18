@@ -48,7 +48,12 @@ class FiltersView extends StatelessWidget {
                     _RangeRow(
                       title: AppStrings.distance,
                       value: AppStrings.upToKm(p.maxDistanceKm),
-                      child: Slider(value: p.maxDistanceKm.toDouble(), min: 1, max: 100, onChanged: (v) => cubit.distanceChanged(v.round())),
+                      child: Slider(
+                        value: p.maxDistanceKm.toDouble(),
+                        min: 1,
+                        max: 100,
+                        onChanged: (v) => cubit.distanceChanged(v.round()),
+                      ),
                     ),
                   ],
                 ),
@@ -73,8 +78,16 @@ class FiltersView extends StatelessWidget {
                 ),
                 LumeCard(
                   children: [
-                    LumeRow(title: AppStrings.verifiedOnly, toggle: p.verifiedOnly, onToggle: cubit.verifiedOnlyChanged),
-                    LumeRow(title: AppStrings.hasVoiceIntro, toggle: p.hasVoiceIntro, onToggle: cubit.voiceIntroChanged),
+                    LumeRow(
+                      title: AppStrings.verifiedOnly,
+                      toggle: p.verifiedOnly,
+                      onToggle: cubit.verifiedOnlyChanged,
+                    ),
+                    LumeRow(
+                      title: AppStrings.hasVoiceIntro,
+                      toggle: p.hasVoiceIntro,
+                      onToggle: cubit.voiceIntroChanged,
+                    ),
                   ],
                 ),
               ],

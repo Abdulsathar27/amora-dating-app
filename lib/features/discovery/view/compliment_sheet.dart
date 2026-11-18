@@ -13,7 +13,10 @@ import '../../../core/constants/app_strings.dart';
 
 /// "Send Maya a compliment". Returns the text, or null if dismissed.
 Future<String?> showComplimentSheet(BuildContext context, Profile profile) {
-  return showLumeSheet<String>(context, builder: (_) => BlocProvider(create: (_) => ComplimentCubit(), child: ComplimentSheet(profile: profile)));
+  return showLumeSheet<String>(
+    context,
+    builder: (_) => BlocProvider(create: (_) => ComplimentCubit(), child: ComplimentSheet(profile: profile)),
+  );
 }
 
 class ComplimentSheet extends StatelessWidget {
@@ -39,7 +42,10 @@ class ComplimentSheet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(AppStrings.complimentTitle(profile.name), style: LumeText.titleM.copyWith(color: AppColors.plum)),
+                          Text(
+                            AppStrings.complimentTitle(profile.name),
+                            style: LumeText.titleM.copyWith(color: AppColors.plum),
+                          ),
                           AppGaps.h2,
                           Text(AppStrings.complimentHint, style: LumeText.bodyM),
                         ],
@@ -53,7 +59,11 @@ class ComplimentSheet extends StatelessWidget {
                   runSpacing: 8,
                   children: [
                     for (final (i, sug) in ComplimentCubit.suggestionsFor(profile).indexed)
-                      LumeTag(sug, variant: i == 3 || s.text == sug ? TagVariant.lavender : TagVariant.normal, onTap: () => cubit.suggestionPicked(sug)),
+                      LumeTag(
+                        sug,
+                        variant: i == 3 || s.text == sug ? TagVariant.lavender : TagVariant.normal,
+                        onTap: () => cubit.suggestionPicked(sug),
+                      ),
                   ],
                 ),
                 AppGaps.h14,
@@ -91,7 +101,10 @@ class ComplimentSheet extends StatelessWidget {
                 AppGaps.h14,
                 LumeNote(AppStrings.complimentNote(profile.name), icon: LumeIcons.info),
                 AppGaps.h14,
-                LumeButton(AppStrings.sendCompliment, onPressed: s.canSend ? () => Navigator.of(context).pop(s.text.trim()) : null),
+                LumeButton(
+                  AppStrings.sendCompliment,
+                  onPressed: s.canSend ? () => Navigator.of(context).pop(s.text.trim()) : null,
+                ),
               ],
             ),
           ),

@@ -22,7 +22,10 @@ class ManagePhotosView extends StatelessWidget {
       builder: (context, s) {
         final p = s.profile;
         if (p == null) return const SizedBox.shrink();
-        final reviews = [for (var i = 0; i < p.photos.length; i++) i < p.photoReviews.length ? p.photoReviews[i] : PhotoReview.inReview];
+        final reviews = [
+          for (var i = 0; i < p.photos.length; i++)
+            i < p.photoReviews.length ? p.photoReviews[i] : PhotoReview.inReview,
+        ];
         final rejected = reviews.contains(PhotoReview.rejected);
         return LumeScaffold(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -42,21 +45,37 @@ class ManagePhotosView extends StatelessWidget {
                       for (var i = 0; i < p.photos.length; i++)
                         LongPressDraggable<int>(
                           data: i,
-                          feedback: Opacity(opacity: 0.85, child: ArchPhoto(source: p.photos[i], width: w, height: w * 210 / 173, shadow: LumeShadows.float)),
-                          childWhenDragging: Opacity(opacity: 0.3, child: _Slot(photo: p.photos[i], review: reviews[i], width: w)),
+                          feedback: Opacity(
+                            opacity: 0.85,
+                            child: ArchPhoto(
+                              source: p.photos[i],
+                              width: w,
+                              height: w * 210 / 173,
+                              shadow: LumeShadows.float,
+                            ),
+                          ),
+                          childWhenDragging: Opacity(
+                            opacity: 0.3,
+                            child: _Slot(photo: p.photos[i], review: reviews[i], width: w),
+                          ),
                           child: DragTarget<int>(
                             onAcceptWithDetails: (d) {
                               final photos = List<String>.of(p.photos);
                               final r = List<PhotoReview>.of(reviews);
                               photos.insert(i, photos.removeAt(d.data));
                               r.insert(i, r.removeAt(d.data));
-                              context.read<ProfileBloc>().add(ProfileSaved({'photos': photos, 'photo_reviews': r.map((e) => e.value).toList()}));
+                              context.read<ProfileBloc>().add(
+                                ProfileSaved({'photos': photos, 'photo_reviews': r.map((e) => e.value).toList()}),
+                              );
                             },
                             builder:
                                 (_, candidates, _) => AnimatedScale(
                                   scale: candidates.isEmpty ? 1 : 1.04,
                                   duration: const Duration(milliseconds: 150),
-                                  child: FadeRise(delay: Duration(milliseconds: 60 * i), child: _Slot(photo: p.photos[i], review: reviews[i], width: w)),
+                                  child: FadeRise(
+                                    delay: Duration(milliseconds: 60 * i),
+                                    child: _Slot(photo: p.photos[i], review: reviews[i], width: w),
+                                  ),
                                 ),
                           ),
                         ),

@@ -35,7 +35,9 @@ class LikesView extends StatelessWidget {
           bottom: false,
           child: BlocBuilder<LikesBloc, LikesState>(
             builder: (context, s) {
-              if (s.status == LikesStatus.loading) return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+              if (s.status == LikesStatus.loading) {
+                return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+              }
               if (s.likes.isEmpty) {
                 return LumeEmptyState(
                   icon: LumeIcons.heart,
@@ -53,7 +55,11 @@ class LikesView extends StatelessWidget {
                   slivers: [
                     SliverPadding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                      sliver: SliverToBoxAdapter(child: FadeRise(child: LumeTitle(AppStrings.likesTitle, subtitle: AppStrings.likedThisWeek(s.likes.length)))),
+                      sliver: SliverToBoxAdapter(
+                        child: FadeRise(
+                          child: LumeTitle(AppStrings.likesTitle, subtitle: AppStrings.likedThisWeek(s.likes.length)),
+                        ),
+                      ),
                     ),
                     SliverPadding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
@@ -66,7 +72,11 @@ class LikesView extends StatelessWidget {
                         ),
                         itemCount: s.likes.length,
                         itemBuilder:
-                            (_, i) => FadeRise(key: ValueKey(s.likes[i].profile.id), delay: Duration(milliseconds: 60 * i), child: _LikeTile(like: s.likes[i])),
+                            (_, i) => FadeRise(
+                              key: ValueKey(s.likes[i].profile.id),
+                              delay: Duration(milliseconds: 60 * i),
+                              child: _LikeTile(like: s.likes[i]),
+                            ),
                       ),
                     ),
                   ],
@@ -109,14 +119,22 @@ class _LikeTile extends StatelessWidget {
                       source: p.mainPhoto,
                       width: b.maxWidth,
                       height: b.maxHeight,
-                      child: Align(alignment: Alignment.bottomLeft, child: Padding(padding: const EdgeInsets.all(10), child: _Badge(like: like))),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Padding(padding: const EdgeInsets.all(10), child: _Badge(like: like)),
+                      ),
                     ),
               ),
             ),
             AppGaps.h8,
             Text('${p.name}, ${p.age}', style: LumeText.titleS.copyWith(color: AppColors.plum)),
             AppGaps.h8,
-            Text(like.reason ?? AppStrings.likedYourProfile, style: LumeText.caption, maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(
+              like.reason ?? AppStrings.likedYourProfile,
+              style: LumeText.caption,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),
@@ -145,7 +163,13 @@ class _Badge extends StatelessWidget {
         children: [
           LumeIcon(icon!, size: 14),
           AppGaps.w4,
-          Flexible(child: Text(label, overflow: TextOverflow.ellipsis, style: LumeText.caption.copyWith(color: AppColors.plum))),
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: LumeText.caption.copyWith(color: AppColors.plum),
+            ),
+          ),
         ],
       ),
     );

@@ -49,7 +49,11 @@ class PrivacyView extends StatelessWidget {
                 ],
               ),
               const _Section(AppStrings.location),
-              LumeCard(children: [row('approximate_distance', AppStrings.approxDistanceOnly, AppStrings.exactLocationNeverShared)]),
+              LumeCard(
+                children: [
+                  row('approximate_distance', AppStrings.approxDistanceOnly, AppStrings.exactLocationNeverShared),
+                ],
+              ),
               const _Section(AppStrings.messages),
               LumeCard(
                 children: [
@@ -83,8 +87,18 @@ class AccountView extends StatelessWidget {
             children: [
               LumeCard(
                 children: [
-                  LumeRow(icon: LumeIcons.phone, title: AppStrings.phoneNumber, subtitle: s.settings.phoneMasked, onTap: soon),
-                  LumeRow(icon: LumeIcons.mail, title: AppStrings.emailLabel, subtitle: s.settings.email ?? AppStrings.addForRecovery, onTap: soon),
+                  LumeRow(
+                    icon: LumeIcons.phone,
+                    title: AppStrings.phoneNumber,
+                    subtitle: s.settings.phoneMasked,
+                    onTap: soon,
+                  ),
+                  LumeRow(
+                    icon: LumeIcons.mail,
+                    title: AppStrings.emailLabel,
+                    subtitle: s.settings.email ?? AppStrings.addForRecovery,
+                    onTap: soon,
+                  ),
                   LumeRow(
                     icon: LumeIcons.key,
                     title: AppStrings.twoStep,
@@ -102,9 +116,23 @@ class AccountView extends StatelessWidget {
               LumeCard(
                 children: [
                   LumeRow(icon: LumeIcons.bell, title: AppStrings.notifications, onTap: soon),
-                  LumeRow(icon: LumeIcons.help, title: AppStrings.helpAndSupport, onTap: () => context.push(AppRoutes.safetyCentre)),
-                  LumeRow(icon: LumeIcons.logout, title: AppStrings.signOut, chevron: false, onTap: () => _confirmSignOut(context)),
-                  LumeRow(icon: LumeIcons.trash, title: AppStrings.deleteAccount, danger: true, onTap: () => _confirmDelete(context)),
+                  LumeRow(
+                    icon: LumeIcons.help,
+                    title: AppStrings.helpAndSupport,
+                    onTap: () => context.push(AppRoutes.safetyCentre),
+                  ),
+                  LumeRow(
+                    icon: LumeIcons.logout,
+                    title: AppStrings.signOut,
+                    chevron: false,
+                    onTap: () => _confirmSignOut(context),
+                  ),
+                  LumeRow(
+                    icon: LumeIcons.trash,
+                    title: AppStrings.deleteAccount,
+                    danger: true,
+                    onTap: () => _confirmDelete(context),
+                  ),
                 ],
               ),
             ],
@@ -147,7 +175,13 @@ class AccountView extends StatelessWidget {
 }
 
 class _ConfirmSheet extends StatelessWidget {
-  const _ConfirmSheet({required this.title, required this.body, required this.confirm, required this.onConfirm, this.danger = false});
+  const _ConfirmSheet({
+    required this.title,
+    required this.body,
+    required this.confirm,
+    required this.onConfirm,
+    this.danger = false,
+  });
 
   final String title;
   final String body;
@@ -179,7 +213,9 @@ class VerificationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final p = context.select<ProfileBloc, (bool, DateTime?)>((b) => (b.state.profile?.isVerified ?? false, b.state.profile?.verifiedAt));
+    final p = context.select<ProfileBloc, (bool, DateTime?)>(
+      (b) => (b.state.profile?.isVerified ?? false, b.state.profile?.verifiedAt),
+    );
     final date = p.$2 == null ? '' : AppStrings.verifiedOn(DateFormat('d MMMM y').format(p.$2!.toLocal()));
     return LumeScaffold(
       header: LumeHeader(title: AppStrings.verification, onBack: () => context.pop()),
@@ -190,9 +226,16 @@ class VerificationView extends StatelessWidget {
           Container(
             width: 180,
             height: 220,
-            decoration: BoxDecoration(color: p.$1 ? AppColors.successSoft : AppColors.lavenderSoft, borderRadius: AppRadius.arch(180, bottom: 24)),
+            decoration: BoxDecoration(
+              color: p.$1 ? AppColors.successSoft : AppColors.lavenderSoft,
+              borderRadius: AppRadius.arch(180, bottom: 24),
+            ),
             alignment: Alignment.center,
-            child: LumeIcon(LumeIcons.verified, size: AppSizes.avatarXl, color: p.$1 ? AppColors.success : AppColors.plum),
+            child: LumeIcon(
+              LumeIcons.verified,
+              size: AppSizes.avatarXl,
+              color: p.$1 ? AppColors.success : AppColors.plum,
+            ),
           ),
           AppGaps.h16,
           LumeTitle(

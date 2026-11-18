@@ -95,8 +95,10 @@ class AppStrings {
   static const apple = 'Apple';
   static const google = 'Google';
   static const email = 'email';
-  static const signInTerms = 'By continuing, you agree to our Terms and Community Guidelines, and confirm you’re at least 18.';
-  static String signInComingSoon(String provider) => 'Sign in with $provider arrives with the backend. Use your phone number for now.';
+  static const signInTerms =
+      'By continuing, you agree to our Terms and Community Guidelines, and confirm you’re at least 18.';
+  static String signInComingSoon(String provider) =>
+      'Sign in with $provider arrives with the backend. Use your phone number for now.';
 
   // ─── Phone & code ─────────────────────────────────────────────────────
   static const phoneTitle = 'What’s your number?';
@@ -162,7 +164,8 @@ class AppStrings {
   static const offlineTitle = 'We lost the connection.';
   static const offlineBody = 'Your likes are saved. Check your signal and we’ll pick up right where you left off.';
   static const emptyDeckTitle = 'That’s everyone nearby, for now.';
-  static const emptyDeckBody = 'New people join every day. Try widening your distance, or polish your profile while you wait.';
+  static const emptyDeckBody =
+      'New people join every day. Try widening your distance, or polish your profile while you wait.';
   static const widenSearch = 'Widen my search';
   static const discoveryFilters = 'Discovery filters';
   static const viewFullProfile = 'View full profile';
@@ -304,7 +307,8 @@ class AppStrings {
   // ─── Photos ───────────────────────────────────────────────────────────
   static const yourPhotos = 'Your photos';
   static const reorderHint = 'Hold and drag to reorder. Your first photo is the one people see first.';
-  static const photoRejectedNote = 'One photo didn’t meet our guidelines because no person is visible. Tap it to replace it.';
+  static const photoRejectedNote =
+      'One photo didn’t meet our guidelines because no person is visible. Tap it to replace it.';
 
   // ─── Relationship preferences ─────────────────────────────────────────
   static const prefsTitle = 'What you’re looking for';
@@ -355,7 +359,8 @@ class AppStrings {
   static const alsoBlock = 'Also block this person';
   static const sendReport = 'Send report';
   static const reportThanksTitle = 'Thank you for telling us.';
-  static const reportThanksBody = 'Our team will review this, usually within 24 hours. You won’t hear from this person again.';
+  static const reportThanksBody =
+      'Our team will review this, usually within 24 hours. You won’t hear from this person again.';
   static const safetyHeroTitle = 'You deserve to feel safe here.';
   static const safetyHeroBody = 'Tools and support, whenever you need them.';
   static const reportSomeone = 'Report someone';
@@ -379,7 +384,8 @@ class AppStrings {
   static const noMoneyBody = 'Never send money to someone you’ve met here.';
   static String reportAbout(String name) => 'Your report about $name is confidential.';
   static String blockQuestion(String name) => 'Block $name?';
-  static String blockBody(String name) => 'You won’t see each other again and your conversation will be removed. $name won’t be told.';
+  static String blockBody(String name) =>
+      'You won’t see each other again and your conversation will be removed. $name won’t be told.';
 
   // ─── Components ───────────────────────────────────────────────────────
   static String stepOf(int step, int total) => 'Step $step of $total';

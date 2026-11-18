@@ -17,12 +17,7 @@ enum RelationshipStatus {
 
 /// Two matched users who agreed to be a couple in the app.
 class Relationship extends Equatable {
-  const Relationship({
-    required this.id,
-    required this.status,
-    this.partner,
-    this.startedAt,
-  });
+  const Relationship({required this.id, required this.status, this.partner, this.startedAt});
 
   static const empty = Relationship(id: '', status: RelationshipStatus.none);
 
@@ -86,13 +81,13 @@ class DatePlan extends Equatable {
   final DatePlanStatus status;
 
   factory DatePlan.fromJson(Map<String, dynamic> json) => DatePlan(
-        id: json['id'].toString(),
-        title: json['title'] as String,
-        scheduledAt: DateTime.parse(json['scheduled_at'] as String),
-        place: json['place'] as String?,
-        notes: json['notes'] as String?,
-        status: DatePlanStatus.fromValue(json['status'] as String?),
-      );
+    id: json['id'].toString(),
+    title: json['title'] as String,
+    scheduledAt: DateTime.parse(json['scheduled_at'] as String),
+    place: json['place'] as String?,
+    notes: json['notes'] as String?,
+    status: DatePlanStatus.fromValue(json['status'] as String?),
+  );
 
   @override
   List<Object?> get props => [id, title, scheduledAt, place, notes, status];
@@ -108,12 +103,12 @@ class Memory extends Equatable {
   final String? photoUrl;
 
   factory Memory.fromJson(Map<String, dynamic> json) => Memory(
-        id: json['id'].toString(),
-        title: json['title'] as String,
-        date: DateTime.parse(json['date'] as String),
-        note: json['note'] as String?,
-        photoUrl: json['photo_url'] as String?,
-      );
+    id: json['id'].toString(),
+    title: json['title'] as String,
+    date: DateTime.parse(json['date'] as String),
+    note: json['note'] as String?,
+    photoUrl: json['photo_url'] as String?,
+  );
 
   @override
   List<Object?> get props => [id, title, date, note, photoUrl];
@@ -144,12 +139,12 @@ class CheckIn extends Equatable {
   final String? note;
 
   factory CheckIn.fromJson(Map<String, dynamic> json) => CheckIn(
-        id: json['id'].toString(),
-        userId: json['user_id'].toString(),
-        mood: Mood.fromValue(json['mood'] as String?),
-        createdAt: DateTime.parse(json['created_at'] as String),
-        note: json['note'] as String?,
-      );
+    id: json['id'].toString(),
+    userId: json['user_id'].toString(),
+    mood: Mood.fromValue(json['mood'] as String?),
+    createdAt: DateTime.parse(json['created_at'] as String),
+    note: json['note'] as String?,
+  );
 
   @override
   List<Object?> get props => [id, userId, mood, createdAt, note];

@@ -42,7 +42,11 @@ class VerifySelfieView extends StatelessWidget {
           height: AppSizes.buttonHeightMd,
           onPressed: () => context.push(AppRoutes.locationPrivacy),
         ),
-        LumeButton(AppStrings.takeSelfie, variant: LumeButtonVariant.plum, onPressed: () => context.push(AppRoutes.locationPrivacy)),
+        LumeButton(
+          AppStrings.takeSelfie,
+          variant: LumeButtonVariant.plum,
+          onPressed: () => context.push(AppRoutes.locationPrivacy),
+        ),
       ],
     );
   }
@@ -58,7 +62,8 @@ class _ScanFrame extends StatefulWidget {
 }
 
 class _ScanFrameState extends State<_ScanFrame> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400))..repeat();
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400))
+    ..repeat();
 
   @override
   void dispose() {
@@ -75,7 +80,10 @@ class _ScanFrameState extends State<_ScanFrame> with SingleTickerProviderStateMi
         fit: StackFit.expand,
         children: [
           ClipRRect(borderRadius: BorderRadius.circular(135), child: LumePhoto(widget.photo)),
-          AnimatedBuilder(animation: _c, builder: (_, _) => CustomPaint(painter: _ScanPainter(_c.value, reduce: LumeMotion.reduceMotion(context)))),
+          AnimatedBuilder(
+            animation: _c,
+            builder: (_, _) => CustomPaint(painter: _ScanPainter(_c.value, reduce: LumeMotion.reduceMotion(context))),
+          ),
         ],
       ),
     );
@@ -170,13 +178,21 @@ class FuzzyMap extends StatelessWidget {
             min: 0.92,
             max: 1.04,
             period: const Duration(milliseconds: 2200),
-            child: Container(width: 240, height: 240, decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.lavender.withValues(alpha: 0.33))),
+            child: Container(
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.lavender.withValues(alpha: 0.33)),
+            ),
           ),
           Pulse(
             min: 0.9,
             max: 1.08,
             period: const Duration(milliseconds: 1600),
-            child: Container(width: 140, height: 140, decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.lavender.withValues(alpha: 0.53))),
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.lavender.withValues(alpha: 0.53)),
+            ),
           ),
           Container(
             width: 56,
@@ -218,7 +234,9 @@ class ProfileReadyView extends StatelessWidget {
                 loading: s.isSubmitting,
                 onPressed: () async {
                   final auth = context.read<AuthBloc>();
-                  if (await context.read<ProfileSetupCubit>().submit()) auth.add(AuthOnboardingCompleted(name: s.name.trim()));
+                  if (await context.read<ProfileSetupCubit>().submit()) {
+                    auth.add(AuthOnboardingCompleted(name: s.name.trim()));
+                  }
                 },
               ),
             ],

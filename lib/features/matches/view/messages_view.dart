@@ -26,7 +26,9 @@ class MessagesView extends StatelessWidget {
         bottom: false,
         child: BlocBuilder<MatchesBloc, MatchesState>(
           builder: (context, s) {
-            if (s.status == MatchesStatus.loading) return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+            if (s.status == MatchesStatus.loading) {
+              return const Center(child: CircularProgressIndicator(color: AppColors.plum));
+            }
             if (s.conversations.isEmpty) {
               return LumeEmptyState(
                 icon: LumeIcons.chat,
@@ -89,7 +91,12 @@ class _ConversationRow extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(children: [Expanded(child: Text(match.profile.name, style: LumeText.titleS)), Text(shortTime(last.sentAt), style: LumeText.caption)]),
+                      Row(
+                        children: [
+                          Expanded(child: Text(match.profile.name, style: LumeText.titleS)),
+                          Text(shortTime(last.sentAt), style: LumeText.caption),
+                        ],
+                      ),
                       AppGaps.h2,
                       Row(
                         children: [
@@ -107,7 +114,10 @@ class _ConversationRow extends StatelessWidget {
                               height: 22,
                               decoration: const BoxDecoration(color: AppColors.coral, shape: BoxShape.circle),
                               alignment: Alignment.center,
-                              child: Text('${match.unreadCount}', style: LumeText.caption.copyWith(color: AppColors.ink)),
+                              child: Text(
+                                '${match.unreadCount}',
+                                style: LumeText.caption.copyWith(color: AppColors.ink),
+                              ),
                             ),
                         ],
                       ),

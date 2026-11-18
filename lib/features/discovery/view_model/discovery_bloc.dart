@@ -110,7 +110,12 @@ class DiscoveryBloc extends Bloc<DiscoveryEvent, DiscoveryState> {
       final deck = await _repo.feed();
       emit(state.copyWith(status: DiscoveryStatus.ready, deck: deck, preferences: prefs));
     } on ApiException catch (err) {
-      emit(state.copyWith(status: err.statusCode == null ? DiscoveryStatus.offline : DiscoveryStatus.ready, error: () => err.message));
+      emit(
+        state.copyWith(
+          status: err.statusCode == null ? DiscoveryStatus.offline : DiscoveryStatus.ready,
+          error: () => err.message,
+        ),
+      );
     }
   }
 
@@ -118,7 +123,13 @@ class DiscoveryBloc extends Bloc<DiscoveryEvent, DiscoveryState> {
     final target = state.top;
     if (target == null) return;
     final liked = e.action != SwipeAction.pass;
-    emit(state.copyWith(deck: state.deck.skip(1).toList(), likes: liked ? state.likes + 1 : state.likes, error: () => null));
+    emit(
+      state.copyWith(
+        deck: state.deck.skip(1).toList(),
+        likes: liked ? state.likes + 1 : state.likes,
+        error: () => null,
+      ),
+    );
     try {
       final result = await _repo.swipe(profileId: target.id, action: e.action, comment: e.comment);
       if (result.isMatch && result.match != null) emit(state.copyWith(newMatch: () => result.match));
@@ -129,7 +140,12 @@ class DiscoveryBloc extends Bloc<DiscoveryEvent, DiscoveryState> {
       }
     } on ApiException catch (err) {
       // Likes are queued server-side; only a lost connection changes the screen.
-      emit(state.copyWith(status: err.statusCode == null ? DiscoveryStatus.offline : state.status, error: () => err.message));
+      emit(
+        state.copyWith(
+          status: err.statusCode == null ? DiscoveryStatus.offline : state.status,
+          error: () => err.message,
+        ),
+      );
     }
   }
 
@@ -140,7 +156,12 @@ class DiscoveryBloc extends Bloc<DiscoveryEvent, DiscoveryState> {
       final deck = await _repo.feed();
       emit(state.copyWith(status: DiscoveryStatus.ready, preferences: saved, deck: deck));
     } on ApiException catch (err) {
-      emit(state.copyWith(status: err.statusCode == null ? DiscoveryStatus.offline : DiscoveryStatus.ready, error: () => err.message));
+      emit(
+        state.copyWith(
+          status: err.statusCode == null ? DiscoveryStatus.offline : DiscoveryStatus.ready,
+          error: () => err.message,
+        ),
+      );
     }
   }
 }

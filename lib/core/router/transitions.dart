@@ -32,13 +32,16 @@ class LumeTransitions {
         }),
   );
 
-  static Page<void> dissolve(GoRouterState state, Widget child, {Duration duration = LumeMotion.dissolve}) => CustomTransitionPage<void>(
-    key: state.pageKey,
-    child: child,
-    transitionDuration: duration,
-    reverseTransitionDuration: LumeMotion.dissolve,
-    transitionsBuilder: (context, a, _, child) => FadeTransition(opacity: CurvedAnimation(parent: a, curve: Curves.easeOut), child: child),
-  );
+  static Page<void> dissolve(GoRouterState state, Widget child, {Duration duration = LumeMotion.dissolve}) =>
+      CustomTransitionPage<void>(
+        key: state.pageKey,
+        child: child,
+        transitionDuration: duration,
+        reverseTransitionDuration: LumeMotion.dissolve,
+        transitionsBuilder:
+            (context, a, _, child) =>
+                FadeTransition(opacity: CurvedAnimation(parent: a, curve: Curves.easeOut), child: child),
+      );
 
   /// Slides up from the bottom (filters, full profile).
   static Page<void> moveIn(GoRouterState state, Widget child) => CustomTransitionPage<void>(
@@ -49,7 +52,10 @@ class LumeTransitions {
     transitionsBuilder:
         (context, a, _, child) => _reduced(context, a, child, () {
           final curve = CurvedAnimation(parent: a, curve: Curves.easeOutCubic, reverseCurve: Curves.easeInCubic);
-          return SlideTransition(position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(curve), child: child);
+          return SlideTransition(
+            position: Tween(begin: const Offset(0, 1), end: Offset.zero).animate(curve),
+            child: child,
+          );
         }),
   );
 }

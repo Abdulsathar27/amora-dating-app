@@ -116,7 +116,12 @@ Future<void> showGifPicker(BuildContext context) {
   final bloc = context.read<ChatBloc>();
   const tags = [AppStrings.gifTrending, AppStrings.gifLaugh, AppStrings.gifYes, AppStrings.gifBlush];
   const gifs = {
-    AppStrings.gifTrending: ['assets/images/dunes.jpg', 'assets/images/sea.jpg', 'assets/images/cafe.jpg', 'assets/images/dunes.jpg'],
+    AppStrings.gifTrending: [
+      'assets/images/dunes.jpg',
+      'assets/images/sea.jpg',
+      'assets/images/cafe.jpg',
+      'assets/images/dunes.jpg',
+    ],
     AppStrings.gifLaugh: ['assets/images/sea.jpg', 'assets/images/cafe.jpg'],
     AppStrings.gifYes: ['assets/images/dunes.jpg', 'assets/images/sea.jpg'],
     AppStrings.gifBlush: ['assets/images/cafe.jpg', 'assets/images/dunes.jpg'],
@@ -142,7 +147,10 @@ Future<void> showGifPicker(BuildContext context) {
                             filled: true,
                             fillColor: AppColors.background,
                             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(22), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(22),
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                         ),
                         AppGaps.h14,
@@ -218,7 +226,12 @@ Future<void> showChatSafetySheet(BuildContext context) {
                           context.push(AppRoutes.person, extra: FullProfileArgs(p));
                         },
                       ),
-                      LumeRow(icon: LumeIcons.bell, title: AppStrings.muteNotifications, toggle: s.isMuted, onToggle: (_) => bloc.add(const ChatMuteToggled())),
+                      LumeRow(
+                        icon: LumeIcons.bell,
+                        title: AppStrings.muteNotifications,
+                        toggle: s.isMuted,
+                        onToggle: (_) => bloc.add(const ChatMuteToggled()),
+                      ),
                       LumeRow(
                         icon: LumeIcons.close,
                         title: AppStrings.unmatch,

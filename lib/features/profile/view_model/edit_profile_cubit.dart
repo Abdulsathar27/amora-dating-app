@@ -15,7 +15,8 @@ class EditProfileState extends Equatable {
   final List<String> interests;
   final Profile original;
 
-  bool get isDirty => bio != original.bio || prompt != original.prompts.firstOrNull || interests.join() != original.interests.join();
+  bool get isDirty =>
+      bio != original.bio || prompt != original.prompts.firstOrNull || interests.join() != original.interests.join();
 
   Map<String, dynamic> get changes => {
     'bio': bio.trim(),
@@ -23,15 +24,20 @@ class EditProfileState extends Equatable {
     'interests': interests,
   };
 
-  EditProfileState copyWith({String? bio, ProfilePrompt? prompt, List<String>? interests}) =>
-      EditProfileState(bio: bio ?? this.bio, prompt: prompt ?? this.prompt, interests: interests ?? this.interests, original: original);
+  EditProfileState copyWith({String? bio, ProfilePrompt? prompt, List<String>? interests}) => EditProfileState(
+    bio: bio ?? this.bio,
+    prompt: prompt ?? this.prompt,
+    interests: interests ?? this.interests,
+    original: original,
+  );
 
   @override
   List<Object?> get props => [bio, prompt, interests, original];
 }
 
 class EditProfileCubit extends Cubit<EditProfileState> {
-  EditProfileCubit(Profile p) : super(EditProfileState(bio: p.bio, prompt: p.prompts.firstOrNull, interests: p.interests, original: p));
+  EditProfileCubit(Profile p)
+    : super(EditProfileState(bio: p.bio, prompt: p.prompts.firstOrNull, interests: p.interests, original: p));
 
   void bioChanged(String v) => emit(state.copyWith(bio: v));
 
@@ -49,7 +55,13 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
 /// Draft of "What you're looking for".
 class RelationshipPrefsState extends Equatable {
-  const RelationshipPrefsState({required this.intent, required this.interestedIn, required this.kids, required this.smoking, required this.distanceKm});
+  const RelationshipPrefsState({
+    required this.intent,
+    required this.interestedIn,
+    required this.kids,
+    required this.smoking,
+    required this.distanceKm,
+  });
 
   final RelationshipIntent intent;
   final InterestedIn interestedIn;
@@ -57,14 +69,19 @@ class RelationshipPrefsState extends Equatable {
   final String smoking;
   final int distanceKm;
 
-  RelationshipPrefsState copyWith({RelationshipIntent? intent, InterestedIn? interestedIn, String? kids, String? smoking, int? distanceKm}) =>
-      RelationshipPrefsState(
-        intent: intent ?? this.intent,
-        interestedIn: interestedIn ?? this.interestedIn,
-        kids: kids ?? this.kids,
-        smoking: smoking ?? this.smoking,
-        distanceKm: distanceKm ?? this.distanceKm,
-      );
+  RelationshipPrefsState copyWith({
+    RelationshipIntent? intent,
+    InterestedIn? interestedIn,
+    String? kids,
+    String? smoking,
+    int? distanceKm,
+  }) => RelationshipPrefsState(
+    intent: intent ?? this.intent,
+    interestedIn: interestedIn ?? this.interestedIn,
+    kids: kids ?? this.kids,
+    smoking: smoking ?? this.smoking,
+    distanceKm: distanceKm ?? this.distanceKm,
+  );
 
   @override
   List<Object?> get props => [intent, interestedIn, kids, smoking, distanceKm];

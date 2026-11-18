@@ -10,21 +10,24 @@ import 'mock_interceptor.dart';
 /// Thin wrapper over Dio. Repositories only ever see JSON or an [ApiException].
 class DioClient {
   DioClient({required TokenStorage tokenStorage, Dio? dio})
-      : _dio = dio ??
-            Dio(
-              BaseOptions(
-                baseUrl: AppConfig.baseUrl,
-                connectTimeout: AppConfig.connectTimeout,
-                receiveTimeout: AppConfig.receiveTimeout,
-                contentType: Headers.jsonContentType,
-                responseType: ResponseType.json,
-              ),
-            ) {
+    : _dio =
+          dio ??
+          Dio(
+            BaseOptions(
+              baseUrl: AppConfig.baseUrl,
+              connectTimeout: AppConfig.connectTimeout,
+              receiveTimeout: AppConfig.receiveTimeout,
+              contentType: Headers.jsonContentType,
+              responseType: ResponseType.json,
+            ),
+          ) {
     authInterceptor = AuthInterceptor(tokenStorage: tokenStorage, dio: _dio);
     _dio.interceptors.add(authInterceptor);
     if (AppConfig.useMockApi) _dio.interceptors.add(MockInterceptor());
     if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: false, logPrint: (o) => debugPrint(o.toString())));
+      _dio.interceptors.add(
+        LogInterceptor(requestBody: true, responseBody: false, logPrint: (o) => debugPrint(o.toString())),
+      );
     }
   }
 

@@ -15,6 +15,8 @@ then turn a match into a couple with a shared space just for the two of you.
 [![Python](https://img.shields.io/badge/Backend-Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](docs/API_CONTRACT.md)
 
 [![CI](https://github.com/Abdulsathar27/amora-dating-app/actions/workflows/flutter-ci.yml/badge.svg)](https://github.com/Abdulsathar27/amora-dating-app/actions/workflows/flutter-ci.yml)
+[![Deploy web](https://github.com/Abdulsathar27/amora-dating-app/actions/workflows/deploy-web.yml/badge.svg)](https://abdulsathar27.github.io/amora-dating-app/)
+[![Release](https://img.shields.io/github/v/release/Abdulsathar27/amora-dating-app?include_prereleases&label=release)](https://github.com/Abdulsathar27/amora-dating-app/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -198,6 +200,37 @@ flutter run --dart-define=USE_MOCK_API=false --dart-define=API_BASE_URL=http://1
 ```bash
 flutter analyze
 flutter test
+```
+
+---
+
+## ⚙️ CI/CD
+
+| Workflow | Runs when | What it does |
+|---|---|---|
+| [Flutter CI](.github/workflows/flutter-ci.yml) | every push to `main` and every pull request | format check, `flutter analyze --fatal-infos`, tests with coverage (summary on the run page), then builds a debug APK and the web app as downloadable artifacts |
+| [Deploy web](.github/workflows/deploy-web.yml) | after CI passes on `main` | publishes the web build to **GitHub Pages**: https://abdulsathar27.github.io/amora-dating-app/ (runs on the mock API) |
+| [Release](.github/workflows/release.yml) | when you push a `v*.*.*` tag (or run it by hand) | tests, then builds a release **APK**, a Play Store **AAB** and a **web zip**, and publishes a GitHub Release with notes and checksums |
+| [Dependabot](.github/dependabot.yml) | weekly / monthly | opens PRs to update Flutter packages and GitHub Actions |
+
+**Cut a release**
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Versions starting with `0.` are marked as pre-releases. The build number is the workflow run number.
+
+**One-time setup**
+1. **GitHub Pages:** Settings → Pages → *Build and deployment* → Source: **GitHub Actions**.
+2. **Release signing (optional):** add the secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`. Without them, release builds are signed with the debug key, which is fine for testing but not for the Play Store.
+3. **Branch protection (recommended):** Settings → Branches → protect `main` and require the *Format, analyze & test* check.
+
+**Before you push**, run the same checks locally:
+
+```bash
+dart format lib test && flutter analyze && flutter test
 ```
 
 ---

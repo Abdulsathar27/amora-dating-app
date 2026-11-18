@@ -29,7 +29,10 @@ class ReportReasonView extends StatelessWidget {
       body: StaggeredEntrance(
         spacing: 14,
         children: [
-          LumeTitle(AppStrings.reportTitle, subtitle: name.isEmpty ? AppStrings.reportConfidential : AppStrings.reportAbout(name)),
+          LumeTitle(
+            AppStrings.reportTitle,
+            subtitle: name.isEmpty ? AppStrings.reportConfidential : AppStrings.reportAbout(name),
+          ),
           LumeCard(
             children: [
               for (final r in ReportReason.values)
@@ -76,7 +79,9 @@ class ReportDetailsView extends StatelessWidget {
                 hint: AppStrings.reportTitle,
               ),
               AppGaps.h14,
-              LumeCard(children: [LumeRow(title: AppStrings.alsoBlock, toggle: s.alsoBlock, onToggle: cubit.alsoBlockChanged)]),
+              LumeCard(
+                children: [LumeRow(title: AppStrings.alsoBlock, toggle: s.alsoBlock, onToggle: cubit.alsoBlockChanged)],
+              ),
               if (s.error != null) ...[AppGaps.h14, LumeNote(s.error!, danger: true)],
             ],
           ),
@@ -110,7 +115,11 @@ class ReportSentView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LumeScaffold(
       scroll: false,
-      body: const LumeEmptyState(icon: LumeIcons.shield, title: AppStrings.reportThanksTitle, body: AppStrings.reportThanksBody),
+      body: const LumeEmptyState(
+        icon: LumeIcons.shield,
+        title: AppStrings.reportThanksTitle,
+        body: AppStrings.reportThanksBody,
+      ),
       bottom: [LumeButton(AppStrings.done, onPressed: () => context.go(AppRoutes.messages))],
     );
   }

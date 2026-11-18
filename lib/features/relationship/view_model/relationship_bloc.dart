@@ -112,16 +112,15 @@ class RelationshipState extends Equatable {
     List<CheckIn>? checkIns,
     bool? isBusy,
     String? error,
-  }) =>
-      RelationshipState(
-        status: status ?? this.status,
-        relationship: relationship ?? this.relationship,
-        datePlans: datePlans ?? this.datePlans,
-        memories: memories ?? this.memories,
-        checkIns: checkIns ?? this.checkIns,
-        isBusy: isBusy ?? this.isBusy,
-        error: error,
-      );
+  }) => RelationshipState(
+    status: status ?? this.status,
+    relationship: relationship ?? this.relationship,
+    datePlans: datePlans ?? this.datePlans,
+    memories: memories ?? this.memories,
+    checkIns: checkIns ?? this.checkIns,
+    isBusy: isBusy ?? this.isBusy,
+    error: error,
+  );
 
   @override
   List<Object?> get props => [status, relationship, datePlans, memories, checkIns, isBusy, error];
@@ -151,13 +150,15 @@ class RelationshipBloc extends Bloc<RelationshipEvent, RelationshipState> {
         return emit(state.copyWith(status: RelationshipViewStatus.ready, relationship: rel));
       }
       final results = await Future.wait([_repo.datePlans(), _repo.memories(), _repo.checkIns()]);
-      emit(state.copyWith(
-        status: RelationshipViewStatus.ready,
-        relationship: rel,
-        datePlans: results[0] as List<DatePlan>,
-        memories: results[1] as List<Memory>,
-        checkIns: results[2] as List<CheckIn>,
-      ));
+      emit(
+        state.copyWith(
+          status: RelationshipViewStatus.ready,
+          relationship: rel,
+          datePlans: results[0] as List<DatePlan>,
+          memories: results[1] as List<Memory>,
+          checkIns: results[2] as List<CheckIn>,
+        ),
+      );
     } on ApiException catch (err) {
       emit(state.copyWith(status: RelationshipViewStatus.failure, error: err.message));
     }
@@ -167,34 +168,34 @@ class RelationshipBloc extends Bloc<RelationshipEvent, RelationshipState> {
       _busy(emit, () async => emit(state.copyWith(relationship: await _repo.request(e.matchId))));
 
   Future<void> _onAnswer(PartnerRequestAnswered e, Emitter<RelationshipState> emit) => _busy(emit, () async {
-        await _repo.respond(accept: e.accept);
-        add(const RelationshipLoaded());
-      });
+    await _repo.respond(accept: e.accept);
+    add(const RelationshipLoaded());
+  });
 
   Future<void> _onEnded(RelationshipEnded e, Emitter<RelationshipState> emit) => _busy(emit, () async {
-        await _repo.end();
-        emit(const RelationshipState(status: RelationshipViewStatus.ready));
-      });
+    await _repo.end();
+    emit(const RelationshipState(status: RelationshipViewStatus.ready));
+  });
 
   Future<void> _onPlanAdded(DatePlanAdded e, Emitter<RelationshipState> emit) => _busy(emit, () async {
-        final plan = await _repo.addDatePlan(title: e.title, scheduledAt: e.scheduledAt, place: e.place);
-        emit(state.copyWith(datePlans: [plan, ...state.datePlans]));
-      });
+    final plan = await _repo.addDatePlan(title: e.title, scheduledAt: e.scheduledAt, place: e.place);
+    emit(state.copyWith(datePlans: [plan, ...state.datePlans]));
+  });
 
   Future<void> _onPlanStatus(DatePlanStatusChanged e, Emitter<RelationshipState> emit) => _busy(emit, () async {
-        final updated = await _repo.updateDatePlanStatus(e.plan.id, e.status);
-        emit(state.copyWith(datePlans: [for (final p in state.datePlans) p.id == updated.id ? updated : p]));
-      });
+    final updated = await _repo.updateDatePlanStatus(e.plan.id, e.status);
+    emit(state.copyWith(datePlans: [for (final p in state.datePlans) p.id == updated.id ? updated : p]));
+  });
 
   Future<void> _onMemoryAdded(MemoryAdded e, Emitter<RelationshipState> emit) => _busy(emit, () async {
-        final m = await _repo.addMemory(title: e.title, date: e.date, note: e.note);
-        emit(state.copyWith(memories: [m, ...state.memories]));
-      });
+    final m = await _repo.addMemory(title: e.title, date: e.date, note: e.note);
+    emit(state.copyWith(memories: [m, ...state.memories]));
+  });
 
   Future<void> _onMood(MoodCheckedIn e, Emitter<RelationshipState> emit) => _busy(emit, () async {
-        final c = await _repo.addCheckIn(e.mood);
-        emit(state.copyWith(checkIns: [c, ...state.checkIns]));
-      });
+    final c = await _repo.addCheckIn(e.mood);
+    emit(state.copyWith(checkIns: [c, ...state.checkIns]));
+  });
 
   Future<void> _busy(Emitter<RelationshipState> emit, Future<void> Function() body) async {
     emit(state.copyWith(isBusy: true));

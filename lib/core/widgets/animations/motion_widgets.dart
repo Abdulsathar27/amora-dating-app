@@ -96,7 +96,10 @@ class _PulseState extends State<Pulse> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     if (LumeMotion.reduceMotion(context)) return widget.child;
     return ScaleTransition(
-      scale: Tween(begin: widget.min, end: widget.max).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
+      scale: Tween(
+        begin: widget.min,
+        end: widget.max,
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut)),
       child: widget.child,
     );
   }
@@ -114,7 +117,10 @@ class Shake extends StatefulWidget {
 }
 
 class _ShakeState extends State<Shake> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 420));
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 420),
+  );
 
   @override
   void didUpdateWidget(Shake old) {
@@ -151,7 +157,10 @@ class Shimmer extends StatefulWidget {
 }
 
 class _ShimmerState extends State<Shimmer> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400))..repeat();
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  )..repeat();
 
   @override
   void dispose() {
@@ -188,7 +197,10 @@ class TypingDots extends StatefulWidget {
 }
 
 class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat();
 
   @override
   void dispose() {
@@ -208,8 +220,15 @@ class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateM
                 margin: const EdgeInsets.symmetric(horizontal: 2),
                 width: 7,
                 height: 7,
-                transform: Matrix4.translationValues(0, -3 * math.max(0, math.sin((_controller.value - i * 0.18) * 2 * math.pi)), 0),
-                decoration: BoxDecoration(color: i == 0 ? AppColors.plum : AppColors.plum.withValues(alpha: 0.45), shape: BoxShape.circle),
+                transform: Matrix4.translationValues(
+                  0,
+                  -3 * math.max(0, math.sin((_controller.value - i * 0.18) * 2 * math.pi)),
+                  0,
+                ),
+                decoration: BoxDecoration(
+                  color: i == 0 ? AppColors.plum : AppColors.plum.withValues(alpha: 0.45),
+                  shape: BoxShape.circle,
+                ),
               ),
           ],
         ),

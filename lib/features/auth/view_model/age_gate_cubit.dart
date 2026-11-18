@@ -26,7 +26,8 @@ class AgeGateState extends Equatable {
     return !eighteenth.isAfter(today);
   }
 
-  AgeGateState copyWith({String? day, String? month, String? year}) => AgeGateState(day: day ?? this.day, month: month ?? this.month, year: year ?? this.year);
+  AgeGateState copyWith({String? day, String? month, String? year}) =>
+      AgeGateState(day: day ?? this.day, month: month ?? this.month, year: year ?? this.year);
 
   @override
   List<Object?> get props => [day, month, year];

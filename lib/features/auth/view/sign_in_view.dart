@@ -22,17 +22,32 @@ class SignInView extends StatelessWidget {
       body: StaggeredEntrance(
         spacing: 20,
         children: [
-          Text(AppStrings.wordmark, style: LumeText.wordmark.copyWith(fontSize: 42, height: 48 / 42, color: AppColors.plum)),
+          Text(
+            AppStrings.wordmark,
+            style: LumeText.wordmark.copyWith(fontSize: 42, height: 48 / 42, color: AppColors.plum),
+          ),
           const LumeTitle(AppStrings.signInTitle, subtitle: AppStrings.signInSubtitle),
           Column(
             children: [
               LumeButton(AppStrings.continueWithPhone, onPressed: () => context.push(AppRoutes.phone)),
               AppGaps.h12,
-              LumeButton(AppStrings.continueWithApple, variant: LumeButtonVariant.secondary, onPressed: () => soon(AppStrings.apple)),
+              LumeButton(
+                AppStrings.continueWithApple,
+                variant: LumeButtonVariant.secondary,
+                onPressed: () => soon(AppStrings.apple),
+              ),
               AppGaps.h12,
-              LumeButton(AppStrings.continueWithGoogle, variant: LumeButtonVariant.secondary, onPressed: () => soon(AppStrings.google)),
+              LumeButton(
+                AppStrings.continueWithGoogle,
+                variant: LumeButtonVariant.secondary,
+                onPressed: () => soon(AppStrings.google),
+              ),
               AppGaps.h12,
-              LumeButton(AppStrings.continueWithEmail, variant: LumeButtonVariant.secondary, onPressed: () => soon(AppStrings.email)),
+              LumeButton(
+                AppStrings.continueWithEmail,
+                variant: LumeButtonVariant.secondary,
+                onPressed: () => soon(AppStrings.email),
+              ),
             ],
           ),
           Text(AppStrings.signInTerms, textAlign: TextAlign.center, style: LumeText.caption),

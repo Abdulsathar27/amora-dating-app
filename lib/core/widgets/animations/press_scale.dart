@@ -17,8 +17,15 @@ class PressScale extends StatefulWidget {
 }
 
 class _PressScaleState extends State<PressScale> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: LumeMotion.tap, reverseDuration: LumeMotion.tap);
-  late final Animation<double> _scale = Tween(begin: 1.0, end: widget.scale).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: LumeMotion.tap,
+    reverseDuration: LumeMotion.tap,
+  );
+  late final Animation<double> _scale = Tween(
+    begin: 1.0,
+    end: widget.scale,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
   @override
   void dispose() {

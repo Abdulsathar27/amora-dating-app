@@ -78,7 +78,12 @@ class MyProfileView extends StatelessWidget {
                               builder:
                                   (_, v, _) => ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
-                                    child: LinearProgressIndicator(value: v, minHeight: 8, color: AppColors.coral, backgroundColor: AppColors.line),
+                                    child: LinearProgressIndicator(
+                                      value: v,
+                                      minHeight: 8,
+                                      color: AppColors.coral,
+                                      backgroundColor: AppColors.line,
+                                    ),
                                   ),
                             ),
                           ],
@@ -99,7 +104,12 @@ class MyProfileView extends StatelessWidget {
                         children: [
                           const LumeIcon(LumeIcons.mic, size: 22),
                           AppGaps.w10,
-                          Expanded(child: Text(AppStrings.addVoiceTo100, style: LumeText.labelM.copyWith(color: AppColors.plum))),
+                          Expanded(
+                            child: Text(
+                              AppStrings.addVoiceTo100,
+                              style: LumeText.labelM.copyWith(color: AppColors.plum),
+                            ),
+                          ),
                           const LumeIcon(LumeIcons.next, size: 20),
                         ],
                       ),
@@ -111,12 +121,36 @@ class MyProfileView extends StatelessWidget {
                   children: [
                     StaggeredEntrance(
                       children: [
-                        LumeRow(icon: LumeIcons.edit, title: AppStrings.editProfile, onTap: () => context.push(AppRoutes.editProfile)),
-                        LumeRow(icon: LumeIcons.image, title: AppStrings.managePhotos, onTap: () => context.push(AppRoutes.managePhotos)),
-                        LumeRow(icon: LumeIcons.mic, title: AppStrings.voiceIntro, onTap: () => context.push(AppRoutes.voiceIntro)),
-                        LumeRow(icon: LumeIcons.heart, title: AppStrings.relationshipPreferences, onTap: () => context.push(AppRoutes.relationshipPrefs)),
-                        LumeRow(icon: LumeIcons.lock, title: AppStrings.privacy, onTap: () => context.push(AppRoutes.privacy)),
-                        LumeRow(icon: LumeIcons.user, title: AppStrings.account, onTap: () => context.push(AppRoutes.account)),
+                        LumeRow(
+                          icon: LumeIcons.edit,
+                          title: AppStrings.editProfile,
+                          onTap: () => context.push(AppRoutes.editProfile),
+                        ),
+                        LumeRow(
+                          icon: LumeIcons.image,
+                          title: AppStrings.managePhotos,
+                          onTap: () => context.push(AppRoutes.managePhotos),
+                        ),
+                        LumeRow(
+                          icon: LumeIcons.mic,
+                          title: AppStrings.voiceIntro,
+                          onTap: () => context.push(AppRoutes.voiceIntro),
+                        ),
+                        LumeRow(
+                          icon: LumeIcons.heart,
+                          title: AppStrings.relationshipPreferences,
+                          onTap: () => context.push(AppRoutes.relationshipPrefs),
+                        ),
+                        LumeRow(
+                          icon: LumeIcons.lock,
+                          title: AppStrings.privacy,
+                          onTap: () => context.push(AppRoutes.privacy),
+                        ),
+                        LumeRow(
+                          icon: LumeIcons.user,
+                          title: AppStrings.account,
+                          onTap: () => context.push(AppRoutes.account),
+                        ),
                       ],
                     ),
                   ],

@@ -38,7 +38,12 @@ class LikesState extends Equatable {
   final Match? newMatch;
   final String? error;
 
-  LikesState copyWith({LikesStatus? status, List<ReceivedLike>? likes, Match? Function()? newMatch, String? Function()? error}) => LikesState(
+  LikesState copyWith({
+    LikesStatus? status,
+    List<ReceivedLike>? likes,
+    Match? Function()? newMatch,
+    String? Function()? error,
+  }) => LikesState(
     status: status ?? this.status,
     likes: likes ?? this.likes,
     newMatch: newMatch != null ? newMatch() : this.newMatch,
@@ -63,7 +68,9 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
     try {
       emit(state.copyWith(status: LikesStatus.ready, likes: await _repo.receivedLikes(), error: () => null));
     } on ApiException catch (err) {
-      emit(state.copyWith(status: state.likes.isEmpty ? LikesStatus.failure : LikesStatus.ready, error: () => err.message));
+      emit(
+        state.copyWith(status: state.likes.isEmpty ? LikesStatus.failure : LikesStatus.ready, error: () => err.message),
+      );
     }
   }
 
@@ -71,7 +78,10 @@ class LikesBloc extends Bloc<LikesEvent, LikesState> {
     final remaining = state.likes.where((l) => l.profile.id != e.like.profile.id).toList();
     emit(state.copyWith(likes: remaining));
     try {
-      final result = await _repo.swipe(profileId: e.like.profile.id, action: e.likeBack ? SwipeAction.like : SwipeAction.pass);
+      final result = await _repo.swipe(
+        profileId: e.like.profile.id,
+        action: e.likeBack ? SwipeAction.like : SwipeAction.pass,
+      );
       if (result.isMatch) emit(state.copyWith(newMatch: () => result.match));
     } on ApiException catch (err) {
       emit(state.copyWith(likes: [e.like, ...remaining], error: () => err.message));

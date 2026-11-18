@@ -23,7 +23,15 @@ String lifestyleIcon(String key) => switch (key) {
 /// "The postcard card": arched photo, voice chip, then a white note with the
 /// name, distance, quote, tags and lifestyle. 358x560 in the design.
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({super.key, required this.profile, this.photoIndex = 0, this.onExpand, this.onPhotoTap, this.onVoiceTap, this.voicePlaying = false});
+  const ProfileCard({
+    super.key,
+    required this.profile,
+    this.photoIndex = 0,
+    this.onExpand,
+    this.onPhotoTap,
+    this.onVoiceTap,
+    this.voicePlaying = false,
+  });
 
   final Profile profile;
   final int photoIndex;
@@ -74,13 +82,21 @@ class ProfileCard extends StatelessWidget {
                         duration: const Duration(milliseconds: 220),
                         width: i == index ? 22 : 8,
                         height: 8,
-                        decoration: BoxDecoration(color: AppColors.surface.withValues(alpha: i == index ? 1 : 0.47), borderRadius: BorderRadius.circular(4)),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface.withValues(alpha: i == index ? 1 : 0.47),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ],
                   ],
                 ),
               ),
-            if (p.voice != null) Positioned(left: 16, top: photoH - 118, child: VoiceChip(voice: p.voice!, playing: voicePlaying, onTap: onVoiceTap)),
+            if (p.voice != null)
+              Positioned(
+                left: 16,
+                top: photoH - 118,
+                child: VoiceChip(voice: p.voice!, playing: voicePlaying, onTap: onVoiceTap),
+              ),
             if (p.compatibility != null)
               Positioned(
                 right: 26,
@@ -105,24 +121,49 @@ class ProfileCard extends StatelessWidget {
               top: photoH - 56,
               child: Container(
                 padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
-                decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(28), boxShadow: LumeShadows.card),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(28),
+                  boxShadow: LumeShadows.card,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       children: [
-                        Flexible(child: Text('${p.name}, ${p.age}', style: LumeText.displayM, overflow: TextOverflow.ellipsis)),
-                        if (p.isVerified) ...[AppGaps.w6, const LumeIcon(LumeIcons.verified, size: 22, color: AppColors.success)],
+                        Flexible(
+                          child: Text('${p.name}, ${p.age}', style: LumeText.displayM, overflow: TextOverflow.ellipsis),
+                        ),
+                        if (p.isVerified) ...[
+                          AppGaps.w6,
+                          const LumeIcon(LumeIcons.verified, size: 22, color: AppColors.success),
+                        ],
                         const Spacer(),
                         if (onExpand != null)
-                          LumeIconButton(LumeIcons.down, onPressed: onExpand, background: AppColors.lavenderSoft, tooltip: AppStrings.viewFullProfile),
+                          LumeIconButton(
+                            LumeIcons.down,
+                            onPressed: onExpand,
+                            background: AppColors.lavenderSoft,
+                            tooltip: AppStrings.viewFullProfile,
+                          ),
                       ],
                     ),
-                    Row(children: [const LumeIcon(LumeIcons.pin, size: 16, color: AppColors.muted), AppGaps.w5, Text(p.distanceLabel, style: LumeText.bodyM)]),
+                    Row(
+                      children: [
+                        const LumeIcon(LumeIcons.pin, size: 16, color: AppColors.muted),
+                        AppGaps.w5,
+                        Text(p.distanceLabel, style: LumeText.bodyM),
+                      ],
+                    ),
                     if (p.quote != null) ...[
                       AppGaps.h7,
-                      Text(p.quote!, style: LumeText.quote.copyWith(color: AppColors.ink), maxLines: 2, overflow: TextOverflow.ellipsis),
+                      Text(
+                        p.quote!,
+                        style: LumeText.quote.copyWith(color: AppColors.ink),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                     AppGaps.h7,
                     Wrap(
@@ -179,7 +220,11 @@ class VoiceChip extends StatelessWidget {
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.fromLTRB(8, 8, 14, 8),
-          decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(24), boxShadow: LumeShadows.soft),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: LumeShadows.soft,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -191,7 +236,12 @@ class VoiceChip extends StatelessWidget {
                 child: LumeIcon(playing ? LumeIcons.pause : LumeIcons.play, size: 16, color: AppColors.ink),
               ),
               AppGaps.w8,
-              Waveform(heights: Waveform.chip, progress: 0.35, playing: playing, duration: Duration(seconds: voice.seconds)),
+              Waveform(
+                heights: Waveform.chip,
+                progress: 0.35,
+                playing: playing,
+                duration: Duration(seconds: voice.seconds),
+              ),
               AppGaps.w8,
               Text(voice.durationLabel, style: LumeText.caption),
             ],

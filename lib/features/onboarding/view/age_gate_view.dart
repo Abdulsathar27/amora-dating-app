@@ -34,11 +34,33 @@ class AgeGateView extends StatelessWidget {
                 AppGaps.h24,
                 Row(
                   children: [
-                    Expanded(child: _DateField(label: AppStrings.day, hint: AppStrings.dayHint, maxLength: 2, onChanged: cubit.dayChanged, autofocus: true)),
+                    Expanded(
+                      child: _DateField(
+                        label: AppStrings.day,
+                        hint: AppStrings.dayHint,
+                        maxLength: 2,
+                        onChanged: cubit.dayChanged,
+                        autofocus: true,
+                      ),
+                    ),
                     AppGaps.w12,
-                    Expanded(child: _DateField(label: AppStrings.month, hint: AppStrings.monthHint, maxLength: 2, onChanged: cubit.monthChanged)),
+                    Expanded(
+                      child: _DateField(
+                        label: AppStrings.month,
+                        hint: AppStrings.monthHint,
+                        maxLength: 2,
+                        onChanged: cubit.monthChanged,
+                      ),
+                    ),
                     AppGaps.w12,
-                    Expanded(child: _DateField(label: AppStrings.year, hint: AppStrings.yearHint, maxLength: 4, onChanged: cubit.yearChanged)),
+                    Expanded(
+                      child: _DateField(
+                        label: AppStrings.year,
+                        hint: AppStrings.yearHint,
+                        maxLength: 4,
+                        onChanged: cubit.yearChanged,
+                      ),
+                    ),
                   ],
                 ),
                 AppGaps.h24,
@@ -48,7 +70,10 @@ class AgeGateView extends StatelessWidget {
             bottom: [
               LumeButton(
                 AppStrings.confirmAdult,
-                onPressed: s.isComplete ? () => s.isAdult() ? context.push(AppRoutes.signIn) : context.go(AppRoutes.ageBlocked) : null,
+                onPressed:
+                    s.isComplete
+                        ? () => s.isAdult() ? context.push(AppRoutes.signIn) : context.go(AppRoutes.ageBlocked)
+                        : null,
               ),
             ],
           );
@@ -59,7 +84,13 @@ class AgeGateView extends StatelessWidget {
 }
 
 class _DateField extends StatelessWidget {
-  const _DateField({required this.label, required this.hint, required this.maxLength, required this.onChanged, this.autofocus = false});
+  const _DateField({
+    required this.label,
+    required this.hint,
+    required this.maxLength,
+    required this.onChanged,
+    this.autofocus = false,
+  });
 
   final String label;
   final String hint;
@@ -69,8 +100,10 @@ class _DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OutlineInputBorder border(Color c, double w) =>
-        OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md), borderSide: BorderSide(color: c, width: w));
+    OutlineInputBorder border(Color c, double w) => OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      borderSide: BorderSide(color: c, width: w),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -109,8 +142,18 @@ class AgeBlockedView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LumeScaffold(
       scroll: false,
-      body: const LumeEmptyState(icon: LumeIcons.shield, title: AppStrings.ageBlockedTitle, body: AppStrings.ageBlockedBody),
-      bottom: [LumeButton(AppStrings.close, variant: LumeButtonVariant.secondary, onPressed: () => context.go(AppRoutes.welcome))],
+      body: const LumeEmptyState(
+        icon: LumeIcons.shield,
+        title: AppStrings.ageBlockedTitle,
+        body: AppStrings.ageBlockedBody,
+      ),
+      bottom: [
+        LumeButton(
+          AppStrings.close,
+          variant: LumeButtonVariant.secondary,
+          onPressed: () => context.go(AppRoutes.welcome),
+        ),
+      ],
     );
   }
 }

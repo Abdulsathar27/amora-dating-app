@@ -30,13 +30,16 @@ class RelationshipRepository {
     return (json['items'] as List).map((e) => DatePlan.fromJson(e as Map<String, dynamic>)).toList();
   }
 
-  Future<DatePlan> addDatePlan({required String title, required DateTime scheduledAt, String? place, String? notes}) async {
-    final json = await _client.post(ApiEndpoints.datePlans, data: {
-      'title': title,
-      'scheduled_at': scheduledAt.toUtc().toIso8601String(),
-      'place': place,
-      'notes': notes,
-    });
+  Future<DatePlan> addDatePlan({
+    required String title,
+    required DateTime scheduledAt,
+    String? place,
+    String? notes,
+  }) async {
+    final json = await _client.post(
+      ApiEndpoints.datePlans,
+      data: {'title': title, 'scheduled_at': scheduledAt.toUtc().toIso8601String(), 'place': place, 'notes': notes},
+    );
     return DatePlan.fromJson(json as Map<String, dynamic>);
   }
 
@@ -51,12 +54,10 @@ class RelationshipRepository {
   }
 
   Future<Memory> addMemory({required String title, required DateTime date, String? note, String? photoUrl}) async {
-    final json = await _client.post(ApiEndpoints.memories, data: {
-      'title': title,
-      'date': date.toUtc().toIso8601String(),
-      'note': note,
-      'photo_url': photoUrl,
-    });
+    final json = await _client.post(
+      ApiEndpoints.memories,
+      data: {'title': title, 'date': date.toUtc().toIso8601String(), 'note': note, 'photo_url': photoUrl},
+    );
     return Memory.fromJson(json as Map<String, dynamic>);
   }
 

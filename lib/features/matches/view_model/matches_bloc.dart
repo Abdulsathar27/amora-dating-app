@@ -49,8 +49,11 @@ class MatchesState extends Equatable {
 
   Match? byId(String id) => matches.where((m) => m.id == id).firstOrNull;
 
-  MatchesState copyWith({MatchesStatus? status, List<Match>? matches, String? Function()? error}) =>
-      MatchesState(status: status ?? this.status, matches: matches ?? this.matches, error: error != null ? error() : this.error);
+  MatchesState copyWith({MatchesStatus? status, List<Match>? matches, String? Function()? error}) => MatchesState(
+    status: status ?? this.status,
+    matches: matches ?? this.matches,
+    error: error != null ? error() : this.error,
+  );
 
   @override
   List<Object?> get props => [status, matches, error];
@@ -61,7 +64,9 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
   MatchesBloc(this._repo) : super(const MatchesState()) {
     on<MatchesRequested>(_onRequested);
     on<UnmatchRequested>(_onUnmatch);
-    on<MatchRemoved>((e, emit) => emit(state.copyWith(matches: state.matches.where((m) => m.profile.id != e.profileId).toList())));
+    on<MatchRemoved>(
+      (e, emit) => emit(state.copyWith(matches: state.matches.where((m) => m.profile.id != e.profileId).toList())),
+    );
   }
 
   final MatchRepository _repo;
@@ -70,7 +75,12 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
     try {
       emit(state.copyWith(status: MatchesStatus.ready, matches: await _repo.matches(), error: () => null));
     } on ApiException catch (err) {
-      emit(state.copyWith(status: state.matches.isEmpty ? MatchesStatus.failure : MatchesStatus.ready, error: () => err.message));
+      emit(
+        state.copyWith(
+          status: state.matches.isEmpty ? MatchesStatus.failure : MatchesStatus.ready,
+          error: () => err.message,
+        ),
+      );
     }
   }
 

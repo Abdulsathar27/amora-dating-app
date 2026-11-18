@@ -42,5 +42,9 @@ class AppColors {
   // "It's a Match" background
   static const matchTop = Color(0xFF6E3564);
   static const matchBottom = Color(0xFF3E1E3A);
-  static const matchGradient = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [matchTop, matchBottom]);
+  static const matchGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [matchTop, matchBottom],
+  );
 }

@@ -46,8 +46,10 @@ class AppRoutes {
   static const datingSafely = '/safety/dating';
 
   // Report flow (person passed as query parameters)
-  static String reportReason(String userId, String name) => '/report/reason?user=$userId&name=${Uri.encodeComponent(name)}';
-  static String reportDetails(String userId, String name) => '/report/details?user=$userId&name=${Uri.encodeComponent(name)}';
+  static String reportReason(String userId, String name) =>
+      '/report/reason?user=$userId&name=${Uri.encodeComponent(name)}';
+  static String reportDetails(String userId, String name) =>
+      '/report/details?user=$userId&name=${Uri.encodeComponent(name)}';
   static const reportSent = '/report/sent';
 
   static bool isPreAuth(String loc) => loc.startsWith(welcome) || loc.startsWith(ageGate) || loc.startsWith(signIn);

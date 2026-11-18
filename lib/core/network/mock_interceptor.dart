@@ -122,7 +122,8 @@ class _MockError implements Exception {
 }
 
 String _iso(DateTime d) => d.toUtc().toIso8601String();
-String _ago({int minutes = 0, int hours = 0, int days = 0}) => _iso(DateTime.now().subtract(Duration(minutes: minutes, hours: hours, days: days)));
+String _ago({int minutes = 0, int hours = 0, int days = 0}) =>
+    _iso(DateTime.now().subtract(Duration(minutes: minutes, hours: hours, days: days)));
 
 class _MockDb {
   _MockDb() {
@@ -198,11 +199,20 @@ class _MockDb {
     'video_thumb': 'assets/images/sea.jpg',
     'voice': {'prompt': '“The small thing that made me smile today…”', 'seconds': 14},
     'prompts': [
-      {'question': 'A perfect Sunday looks like', 'answer': 'Farmers market, an overly ambitious recipe, then calling my sister.'},
+      {
+        'question': 'A perfect Sunday looks like',
+        'answer': 'Farmers market, an overly ambitious recipe, then calling my sister.',
+      },
     ],
     'interests': ['Ceramics', 'Bookshops', 'Indie folk', 'Film photography', 'Cooking', 'Road trips'],
     'activities': ['Throwing pottery', 'Sunrise walks', 'Second-hand bookshops', 'Long dinners'],
-    'lifestyle': {'sleep': 'Night owl', 'drinks': 'Sometimes', 'diet': 'Vegetarian', 'exercise': 'Twice a week', 'kids': 'Open to kids'},
+    'lifestyle': {
+      'sleep': 'Night owl',
+      'drinks': 'Sometimes',
+      'diet': 'Vegetarian',
+      'exercise': 'Twice a week',
+      'kids': 'Open to kids',
+    },
     'personality': [
       {'left': 'Homebody', 'right': 'Adventurer', 'value': 0.6},
       {'left': 'Planner', 'right': 'Spontaneous', 'value': 0.3},
@@ -214,7 +224,11 @@ class _MockDb {
       {'title': 'Nineties R&B', 'note': 'Guilty pleasure'},
     ],
     'relationship_goal': 'A life partner. Someone curious and kind, who wants to build something slowly.',
-    'starters': ['Which bookshop should I visit first?', 'What’s the last thing you made in the studio?', 'Pick the album for our road trip.'],
+    'starters': [
+      'Which bookshop should I visit first?',
+      'What’s the last thing you made in the studio?',
+      'Pick the album for our road trip.',
+    ],
   };
 
   static Map<String, dynamic> _person(
@@ -296,12 +310,40 @@ class _MockDb {
       quote: '“Sunrise hikes, then a very long breakfast.”',
       interests: ['Hiking', 'Film photography'],
     ),
-    'u_kai': _person('u_kai', 'Kai', 29, 'man', 'relationship', 9, quote: '“Record shops are my love language.”', interests: ['Vinyl', 'Board games']),
-    'u_noor': _person('u_noor', 'Noor', 28, 'woman', 'life_partner', 2, quote: '“Tell me your favourite poem.”', interests: ['Poetry', 'Baking']),
-    'u_sofia': _person('u_sofia', 'Sofia', 30, 'woman', 'new_connections', 8, quote: '“Plant mum, bad singer, great listener.”', interests: ['Dogs', 'Yoga']),
+    'u_kai': _person(
+      'u_kai',
+      'Kai',
+      29,
+      'man',
+      'relationship',
+      9,
+      quote: '“Record shops are my love language.”',
+      interests: ['Vinyl', 'Board games'],
+    ),
+    'u_noor': _person(
+      'u_noor',
+      'Noor',
+      28,
+      'woman',
+      'life_partner',
+      2,
+      quote: '“Tell me your favourite poem.”',
+      interests: ['Poetry', 'Baking'],
+    ),
+    'u_sofia': _person(
+      'u_sofia',
+      'Sofia',
+      30,
+      'woman',
+      'new_connections',
+      8,
+      quote: '“Plant mum, bad singer, great listener.”',
+      interests: ['Dogs', 'Yoga'],
+    ),
   };
 
-  Map<String, dynamic> person(String id) => id == 'me' ? me : people[id] ?? (throw const _MockError(404, 'Profile not found'));
+  Map<String, dynamic> person(String id) =>
+      id == 'me' ? me : people[id] ?? (throw const _MockError(404, 'Profile not found'));
 
   // ------------------------------------------------------------------ seeds
   void _seedConversations() {
@@ -309,7 +351,13 @@ class _MockDb {
     final mid = maya['id'] as String;
     messages[mid] = [
       _msg(mid, 'me', 'Which bookshop should I visit first?', minutesAgo: 36),
-      _msg(mid, 'u_maya', 'Okay, big question. The tiny one on Canal Street, without a doubt.', minutesAgo: 34, reaction: 'heart'),
+      _msg(
+        mid,
+        'u_maya',
+        'Okay, big question. The tiny one on Canal Street, without a doubt.',
+        minutesAgo: 34,
+        reaction: 'heart',
+      ),
       _msg(mid, 'me', 'Sold. Do they have a shop cat?', minutesAgo: 32),
       _msg(mid, 'u_maya', '', minutesAgo: 30, type: 'voice', voiceSeconds: 21),
       _msg(mid, 'me', 'Your laugh in that voice note!', minutesAgo: 29),
@@ -375,7 +423,13 @@ class _MockDb {
   }
 
   List<Map<String, dynamic>> likes() => [
-    if (!swiped.contains('u_amara')) {'profile': people['u_amara'], 'liked_at': _ago(hours: 3), 'kind': 'super_like', 'reason': 'Liked your voice intro'},
+    if (!swiped.contains('u_amara'))
+      {
+        'profile': people['u_amara'],
+        'liked_at': _ago(hours: 3),
+        'kind': 'super_like',
+        'reason': 'Liked your voice intro',
+      },
     if (!swiped.contains('u_daniel'))
       {
         'profile': people['u_daniel'],
@@ -384,14 +438,22 @@ class _MockDb {
         'reason': 'Liked your Sunday answer',
         'comment': 'An overly ambitious recipe is my favourite kind.',
       },
-    if (!swiped.contains('u_kai')) {'profile': people['u_kai'], 'liked_at': _ago(days: 1), 'kind': 'like', 'reason': 'Liked your photo'},
-    if (!swiped.contains('u_leo')) {'profile': people['u_leo'], 'liked_at': _ago(days: 2), 'kind': 'like', 'reason': 'Liked your photo'},
+    if (!swiped.contains('u_kai'))
+      {'profile': people['u_kai'], 'liked_at': _ago(days: 1), 'kind': 'like', 'reason': 'Liked your photo'},
+    if (!swiped.contains('u_leo'))
+      {'profile': people['u_leo'], 'liked_at': _ago(days: 2), 'kind': 'like', 'reason': 'Liked your photo'},
   ];
 
   // ---------------------------------------------------------------- matches
   Map<String, dynamic> _createMatch(String profileId, {int daysAgo = 0, bool online = false}) {
     final id = _id('m');
-    matches[id] = {'id': id, 'profile': person(profileId), 'matched_at': _ago(days: daysAgo), 'is_online': online, 'is_muted': false};
+    matches[id] = {
+      'id': id,
+      'profile': person(profileId),
+      'matched_at': _ago(days: daysAgo),
+      'is_online': online,
+      'is_muted': false,
+    };
     swiped.add(profileId);
     return matches[id]!;
   }
@@ -399,7 +461,11 @@ class _MockDb {
   Map<String, dynamic> matchJson(String id) {
     final m = matches[id] ?? (throw const _MockError(404, 'Match not found'));
     final msgs = messages[id] ?? const [];
-    return {...m, 'last_message': msgs.isEmpty ? null : msgs.last, 'unread_count': msgs.where((e) => e['sender_id'] != 'me' && e['is_read'] != true).length};
+    return {
+      ...m,
+      'last_message': msgs.isEmpty ? null : msgs.last,
+      'unread_count': msgs.where((e) => e['sender_id'] != 'me' && e['is_read'] != true).length,
+    };
   }
 
   List<Map<String, dynamic>> matchList() {
@@ -466,7 +532,13 @@ class _MockDb {
 
   Map<String, dynamic> send(String matchId, Map<String, dynamic> b) {
     if (!matches.containsKey(matchId)) throw const _MockError(404, 'Match not found');
-    final msg = _msg(matchId, 'me', b['text'] as String? ?? '', type: b['type'] as String? ?? 'text', media: b['media_url'] as String?);
+    final msg = _msg(
+      matchId,
+      'me',
+      b['text'] as String? ?? '',
+      type: b['type'] as String? ?? 'text',
+      media: b['media_url'] as String?,
+    );
     (messages[matchId] ??= []).add(msg);
     final partnerId = matches[matchId]!['profile']['id'] as String;
     Future<void>.delayed(const Duration(seconds: 4), () {
@@ -483,7 +555,12 @@ class _MockDb {
     if (sub.isEmpty && m == 'GET') return (200, relationship ?? {'status': 'none'});
     if (sub == 'request') {
       final match = matches[b['match_id']] ?? (throw const _MockError(404, 'Match not found'));
-      relationship = {'id': _id('rel'), 'status': 'active', 'partner': match['profile'], 'started_at': _iso(DateTime.now())};
+      relationship = {
+        'id': _id('rel'),
+        'status': 'active',
+        'partner': match['profile'],
+        'started_at': _iso(DateTime.now()),
+      };
       return (200, relationship);
     }
     if (sub == 'respond') return (200, relationship ?? {'status': 'none'});

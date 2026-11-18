@@ -27,8 +27,66 @@ class Waveform extends StatefulWidget {
   final double gap;
   final Duration duration;
 
-  static const intro = <double>[8.0, 19, 30, 16, 35, 24, 11, 27, 38, 19, 14, 33, 22, 8, 24, 35, 16, 27, 11, 22, 33, 14, 19, 30, 8, 16, 27, 22, 11, 19];
-  static const priya = <double>[7.0, 17, 27, 15, 32, 22, 10, 24, 34, 17, 12, 29, 19, 7, 22, 32, 15, 24, 10, 19, 29, 12, 17, 27, 7, 15];
+  static const intro = <double>[
+    8.0,
+    19,
+    30,
+    16,
+    35,
+    24,
+    11,
+    27,
+    38,
+    19,
+    14,
+    33,
+    22,
+    8,
+    24,
+    35,
+    16,
+    27,
+    11,
+    22,
+    33,
+    14,
+    19,
+    30,
+    8,
+    16,
+    27,
+    22,
+    11,
+    19,
+  ];
+  static const priya = <double>[
+    7.0,
+    17,
+    27,
+    15,
+    32,
+    22,
+    10,
+    24,
+    34,
+    17,
+    12,
+    29,
+    19,
+    7,
+    22,
+    32,
+    15,
+    24,
+    10,
+    19,
+    29,
+    12,
+    17,
+    27,
+    7,
+    15,
+  ];
   static const chip = <double>[5.0, 11, 17, 9, 20, 14, 6, 16, 22, 11, 8];
 
   @override
@@ -79,7 +137,10 @@ class _WaveformState extends State<Waveform> with SingleTickerProviderStateMixin
                 Container(
                   width: widget.barWidth,
                   height: widget.heights[i] * (widget.playing && i / n <= p && i / n > p - 0.12 ? 1.12 : 1),
-                  decoration: BoxDecoration(color: i / n < p ? widget.activeColor : widget.idleColor, borderRadius: BorderRadius.circular(1)),
+                  decoration: BoxDecoration(
+                    color: i / n < p ? widget.activeColor : widget.idleColor,
+                    borderRadius: BorderRadius.circular(1),
+                  ),
                 ),
               ],
             ],

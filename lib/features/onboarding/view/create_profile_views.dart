@@ -44,10 +44,22 @@ class CreateStepScaffold extends StatelessWidget {
     return LumeScaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [StepProgress(step: step), AppGaps.h24, FadeRise(child: LumeTitle(title, subtitle: subtitle)), AppGaps.h24, ...children],
+        children: [
+          StepProgress(step: step),
+          AppGaps.h24,
+          FadeRise(child: LumeTitle(title, subtitle: subtitle)),
+          AppGaps.h24,
+          ...children,
+        ],
       ),
       bottom: [
-        if (skip != null) LumeButton(AppStrings.skipForNow, variant: LumeButtonVariant.ghost, height: AppSizes.buttonHeightMd, onPressed: skip),
+        if (skip != null)
+          LumeButton(
+            AppStrings.skipForNow,
+            variant: LumeButtonVariant.ghost,
+            height: AppSizes.buttonHeightMd,
+            onPressed: skip,
+          ),
         LumeButton(continueLabel, onPressed: onContinue),
       ],
     );
@@ -101,7 +113,11 @@ class CreateIdentityView extends StatelessWidget {
               runSpacing: 8,
               children: [
                 for (final g in Gender.values)
-                  LumeTag(g.label, variant: s.gender == g ? TagVariant.selected : TagVariant.normal, onTap: () => cubit.genderSelected(g)),
+                  LumeTag(
+                    g.label,
+                    variant: s.gender == g ? TagVariant.selected : TagVariant.normal,
+                    onTap: () => cubit.genderSelected(g),
+                  ),
               ],
             ),
             AppGaps.h24,
@@ -112,7 +128,11 @@ class CreateIdentityView extends StatelessWidget {
               runSpacing: 8,
               children: [
                 for (final i in InterestedIn.values)
-                  LumeTag(i.label, variant: s.interestedIn == i ? TagVariant.selected : TagVariant.normal, onTap: () => cubit.interestedInSelected(i)),
+                  LumeTag(
+                    i.label,
+                    variant: s.interestedIn == i ? TagVariant.selected : TagVariant.normal,
+                    onTap: () => cubit.interestedInSelected(i),
+                  ),
               ],
             ),
           ],
@@ -140,7 +160,10 @@ class CreatePhotosView extends StatelessWidget {
                 child:
                     arch
                         ? ArchPhoto(source: s.photos[i], width: w, height: h)
-                        : ClipRRect(borderRadius: BorderRadius.circular(20), child: SizedBox(width: w, height: h, child: LumePhoto(s.photos[i]))),
+                        : ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: SizedBox(width: w, height: h, child: LumePhoto(s.photos[i])),
+                        ),
               ),
             );
           }
@@ -207,7 +230,11 @@ class CreateIntentionView extends StatelessWidget {
                 spacing: 10,
                 children: [
                   for (final i in RelationshipIntent.values)
-                    IntentOption(intent: i, selected: s.intent == i, onTap: () => context.read<ProfileSetupCubit>().intentSelected(i)),
+                    IntentOption(
+                      intent: i,
+                      selected: s.intent == i,
+                      onTap: () => context.read<ProfileSetupCubit>().intentSelected(i),
+                    ),
                 ],
               ),
             ],
@@ -247,9 +274,15 @@ class IntentOption extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(intent.label, style: LumeText.titleS.copyWith(color: selected ? AppColors.surface : AppColors.ink)),
+                    Text(
+                      intent.label,
+                      style: LumeText.titleS.copyWith(color: selected ? AppColors.surface : AppColors.ink),
+                    ),
                     AppGaps.h2,
-                    Text(intent.description, style: LumeText.bodyM.copyWith(color: selected ? AppColors.lavender : AppColors.muted)),
+                    Text(
+                      intent.description,
+                      style: LumeText.bodyM.copyWith(color: selected ? AppColors.lavender : AppColors.muted),
+                    ),
                   ],
                 ),
               ),
@@ -343,19 +376,31 @@ class VoiceRecorderCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(28), boxShadow: LumeShadows.card),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: LumeShadows.card,
+      ),
       child: Column(
         children: [
           Text(kVoicePrompt, textAlign: TextAlign.center, style: LumeText.quote),
           AppGaps.h18,
-          Waveform(heights: Waveform.intro, progress: progress, playing: state.isRecording, duration: const Duration(seconds: 15)),
+          Waveform(
+            heights: Waveform.intro,
+            progress: progress,
+            playing: state.isRecording,
+            duration: const Duration(seconds: 15),
+          ),
           AppGaps.h18,
           Text(state.voiceLabel, style: LumeText.labelM.copyWith(color: AppColors.muted)),
           AppGaps.h18,
           Semantics(
             button: true,
             label: state.isRecording ? AppStrings.stopRecording : AppStrings.recordVoiceIntro,
-            child: state.isRecording ? Pulse(min: 1, max: 1.1, period: const Duration(milliseconds: 700), child: button) : button,
+            child:
+                state.isRecording
+                    ? Pulse(min: 1, max: 1.1, period: const Duration(milliseconds: 700), child: button)
+                    : button,
           ),
         ],
       ),

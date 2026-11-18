@@ -44,7 +44,13 @@ enum LikeKind { like, superLike, compliment }
 
 /// Someone who liked you but you haven't answered yet ("They noticed you.").
 class ReceivedLike extends Equatable {
-  const ReceivedLike({required this.profile, required this.likedAt, this.kind = LikeKind.like, this.reason, this.comment});
+  const ReceivedLike({
+    required this.profile,
+    required this.likedAt,
+    this.kind = LikeKind.like,
+    this.reason,
+    this.comment,
+  });
 
   final Profile profile;
   final DateTime likedAt;

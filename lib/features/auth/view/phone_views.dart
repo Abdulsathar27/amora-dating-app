@@ -81,7 +81,10 @@ class VerifyCodeView extends StatelessWidget {
               AppGaps.h24,
               LumeTitle(AppStrings.codeTitle, subtitle: AppStrings.codeSentTo(s.phone.trim())),
               AppGaps.h24,
-              Shake(trigger: s.shake, child: _CodeBoxes(code: s.code, error: s.codeError, onChanged: cubit.codeChanged)),
+              Shake(
+                trigger: s.shake,
+                child: _CodeBoxes(code: s.code, error: s.codeError, onChanged: cubit.codeChanged),
+              ),
               AppGaps.h24,
               AnimatedSwitcher(
                 duration: LumeMotion.dissolve,
@@ -97,13 +100,26 @@ class VerifyCodeView extends StatelessWidget {
                           ],
                         )
                         : s.resendIn > 0
-                        ? Text(s.resendLabel, key: const ValueKey('timer'), style: LumeText.labelM.copyWith(color: AppColors.muted))
+                        ? Text(
+                          s.resendLabel,
+                          key: const ValueKey('timer'),
+                          style: LumeText.labelM.copyWith(color: AppColors.muted),
+                        )
                         : _TextLink(AppStrings.sendNewCode, key: const ValueKey('resend'), onTap: cubit.resend),
               ),
-              if (AppConfig.useMockApi) ...[AppGaps.h24, Text(AppStrings.demoCode(MockInterceptor.demoCode), style: LumeText.caption)],
+              if (AppConfig.useMockApi) ...[
+                AppGaps.h24,
+                Text(AppStrings.demoCode(MockInterceptor.demoCode), style: LumeText.caption),
+              ],
             ],
           ),
-          bottom: [LumeButton(AppStrings.verify, loading: s.step == PhoneStep.verifying, onPressed: s.canVerify ? cubit.verify : null)],
+          bottom: [
+            LumeButton(
+              AppStrings.verify,
+              loading: s.step == PhoneStep.verifying,
+              onPressed: s.canVerify ? cubit.verify : null,
+            ),
+          ],
         );
       },
     );
@@ -117,8 +133,10 @@ class _TextLink extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) =>
-      GestureDetector(onTap: onTap, child: Text(label, style: LumeText.labelM.copyWith(color: onTap == null ? AppColors.muted : AppColors.plum)));
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: onTap,
+    child: Text(label, style: LumeText.labelM.copyWith(color: onTap == null ? AppColors.muted : AppColors.plum)),
+  );
 }
 
 /// Six 50x60 digit boxes over one invisible text field that owns the keyboard.
@@ -154,7 +172,11 @@ class _CodeBoxes extends StatelessWidget {
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 140),
                       transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
-                      child: Text(i < code.length ? code[i] : '', key: ValueKey('$i${i < code.length ? code[i] : ''}'), style: LumeText.titleL),
+                      child: Text(
+                        i < code.length ? code[i] : '',
+                        key: ValueKey('$i${i < code.length ? code[i] : ''}'),
+                        style: LumeText.titleL,
+                      ),
                     ),
                   ),
                 ),

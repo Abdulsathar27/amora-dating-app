@@ -4,8 +4,20 @@ import 'package:equatable/equatable.dart';
 enum RelationshipIntent {
   lifePartner('life_partner', 'A life partner', 'Ready for something lasting', 'Long-term', 'Life partner'),
   relationship('relationship', 'A real relationship', 'Open to seeing where it goes', 'Relationship', 'Relationship'),
-  newConnections('new_connections', 'New connections', 'Dates, friends, good company', 'New connections', 'New connections'),
-  figuringOut('figuring_out', 'Still figuring it out', 'And that’s completely fine', 'Figuring it out', 'Figuring it out');
+  newConnections(
+    'new_connections',
+    'New connections',
+    'Dates, friends, good company',
+    'New connections',
+    'New connections',
+  ),
+  figuringOut(
+    'figuring_out',
+    'Still figuring it out',
+    'And that’s completely fine',
+    'Figuring it out',
+    'Figuring it out',
+  );
 
   const RelationshipIntent(this.value, this.label, this.description, this.tag, this.filterLabel);
 
@@ -19,7 +31,8 @@ enum RelationshipIntent {
   /// Label in Discovery filters.
   final String filterLabel;
 
-  static RelationshipIntent fromValue(String? v) => values.firstWhere((e) => e.value == v, orElse: () => RelationshipIntent.figuringOut);
+  static RelationshipIntent fromValue(String? v) =>
+      values.firstWhere((e) => e.value == v, orElse: () => RelationshipIntent.figuringOut);
 }
 
 enum Gender {
@@ -54,7 +67,8 @@ class ProfilePrompt extends Equatable {
   final String question;
   final String answer;
 
-  factory ProfilePrompt.fromJson(Map<String, dynamic> json) => ProfilePrompt(question: json['question'] as String, answer: json['answer'] as String);
+  factory ProfilePrompt.fromJson(Map<String, dynamic> json) =>
+      ProfilePrompt(question: json['question'] as String, answer: json['answer'] as String);
 
   Map<String, dynamic> toJson() => {'question': question, 'answer': answer};
 
@@ -72,8 +86,11 @@ class VoiceIntro extends Equatable {
 
   String get durationLabel => '0:${seconds.toString().padLeft(2, '0')}';
 
-  factory VoiceIntro.fromJson(Map<String, dynamic> json) =>
-      VoiceIntro(prompt: json['prompt'] as String, seconds: (json['seconds'] as num).toInt(), url: json['url'] as String?);
+  factory VoiceIntro.fromJson(Map<String, dynamic> json) => VoiceIntro(
+    prompt: json['prompt'] as String,
+    seconds: (json['seconds'] as num).toInt(),
+    url: json['url'] as String?,
+  );
 
   Map<String, dynamic> toJson() => {'prompt': prompt, 'seconds': seconds, 'url': url};
 
@@ -89,8 +106,11 @@ class PersonalityTrait extends Equatable {
   final String right;
   final double value;
 
-  factory PersonalityTrait.fromJson(Map<String, dynamic> json) =>
-      PersonalityTrait(left: json['left'] as String, right: json['right'] as String, value: (json['value'] as num).toDouble());
+  factory PersonalityTrait.fromJson(Map<String, dynamic> json) => PersonalityTrait(
+    left: json['left'] as String,
+    right: json['right'] as String,
+    value: (json['value'] as num).toDouble(),
+  );
 
   @override
   List<Object?> get props => [left, right, value];
@@ -103,7 +123,8 @@ class Song extends Equatable {
   final String title;
   final String note;
 
-  factory Song.fromJson(Map<String, dynamic> json) => Song(title: json['title'] as String, note: json['note'] as String);
+  factory Song.fromJson(Map<String, dynamic> json) =>
+      Song(title: json['title'] as String, note: json['note'] as String);
 
   @override
   List<Object?> get props => [title, note];
@@ -112,8 +133,20 @@ class Song extends Equatable {
 /// Lifestyle keys used across the card and full profile.
 class Lifestyle {
   Lifestyle._();
-  static const sleep = 'sleep', drinks = 'drinks', diet = 'diet', exercise = 'exercise', kids = 'kids', smoking = 'smoking';
-  static const labels = {sleep: 'Sleep', drinks: 'Drinks', diet: 'Diet', exercise: 'Exercise', kids: 'Kids', smoking: 'Smoking'};
+  static const sleep = 'sleep',
+      drinks = 'drinks',
+      diet = 'diet',
+      exercise = 'exercise',
+      kids = 'kids',
+      smoking = 'smoking';
+  static const labels = {
+    sleep: 'Sleep',
+    drinks: 'Drinks',
+    diet: 'Diet',
+    exercise: 'Exercise',
+    kids: 'Kids',
+    smoking: 'Smoking',
+  };
 }
 
 class Profile extends Equatable {
@@ -182,7 +215,8 @@ class Profile extends Equatable {
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     List<String> strings(String k) => (json[k] as List? ?? const []).map((e) => e.toString()).toList();
-    List<T> objects<T>(String k, T Function(Map<String, dynamic>) f) => (json[k] as List? ?? const []).map((e) => f(e as Map<String, dynamic>)).toList();
+    List<T> objects<T>(String k, T Function(Map<String, dynamic>) f) =>
+        (json[k] as List? ?? const []).map((e) => f(e as Map<String, dynamic>)).toList();
     return Profile(
       id: json['id'].toString(),
       name: json['name'] as String? ?? '',

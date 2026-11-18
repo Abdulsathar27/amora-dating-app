@@ -66,7 +66,13 @@ class _StaggeredEntranceState extends State<StaggeredEntrance> with SingleTicker
 
 /// Single fade + rise for one widget.
 class FadeRise extends StatefulWidget {
-  const FadeRise({super.key, required this.child, this.delay = Duration.zero, this.offset = 16, this.duration = const Duration(milliseconds: 420)});
+  const FadeRise({
+    super.key,
+    required this.child,
+    this.delay = Duration.zero,
+    this.offset = 16,
+    this.duration = const Duration(milliseconds: 420),
+  });
 
   final Widget child;
   final Duration delay;
@@ -103,7 +109,8 @@ class _FadeRiseState extends State<FadeRise> with SingleTickerProviderStateMixin
 }
 
 class _Item extends AnimatedWidget {
-  const _Item({required Animation<double> animation, required this.child, required this.offset}) : super(listenable: animation);
+  const _Item({required Animation<double> animation, required this.child, required this.offset})
+    : super(listenable: animation);
 
   final Widget child;
   final double offset;
@@ -111,6 +118,9 @@ class _Item extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final t = (listenable as Animation<double>).value;
-    return Opacity(opacity: t.clamp(0.0, 1.0), child: Transform.translate(offset: Offset(0, (1 - t) * offset), child: child));
+    return Opacity(
+      opacity: t.clamp(0.0, 1.0),
+      child: Transform.translate(offset: Offset(0, (1 - t) * offset), child: child),
+    );
   }
 }

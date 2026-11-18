@@ -16,8 +16,16 @@ class LumeToggle extends StatefulWidget {
 }
 
 class _LumeToggleState extends State<LumeToggle> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 220), value: widget.value ? 1 : 0);
-  late final Animation<double> _t = CurvedAnimation(parent: _controller, curve: Curves.easeOutBack, reverseCurve: Curves.easeInBack);
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 220),
+    value: widget.value ? 1 : 0,
+  );
+  late final Animation<double> _t = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutBack,
+    reverseCurve: Curves.easeInBack,
+  );
 
   @override
   void didUpdateWidget(LumeToggle old) {
@@ -50,13 +58,20 @@ class _LumeToggleState extends State<LumeToggle> with SingleTickerProviderStateM
                 width: 52,
                 height: 32,
                 padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(color: Color.lerp(AppColors.line, AppColors.plum, _controller.value), borderRadius: BorderRadius.circular(16)),
+                decoration: BoxDecoration(
+                  color: Color.lerp(AppColors.line, AppColors.plum, _controller.value),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Align(
                   alignment: Alignment(-1 + 2 * _t.value, 0),
                   child: Container(
                     width: 26,
                     height: 26,
-                    decoration: const BoxDecoration(color: AppColors.surface, shape: BoxShape.circle, boxShadow: LumeShadows.soft),
+                    decoration: const BoxDecoration(
+                      color: AppColors.surface,
+                      shape: BoxShape.circle,
+                      boxShadow: LumeShadows.soft,
+                    ),
                   ),
                 ),
               ),

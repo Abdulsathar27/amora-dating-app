@@ -44,7 +44,9 @@ class EditProfileView extends StatelessWidget {
                         Expanded(
                           child: AspectRatio(
                             aspectRatio: 96 / 124,
-                            child: LayoutBuilder(builder: (_, b) => ArchPhoto(source: photo, width: b.maxWidth, height: b.maxHeight)),
+                            child: LayoutBuilder(
+                              builder: (_, b) => ArchPhoto(source: photo, width: b.maxWidth, height: b.maxHeight),
+                            ),
                           ),
                         ),
                       ],
@@ -80,7 +82,10 @@ class EditProfileView extends StatelessWidget {
                   children: [
                     Text(AppStrings.interests, style: LumeText.titleS.copyWith(color: AppColors.plum)),
                     const Spacer(),
-                    Text(AppStrings.chosenCount(s.interests.length), style: LumeText.labelM.copyWith(color: AppColors.plum)),
+                    Text(
+                      AppStrings.chosenCount(s.interests.length),
+                      style: LumeText.labelM.copyWith(color: AppColors.plum),
+                    ),
                   ],
                 ),
                 Wrap(
@@ -88,7 +93,11 @@ class EditProfileView extends StatelessWidget {
                   runSpacing: 8,
                   children: [
                     for (final i in {...s.interests, ...kInterestOptions})
-                      LumeTag(i, variant: s.interests.contains(i) ? TagVariant.lavender : TagVariant.normal, onTap: () => cubit.interestToggled(i)),
+                      LumeTag(
+                        i,
+                        variant: s.interests.contains(i) ? TagVariant.lavender : TagVariant.normal,
+                        onTap: () => cubit.interestToggled(i),
+                      ),
                   ],
                 ),
               ],

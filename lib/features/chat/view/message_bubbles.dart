@@ -38,7 +38,12 @@ List<Widget> buildChatItems(ChatState s) {
     final prev = i > 0 ? msgs[i - 1] : null;
     final next = i + 1 < msgs.length ? msgs[i + 1] : null;
     if (prev == null || !DateUtils.isSameDay(prev.sentAt.toLocal(), m.sentAt.toLocal())) {
-      out.add(Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Center(child: Text(_day(m.sentAt), style: LumeText.caption))));
+      out.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Center(child: Text(_day(m.sentAt), style: LumeText.caption)),
+        ),
+      );
     }
     final mine = m.senderId == 'me';
     final lastOfRun = next == null || next.senderId != m.senderId || next.sentAt.difference(m.sentAt).inMinutes > 5;
@@ -49,7 +54,13 @@ List<Widget> buildChatItems(ChatState s) {
         duration: const Duration(milliseconds: 260),
         child: Padding(
           padding: EdgeInsets.only(bottom: lastOfRun ? 12 : 4),
-          child: _MessageRow(message: m, mine: mine, showTime: lastOfRun, declined: s.declined.contains(m.id), playing: s.playingId == m.id),
+          child: _MessageRow(
+            message: m,
+            mine: mine,
+            showTime: lastOfRun,
+            declined: s.declined.contains(m.id),
+            playing: s.playingId == m.id,
+          ),
         ),
       ),
     );
@@ -58,7 +69,13 @@ List<Widget> buildChatItems(ChatState s) {
 }
 
 class _MessageRow extends StatelessWidget {
-  const _MessageRow({required this.message, required this.mine, required this.showTime, required this.declined, required this.playing});
+  const _MessageRow({
+    required this.message,
+    required this.mine,
+    required this.showTime,
+    required this.declined,
+    required this.playing,
+  });
 
   final Message message;
   final bool mine;
@@ -80,18 +97,29 @@ class _MessageRow extends StatelessWidget {
       children: [
         GestureDetector(
           onLongPress: m.isHidden ? null : () => showReactions(context, m),
-          child: m.isHidden && !mine ? _HiddenPhoto(message: m, declined: declined) : MessageBubble(message: m, mine: mine, playing: playing),
+          child:
+              m.isHidden && !mine
+                  ? _HiddenPhoto(message: m, declined: declined)
+                  : MessageBubble(message: m, mine: mine, playing: playing),
         ),
         if (hasReaction)
           Transform.translate(
             offset: const Offset(0, -4),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: AppColors.line)),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.line),
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  LumeIcon(m.reaction!, size: 14, color: m.reaction == LumeIcons.heart ? AppColors.coral : AppColors.plum),
+                  LumeIcon(
+                    m.reaction!,
+                    size: 14,
+                    color: m.reaction == LumeIcons.heart ? AppColors.coral : AppColors.plum,
+                  ),
                   AppGaps.w4,
                   Text('1', style: LumeText.caption),
                 ],
@@ -138,7 +166,10 @@ class MessageBubble extends StatelessWidget {
           child: SizedBox(
             width: 200,
             height: 150,
-            child: Stack(fit: StackFit.expand, children: [LumePhoto(m.mediaUrl), const Positioned(left: 10, top: 10, child: LumeTag(AppStrings.gif))]),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [LumePhoto(m.mediaUrl), const Positioned(left: 10, top: 10, child: LumeTag(AppStrings.gif))],
+            ),
           ),
         );
       case MessageType.voice:

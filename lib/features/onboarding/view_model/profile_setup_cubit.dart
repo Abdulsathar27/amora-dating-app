@@ -30,7 +30,12 @@ const kInterestOptions = [
 const kVoicePrompt = '“The small thing that made me smile today…”';
 
 /// Placeholder library standing in for the photo picker until uploads exist.
-const kSamplePhotos = ['assets/images/maya.jpg', 'assets/images/dunes.jpg', 'assets/images/cafe.jpg', 'assets/images/sea.jpg'];
+const kSamplePhotos = [
+  'assets/images/maya.jpg',
+  'assets/images/dunes.jpg',
+  'assets/images/cafe.jpg',
+  'assets/images/sea.jpg',
+];
 
 class ProfileSetupState extends Equatable {
   const ProfileSetupState({
@@ -94,13 +99,27 @@ class ProfileSetupState extends Equatable {
   );
 
   @override
-  List<Object?> get props => [name, gender, interestedIn, photos, intent, interests, voiceSeconds, isRecording, showDistance, isSubmitting, error];
+  List<Object?> get props => [
+    name,
+    gender,
+    interestedIn,
+    photos,
+    intent,
+    interests,
+    voiceSeconds,
+    isRecording,
+    showDistance,
+    isSubmitting,
+    error,
+  ];
 }
 
 /// "Create your profile": one small question per screen, saved once at the end.
 class ProfileSetupCubit extends Cubit<ProfileSetupState> {
   ProfileSetupCubit(this._profiles, this._discovery, {String? initialName})
-    : super(initialName == null || initialName.isEmpty ? const ProfileSetupState() : ProfileSetupState(name: initialName));
+    : super(
+        initialName == null || initialName.isEmpty ? const ProfileSetupState() : ProfileSetupState(name: initialName),
+      );
 
   final ProfileRepository _profiles;
   final DiscoveryRepository _discovery;

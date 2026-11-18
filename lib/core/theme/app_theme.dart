@@ -20,7 +20,10 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: AppColors.background,
-      textTheme: (LumeText.useGoogleFonts ? GoogleFonts.interTextTheme() : const TextTheme()).apply(bodyColor: AppColors.ink, displayColor: AppColors.plum),
+      textTheme: (LumeText.useGoogleFonts ? GoogleFonts.interTextTheme() : const TextTheme()).apply(
+        bodyColor: AppColors.ink,
+        displayColor: AppColors.plum,
+      ),
       inputDecorationTheme: const InputDecorationTheme(hoverColor: Colors.transparent, focusColor: Colors.transparent),
       splashFactory: NoSplash.splashFactory,
       highlightColor: Colors.transparent,
@@ -30,7 +33,11 @@ class AppTheme {
         scrolledUnderElevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      textSelectionTheme: const TextSelectionThemeData(cursorColor: AppColors.plum, selectionColor: AppColors.lavender, selectionHandleColor: AppColors.plum),
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: AppColors.plum,
+        selectionColor: AppColors.lavender,
+        selectionHandleColor: AppColors.plum,
+      ),
       sliderTheme: const SliderThemeData(
         activeTrackColor: AppColors.plum,
         inactiveTrackColor: AppColors.line,

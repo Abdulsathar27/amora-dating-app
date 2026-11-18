@@ -18,8 +18,10 @@ class SwipeResult {
   final bool isMatch;
   final Match? match;
 
-  factory SwipeResult.fromJson(Map<String, dynamic> json) =>
-      SwipeResult(isMatch: json['is_match'] as bool? ?? false, match: json['match'] == null ? null : Match.fromJson(json['match'] as Map<String, dynamic>));
+  factory SwipeResult.fromJson(Map<String, dynamic> json) => SwipeResult(
+    isMatch: json['is_match'] as bool? ?? false,
+    match: json['match'] == null ? null : Match.fromJson(json['match'] as Map<String, dynamic>),
+  );
 }
 
 /// "Who would you like to meet?"
@@ -32,7 +34,8 @@ enum InterestedIn {
   final String value;
   final String label;
 
-  static InterestedIn fromValue(String? v) => values.firstWhere((e) => e.value == v, orElse: () => InterestedIn.everyone);
+  static InterestedIn fromValue(String? v) =>
+      values.firstWhere((e) => e.value == v, orElse: () => InterestedIn.everyone);
 }
 
 class DiscoveryPreferences extends Equatable {
@@ -59,7 +62,8 @@ class DiscoveryPreferences extends Equatable {
     maxAge: (json['max_age'] as num?)?.toInt() ?? 34,
     maxDistanceKm: (json['max_distance_km'] as num?)?.toInt() ?? 15,
     interestedIn: InterestedIn.fromValue(json['interested_in'] as String?),
-    lookingFor: (json['looking_for'] as List? ?? const []).map((e) => RelationshipIntent.fromValue(e as String)).toSet(),
+    lookingFor:
+        (json['looking_for'] as List? ?? const []).map((e) => RelationshipIntent.fromValue(e as String)).toSet(),
     verifiedOnly: json['verified_only'] as bool? ?? false,
     hasVoiceIntro: json['has_voice_intro'] as bool? ?? false,
   );

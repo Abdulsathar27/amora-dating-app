@@ -1,41 +1,66 @@
 name: Flutter CI
 
+# Runs on every push to main and every pull request.
+# Quality gate (format, analyze, tests + coverage), then Android and web builds.
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  FLUTTER_VERSION: '3.44.3'
+
 jobs:
-  analyze-and-test:
-    name: Analyze & test
+  quality:
+    name: Format, analyze & test
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.3'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test
 
-      - name: Test
-        run: flutter test
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test with coverage
+        run: flutter test --coverage
+
+      - name: Coverage summary
+        run: |
+          total=$(grep -c '^DA:' coverage/lcov.info)
+          hit=$(grep '^DA:' coverage/lcov.info | grep -vc ',0$')
+          pct=$(awk "BEGIN { printf \"%.1f\", 100 * $hit / $total }")
+          echo "### Test coverage: ${pct}% ($hit / $total lines)" >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info
+          retention-days: 14
 
   build-android:
-    name: Build debug APK
-    needs: analyze-and-test
+    name: Build Android (debug APK)
+    needs: quality
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -43,10 +68,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.3'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
 
@@ -55,6 +81,29 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: amora-debug-apk
+          name: lume-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           retention-days: 14
+
+  build-web:
+    name: Build web
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter build web --release --no-wasm-dry-run
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lume-web
+          path: build/web
+          retention-days: 7

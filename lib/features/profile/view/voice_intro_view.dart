@@ -45,7 +45,11 @@ class VoiceIntroView extends StatelessWidget {
                             AppGaps.h7,
                             LumeAvatar(p?.mainPhoto, size: 104, ringColor: AppColors.coral),
                             AppGaps.h16,
-                            Text(voice?.prompt ?? kVoicePrompt, textAlign: TextAlign.center, style: LumeText.quote.copyWith(color: AppColors.surface)),
+                            Text(
+                              voice?.prompt ?? kVoicePrompt,
+                              textAlign: TextAlign.center,
+                              style: LumeText.quote.copyWith(color: AppColors.surface),
+                            ),
                             AppGaps.h16,
                             Waveform(
                               heights: Waveform.priya,
@@ -55,7 +59,11 @@ class VoiceIntroView extends StatelessWidget {
                               duration: Duration(seconds: voice?.seconds ?? 15),
                             ),
                             AppGaps.h16,
-                            _PlayButton(playing: playing, enabled: voice != null, onTap: () => context.read<ValueCubit<bool>>().set(!playing)),
+                            _PlayButton(
+                              playing: playing,
+                              enabled: voice != null,
+                              onTap: () => context.read<ValueCubit<bool>>().set(!playing),
+                            ),
                           ],
                         ),
                       ),

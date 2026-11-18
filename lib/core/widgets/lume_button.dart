@@ -54,7 +54,9 @@ class LumeButton extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (icon != null) ...[LumeIcon(icon!, size: 20, color: fg), AppGaps.w8],
-                Flexible(child: Text(label, style: LumeText.labelL.copyWith(color: fg), overflow: TextOverflow.ellipsis)),
+                Flexible(
+                  child: Text(label, style: LumeText.labelL.copyWith(color: fg), overflow: TextOverflow.ellipsis),
+                ),
               ],
             );
 
@@ -116,7 +118,11 @@ class LumeIconButton extends StatelessWidget {
         child: Container(
           width: size,
           height: size,
-          decoration: BoxDecoration(color: background, shape: BoxShape.circle, border: bordered ? Border.all(color: AppColors.line) : null),
+          decoration: BoxDecoration(
+            color: background,
+            shape: BoxShape.circle,
+            border: bordered ? Border.all(color: AppColors.line) : null,
+          ),
           alignment: Alignment.center,
           child: LumeIcon(icon, size: iconSize, color: color),
         ),

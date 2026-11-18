@@ -42,16 +42,23 @@ class ProfileState extends Equatable {
   double get completeness {
     final p = profile;
     if (p == null) return 0;
-    final checks = [p.photos.length >= 3, p.bio.length >= 10, p.prompts.isNotEmpty, p.interests.length >= 3, p.voice != null];
+    final checks = [
+      p.photos.length >= 3,
+      p.bio.length >= 10,
+      p.prompts.isNotEmpty,
+      p.interests.length >= 3,
+      p.voice != null,
+    ];
     return checks.where((c) => c).length / checks.length;
   }
 
-  ProfileState copyWith({ProfileStatus? status, Profile? profile, String? Function()? error, DateTime? savedAt}) => ProfileState(
-    status: status ?? this.status,
-    profile: profile ?? this.profile,
-    error: error != null ? error() : this.error,
-    savedAt: savedAt ?? this.savedAt,
-  );
+  ProfileState copyWith({ProfileStatus? status, Profile? profile, String? Function()? error, DateTime? savedAt}) =>
+      ProfileState(
+        status: status ?? this.status,
+        profile: profile ?? this.profile,
+        error: error != null ? error() : this.error,
+        savedAt: savedAt ?? this.savedAt,
+      );
 
   @override
   List<Object?> get props => [status, profile, error, savedAt];

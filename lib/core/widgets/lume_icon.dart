@@ -27,6 +27,11 @@ class LumeIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset('assets/icons/$name.svg', width: size, height: size, colorFilter: ColorFilter.mode(color, BlendMode.srcIn));
+    return SvgPicture.asset(
+      'assets/icons/$name.svg',
+      width: size,
+      height: size,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+    );
   }
 }

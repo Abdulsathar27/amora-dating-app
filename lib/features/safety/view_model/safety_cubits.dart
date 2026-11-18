@@ -44,7 +44,14 @@ class SettingsCubit extends Cubit<SettingsState> {
 
 // ------------------------------------------------------------------ report
 class ReportState extends Equatable {
-  const ReportState({this.reason, this.details = '', this.alsoBlock = true, this.submitting = false, this.sent = false, this.error});
+  const ReportState({
+    this.reason,
+    this.details = '',
+    this.alsoBlock = true,
+    this.submitting = false,
+    this.sent = false,
+    this.error,
+  });
 
   final ReportReason? reason;
   final String details;
@@ -53,7 +60,14 @@ class ReportState extends Equatable {
   final bool sent;
   final String? error;
 
-  ReportState copyWith({ReportReason? reason, String? details, bool? alsoBlock, bool? submitting, bool? sent, String? Function()? error}) => ReportState(
+  ReportState copyWith({
+    ReportReason? reason,
+    String? details,
+    bool? alsoBlock,
+    bool? submitting,
+    bool? sent,
+    String? Function()? error,
+  }) => ReportState(
     reason: reason ?? this.reason,
     details: details ?? this.details,
     alsoBlock: alsoBlock ?? this.alsoBlock,
@@ -82,7 +96,12 @@ class ReportCubit extends Cubit<ReportState> {
     if (reason == null) return false;
     emit(state.copyWith(submitting: true, error: () => null));
     try {
-      await _repo.report(userId: userId, reason: reason, details: state.details.trim().isEmpty ? null : state.details.trim(), alsoBlock: state.alsoBlock);
+      await _repo.report(
+        userId: userId,
+        reason: reason,
+        details: state.details.trim().isEmpty ? null : state.details.trim(),
+        alsoBlock: state.alsoBlock,
+      );
       emit(state.copyWith(submitting: false, sent: true));
       return true;
     } on ApiException catch (e) {

@@ -159,7 +159,20 @@ class ChatState extends Equatable {
   );
 
   @override
-  List<Object?> get props => [match, status, messages, draft, draftVersion, isSending, partnerTyping, selected, declined, isMuted, playingId, error];
+  List<Object?> get props => [
+    match,
+    status,
+    messages,
+    draft,
+    draftVersion,
+    isSending,
+    partnerTyping,
+    selected,
+    declined,
+    isMuted,
+    playingId,
+    error,
+  ];
 }
 
 // ---------------- ViewModel ----------------
@@ -174,7 +187,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatPhotoRevealed>(_onRevealed);
     on<ChatPhotoDeclined>((e, emit) => emit(state.copyWith(declined: {...state.declined, e.messageId})));
     on<ChatMuteToggled>(_onMute);
-    on<ChatVoicePlayed>((e, emit) => emit(state.copyWith(playingId: () => state.playingId == e.messageId ? null : e.messageId)));
+    on<ChatVoicePlayed>(
+      (e, emit) => emit(state.copyWith(playingId: () => state.playingId == e.messageId ? null : e.messageId)),
+    );
     on<_ChatPolled>(_onPolled);
   }
 
@@ -233,7 +248,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final target = state.selected;
     if (target == null) return;
     final next = target.reaction == e.reaction ? null : e.reaction;
-    emit(state.copyWith(selected: () => null, messages: [for (final m in state.messages) m.id == target.id ? m.copyWith(reaction: next ?? '') : m]));
+    emit(
+      state.copyWith(
+        selected: () => null,
+        messages: [for (final m in state.messages) m.id == target.id ? m.copyWith(reaction: next ?? '') : m],
+      ),
+    );
     try {
       await _repo.react(target.id, next);
     } on ApiException catch (err) {
@@ -242,7 +262,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Future<void> _onRevealed(ChatPhotoRevealed e, Emitter<ChatState> emit) async {
-    emit(state.copyWith(messages: [for (final m in state.messages) m.id == e.messageId ? m.copyWith(isHidden: false) : m]));
+    emit(
+      state.copyWith(messages: [for (final m in state.messages) m.id == e.messageId ? m.copyWith(isHidden: false) : m]),
+    );
     try {
       await _repo.reveal(e.messageId);
     } on ApiException catch (err) {

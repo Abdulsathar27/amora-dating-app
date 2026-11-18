@@ -86,18 +86,41 @@ GoRouter buildRouter(AuthBloc auth) {
       GoRoute(path: AppRoutes.pledge, pageBuilder: (_, s) => LumeTransitions.push(s, const PledgeView())),
       ShellRoute(
         builder:
-            (context, _, child) =>
-                BlocProvider(create: (_) => ProfileSetupCubit(sl(), sl(), initialName: context.read<AuthBloc>().state.user?.name), child: child),
+            (context, _, child) => BlocProvider(
+              create: (_) => ProfileSetupCubit(sl(), sl(), initialName: context.read<AuthBloc>().state.user?.name),
+              child: child,
+            ),
         routes: [
           GoRoute(path: AppRoutes.createName, pageBuilder: (_, s) => LumeTransitions.push(s, const CreateNameView())),
-          GoRoute(path: AppRoutes.createIdentity, pageBuilder: (_, s) => LumeTransitions.push(s, const CreateIdentityView())),
-          GoRoute(path: AppRoutes.createPhotos, pageBuilder: (_, s) => LumeTransitions.push(s, const CreatePhotosView())),
-          GoRoute(path: AppRoutes.createIntention, pageBuilder: (_, s) => LumeTransitions.push(s, const CreateIntentionView())),
-          GoRoute(path: AppRoutes.createInterests, pageBuilder: (_, s) => LumeTransitions.push(s, const CreateInterestsView())),
+          GoRoute(
+            path: AppRoutes.createIdentity,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const CreateIdentityView()),
+          ),
+          GoRoute(
+            path: AppRoutes.createPhotos,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const CreatePhotosView()),
+          ),
+          GoRoute(
+            path: AppRoutes.createIntention,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const CreateIntentionView()),
+          ),
+          GoRoute(
+            path: AppRoutes.createInterests,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const CreateInterestsView()),
+          ),
           GoRoute(path: AppRoutes.createVoice, pageBuilder: (_, s) => LumeTransitions.push(s, const CreateVoiceView())),
-          GoRoute(path: AppRoutes.verifySelfie, pageBuilder: (_, s) => LumeTransitions.push(s, const VerifySelfieView())),
-          GoRoute(path: AppRoutes.locationPrivacy, pageBuilder: (_, s) => LumeTransitions.push(s, const LocationPrivacyView())),
-          GoRoute(path: AppRoutes.profileReady, pageBuilder: (_, s) => LumeTransitions.push(s, const ProfileReadyView())),
+          GoRoute(
+            path: AppRoutes.verifySelfie,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const VerifySelfieView()),
+          ),
+          GoRoute(
+            path: AppRoutes.locationPrivacy,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const LocationPrivacyView()),
+          ),
+          GoRoute(
+            path: AppRoutes.profileReady,
+            pageBuilder: (_, s) => LumeTransitions.push(s, const ProfileReadyView()),
+          ),
         ],
       ),
 
@@ -117,7 +140,12 @@ GoRouter buildRouter(AuthBloc auth) {
       GoRoute(path: AppRoutes.filters, pageBuilder: (_, s) => LumeTransitions.moveIn(s, const FiltersView())),
       GoRoute(
         path: AppRoutes.itsAMatch,
-        pageBuilder: (_, s) => LumeTransitions.dissolve(s, MatchView(match: s.extra! as Match), duration: const Duration(milliseconds: 480)),
+        pageBuilder:
+            (_, s) => LumeTransitions.dissolve(
+              s,
+              MatchView(match: s.extra! as Match),
+              duration: const Duration(milliseconds: 480),
+            ),
       ),
       GoRoute(
         path: AppRoutes.person,
@@ -128,12 +156,17 @@ GoRouter buildRouter(AuthBloc auth) {
       ),
       GoRoute(
         path: '/chat/:matchId',
-        pageBuilder: (_, s) => LumeTransitions.push(s, ChatView(matchId: s.pathParameters['matchId']!, initial: s.extra as Match?)),
+        pageBuilder:
+            (_, s) =>
+                LumeTransitions.push(s, ChatView(matchId: s.pathParameters['matchId']!, initial: s.extra as Match?)),
       ),
       GoRoute(path: AppRoutes.editProfile, pageBuilder: (_, s) => LumeTransitions.push(s, const EditProfileView())),
       GoRoute(path: AppRoutes.managePhotos, pageBuilder: (_, s) => LumeTransitions.push(s, const ManagePhotosView())),
       GoRoute(path: AppRoutes.voiceIntro, pageBuilder: (_, s) => LumeTransitions.push(s, const VoiceIntroView())),
-      GoRoute(path: AppRoutes.relationshipPrefs, pageBuilder: (_, s) => LumeTransitions.push(s, const RelationshipPrefsView())),
+      GoRoute(
+        path: AppRoutes.relationshipPrefs,
+        pageBuilder: (_, s) => LumeTransitions.push(s, const RelationshipPrefsView()),
+      ),
       GoRoute(path: AppRoutes.privacy, pageBuilder: (_, s) => LumeTransitions.push(s, const PrivacyView())),
       GoRoute(path: AppRoutes.account, pageBuilder: (_, s) => LumeTransitions.push(s, const AccountView())),
       GoRoute(path: AppRoutes.verification, pageBuilder: (_, s) => LumeTransitions.push(s, const VerificationView())),
@@ -142,9 +175,16 @@ GoRouter buildRouter(AuthBloc auth) {
 
       // ------------------------------------------------ report flow
       ShellRoute(
-        builder: (_, s, child) => BlocProvider(create: (_) => ReportCubit(sl(), userId: s.uri.queryParameters['user'] ?? ''), child: child),
+        builder:
+            (_, s, child) => BlocProvider(
+              create: (_) => ReportCubit(sl(), userId: s.uri.queryParameters['user'] ?? ''),
+              child: child,
+            ),
         routes: [
-          GoRoute(path: '/report/reason', pageBuilder: (_, s) => LumeTransitions.push(s, ReportReasonView(name: s.uri.queryParameters['name'] ?? ''))),
+          GoRoute(
+            path: '/report/reason',
+            pageBuilder: (_, s) => LumeTransitions.push(s, ReportReasonView(name: s.uri.queryParameters['name'] ?? '')),
+          ),
           GoRoute(path: '/report/details', pageBuilder: (_, s) => LumeTransitions.push(s, const ReportDetailsView())),
         ],
       ),

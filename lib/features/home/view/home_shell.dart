@@ -61,7 +61,11 @@ class LumeNavBar extends StatefulWidget {
 }
 
 class _LumeNavBarState extends State<LumeNavBar> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 320), value: 1);
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 320),
+    value: 1,
+  );
   late int _from = widget.index;
 
   @override
@@ -88,7 +92,11 @@ class _LumeNavBarState extends State<LumeNavBar> with SingleTickerProviderStateM
       child: Container(
         height: AppSizes.navBarHeight,
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-        decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(36), boxShadow: LumeShadows.card),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(36),
+          boxShadow: LumeShadows.card,
+        ),
         child: LayoutBuilder(
           builder: (_, box) {
             final w = box.maxWidth / LumeNavBar.tabs.length;
@@ -105,7 +113,10 @@ class _LumeNavBarState extends State<LumeNavBar> with SingleTickerProviderStateM
                       child: Container(
                         width: 52,
                         height: 32,
-                        decoration: BoxDecoration(color: AppColors.lavenderSoft, borderRadius: BorderRadius.circular(16)),
+                        decoration: BoxDecoration(
+                          color: AppColors.lavenderSoft,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                     ),
                     Row(
@@ -138,7 +149,13 @@ class _LumeNavBarState extends State<LumeNavBar> with SingleTickerProviderStateM
 }
 
 class _NavItem extends StatelessWidget {
-  const _NavItem({required this.tab, required this.selected, required this.bounce, required this.badge, required this.onTap});
+  const _NavItem({
+    required this.tab,
+    required this.selected,
+    required this.bounce,
+    required this.badge,
+    required this.onTap,
+  });
 
   final _Tab tab;
   final bool selected;
@@ -165,7 +182,10 @@ class _NavItem extends StatelessWidget {
                   clipBehavior: Clip.none,
                   alignment: Alignment.center,
                   children: [
-                    Transform.scale(scale: selected ? 0.85 + 0.15 * bounce : 1, child: LumeIcon(tab.icon, color: color)),
+                    Transform.scale(
+                      scale: selected ? 0.85 + 0.15 * bounce : 1,
+                      child: LumeIcon(tab.icon, color: color),
+                    ),
                     if (badge > 0)
                       Positioned(
                         right: -4,
@@ -173,14 +193,25 @@ class _NavItem extends StatelessWidget {
                         child: Container(
                           width: 9,
                           height: 9,
-                          decoration: BoxDecoration(color: AppColors.coral, shape: BoxShape.circle, border: Border.all(color: AppColors.surface, width: 1.5)),
+                          decoration: BoxDecoration(
+                            color: AppColors.coral,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.surface, width: 1.5),
+                          ),
                         ),
                       ),
                   ],
                 ),
               ),
               AppGaps.h3,
-              Text(tab.label, maxLines: 1, style: LumeText.caption.copyWith(color: color, fontWeight: selected ? FontWeight.w600 : FontWeight.w500)),
+              Text(
+                tab.label,
+                maxLines: 1,
+                style: LumeText.caption.copyWith(
+                  color: color,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),

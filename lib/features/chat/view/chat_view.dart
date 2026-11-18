@@ -36,7 +36,11 @@ class ChatView extends StatelessWidget {
       return LumeScaffold(
         header: LumeHeader(onBack: () => context.pop()),
         scroll: false,
-        body: const LumeEmptyState(title: AppStrings.conversationEnded, body: AppStrings.matchRemoved, icon: LumeIcons.chat),
+        body: const LumeEmptyState(
+          title: AppStrings.conversationEnded,
+          body: AppStrings.matchRemoved,
+          icon: LumeIcons.chat,
+        ),
       );
     }
     return BlocProvider(
@@ -99,7 +103,11 @@ class _ChatHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 2, 16, 8),
       child: Row(
         children: [
-          LumeIconButton(LumeIcons.back, tooltip: AppStrings.back, onPressed: () => context.canPop() ? context.pop() : context.go(AppRoutes.messages)),
+          LumeIconButton(
+            LumeIcons.back,
+            tooltip: AppStrings.back,
+            onPressed: () => context.canPop() ? context.pop() : context.go(AppRoutes.messages),
+          ),
           AppGaps.w10,
           GestureDetector(
             onTap: () => context.push(AppRoutes.person, extra: FullProfileArgs(p)),
@@ -113,13 +121,20 @@ class _ChatHeader extends StatelessWidget {
                     Row(
                       children: [
                         Text(p.name, style: LumeText.titleS),
-                        if (p.isVerified) ...[AppGaps.w4, const LumeIcon(LumeIcons.verified, size: 16, color: AppColors.success)],
+                        if (p.isVerified) ...[
+                          AppGaps.w4,
+                          const LumeIcon(LumeIcons.verified, size: 16, color: AppColors.success),
+                        ],
                       ],
                     ),
                     if (match.isOnline)
                       Row(
                         children: [
-                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.success, shape: BoxShape.circle)),
+                          Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(color: AppColors.success, shape: BoxShape.circle),
+                          ),
                           AppGaps.w5,
                           Text(AppStrings.onlineNow, style: LumeText.caption.copyWith(color: AppColors.success)),
                         ],
@@ -130,7 +145,11 @@ class _ChatHeader extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          LumeIconButton(LumeIcons.more, tooltip: AppStrings.conversationOptions, onPressed: () => showChatSafetySheet(context)),
+          LumeIconButton(
+            LumeIcons.more,
+            tooltip: AppStrings.conversationOptions,
+            onPressed: () => showChatSafetySheet(context),
+          ),
         ],
       ),
     );
@@ -158,7 +177,10 @@ class _NewMatchStarters extends StatelessWidget {
             AppGaps.h10,
             Text(AppStrings.startersFrom(p.name), style: LumeText.bodyM),
             AppGaps.h20,
-            for (final s in p.starters) ...[StarterChip(text: s, onTap: () => context.read<ChatBloc>().add(ChatSendPressed(s))), AppGaps.h8],
+            for (final s in p.starters) ...[
+              StarterChip(text: s, onTap: () => context.read<ChatBloc>().add(ChatSendPressed(s))),
+              AppGaps.h8,
+            ],
           ],
         ),
       ],
@@ -217,7 +239,11 @@ class _Composer extends StatelessWidget {
                   child: Container(
                     constraints: const BoxConstraints(minHeight: 44),
                     padding: const EdgeInsets.only(left: 16, right: 4),
-                    decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(22), border: Border.all(color: AppColors.line)),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: AppColors.line),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -367,7 +393,11 @@ class _ReactionOverlay extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _MenuItem(icon: LumeIcons.undo, label: AppStrings.reply, onTap: () => Navigator.of(context).pop()),
+                      _MenuItem(
+                        icon: LumeIcons.undo,
+                        label: AppStrings.reply,
+                        onTap: () => Navigator.of(context).pop(),
+                      ),
                       if (message.type == MessageType.text)
                         _MenuItem(
                           icon: LumeIcons.edit,
@@ -459,6 +489,9 @@ class _PopInState extends State<_PopIn> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) => FadeTransition(
     opacity: _c,
-    child: ScaleTransition(scale: Tween(begin: 0.6, end: 1.0).animate(CurvedAnimation(parent: _c, curve: Curves.easeOutBack)), child: widget.child),
+    child: ScaleTransition(
+      scale: Tween(begin: 0.6, end: 1.0).animate(CurvedAnimation(parent: _c, curve: Curves.easeOutBack)),
+      child: widget.child,
+    ),
   );
 }

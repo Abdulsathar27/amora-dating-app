@@ -32,7 +32,13 @@ class LumeText {
   }
 
   static TextStyle _sans(double size, double height, FontWeight w, [double spacing = 0]) {
-    final style = TextStyle(fontSize: size, height: height / size, fontWeight: w, letterSpacing: spacing, color: AppColors.ink);
+    final style = TextStyle(
+      fontSize: size,
+      height: height / size,
+      fontWeight: w,
+      letterSpacing: spacing,
+      color: AppColors.ink,
+    );
     return useGoogleFonts ? GoogleFonts.inter(textStyle: style) : style.copyWith(fontFamily: 'Inter');
   }
 

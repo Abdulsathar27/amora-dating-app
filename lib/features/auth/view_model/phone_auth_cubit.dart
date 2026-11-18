@@ -77,7 +77,9 @@ class PhoneAuthCubit extends Cubit<PhoneAuthState> {
 
   void codeChanged(String v) {
     final digits = v.replaceAll(RegExp(r'\D'), '');
-    emit(state.copyWith(code: digits.length > 6 ? digits.substring(0, 6) : digits, codeError: false, error: () => null));
+    emit(
+      state.copyWith(code: digits.length > 6 ? digits.substring(0, 6) : digits, codeError: false, error: () => null),
+    );
   }
 
   /// Returns true when the code was sent and the next screen should open.

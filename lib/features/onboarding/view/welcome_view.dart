@@ -41,7 +41,9 @@ class WelcomeView extends StatelessWidget {
                         controller: controller,
                         itemCount: _pages.length,
                         onPageChanged: context.read<ValueCubit<int>>().set,
-                        itemBuilder: (_, i) => _WelcomePage(index: i, title: _pages[i].$1, body: _pages[i].$2, controller: controller),
+                        itemBuilder:
+                            (_, i) =>
+                                _WelcomePage(index: i, title: _pages[i].$1, body: _pages[i].$2, controller: controller),
                       ),
                     ),
                     Padding(
@@ -63,7 +65,10 @@ class WelcomeView extends StatelessWidget {
                                     onPressed:
                                         () =>
                                             page < 2
-                                                ? controller.nextPage(duration: LumeMotion.push, curve: Curves.easeInOut)
+                                                ? controller.nextPage(
+                                                  duration: LumeMotion.push,
+                                                  curve: Curves.easeInOut,
+                                                )
                                                 : context.push(AppRoutes.ageGate),
                                   ),
                                   if (page == 0) ...[
@@ -167,7 +172,10 @@ class _Dots extends StatelessWidget {
                 return Container(
                   width: 8 + 14 * t,
                   height: 8,
-                  decoration: BoxDecoration(color: Color.lerp(AppColors.line, AppColors.plum, t), borderRadius: BorderRadius.circular(4)),
+                  decoration: BoxDecoration(
+                    color: Color.lerp(AppColors.line, AppColors.plum, t),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 );
               },
             ),
@@ -187,7 +195,8 @@ class _ArchesIllustration extends StatefulWidget {
 }
 
 class _ArchesIllustrationState extends State<_ArchesIllustration> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..forward();
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))
+    ..forward();
   late final _spread = CurvedAnimation(parent: _c, curve: const Interval(0.2, 1, curve: Curves.easeOutBack));
   late final _rise = CurvedAnimation(parent: _c, curve: const Interval(0, 0.6, curve: Curves.easeOutCubic));
 
@@ -214,7 +223,10 @@ class _ArchesIllustrationState extends State<_ArchesIllustration> with SingleTic
                     Positioned(
                       top: 90,
                       left: box.maxWidth / 2 - 75 + sign * dx * _spread.value,
-                      child: Opacity(opacity: _spread.value.clamp(0.0, 1.0), child: ArchPhoto(source: photo, width: 150, height: 230)),
+                      child: Opacity(
+                        opacity: _spread.value.clamp(0.0, 1.0),
+                        child: ArchPhoto(source: photo, width: 150, height: 230),
+                      ),
                     ),
                   Positioned(
                     top: 20 + 30 * (1 - _rise.value),
@@ -262,7 +274,11 @@ class _VoicePreview extends StatelessWidget {
             duration: const Duration(seconds: 6),
           ),
           AppGaps.h16,
-          Text(AppStrings.welcomeSampleQuote, textAlign: TextAlign.center, style: LumeText.quote.copyWith(color: AppColors.lavender)),
+          Text(
+            AppStrings.welcomeSampleQuote,
+            textAlign: TextAlign.center,
+            style: LumeText.quote.copyWith(color: AppColors.lavender),
+          ),
         ],
       ),
     );
