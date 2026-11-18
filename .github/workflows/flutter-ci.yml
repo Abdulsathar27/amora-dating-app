@@ -50,7 +50,7 @@ jobs:
           pct=$(awk "BEGIN { printf \"%.1f\", 100 * $hit / $total }")
           echo "### Test coverage: ${pct}% ($hit / $total lines)" >> "$GITHUB_STEP_SUMMARY"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: coverage-lcov
           path: coverage/lcov.info
@@ -79,7 +79,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build apk --debug
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: lume-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
@@ -102,7 +102,7 @@ jobs:
       - run: flutter pub get
       - run: flutter build web --release --no-wasm-dry-run
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: lume-web
           path: build/web
